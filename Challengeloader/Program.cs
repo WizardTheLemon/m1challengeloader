@@ -28,25 +28,35 @@ namespace Challengeloader
         public static void Main()
         {
             Console.Title = "Magicka Challengeloader";
-            Console.WriteLine("\n Press the corresponding number to view maps in each category");
+
+            Console.WriteLine(
+                "\n Press the corresponding number to view maps in each category." +
+                "\n Type \"exit\" if you want to exit the program." +
+                "\n Type \"restore\" to restore all original challenge files. \n"
+            );
 
             for (int i = 0; i < difficultyFolders.Length; i++)
             {
                 var folder = new DirectoryInfo(difficultyFolders[i]).Name;
-                Console.WriteLine("   " + (i + 1) + ") " + folder);
+                //Console.WriteLine("   " + (i + 1) + ") " + folder);
+                Console.WriteLine("   {0}) {1}", i+1 , folder);
             }
-            
+
             var diffSelection = Console.ReadLine();
+
+            if (diffSelection == "restore") RestoreFiles();
+
             int checkedInput = CheckInput(diffSelection, difficultyFolders.Length);
             DisplayFiles(checkedInput);
-            //Console.WriteLine("Checked Input: " + checkedInput);
-            //Console.ReadKey();
         }
 
         static void DisplayFiles(int dirChoice)
         {
             Console.Clear();
-            Console.WriteLine("\n Press the corresponding number to load the challenge map");
+            Console.WriteLine(
+                "\n Press the corresponding number to load the challenge map" +
+                "\n Type \"exit\" if you want to exit the program."
+            );
 
             var availableMaps = Directory.GetFiles(difficultyFolders[dirChoice]);
             for (int i = 0; i < availableMaps.Length; i++)
@@ -56,7 +66,8 @@ namespace Challengeloader
                 {
                     if(map == challengeNames[j,0])
                     {
-                        Console.WriteLine("   " + (i + 1) + ") " + challengeNames[j,1]);
+                        //Console.WriteLine("   " + (i + 1) + ") " + challengeNames[j,1]);
+                        Console.WriteLine("   {0}) {1}", i+1, challengeNames[j,1]);
                         break;
                     }
                 }
@@ -82,7 +93,7 @@ namespace Challengeloader
                 new DirectoryInfo(difficultyFolders[dirChoice]).Name,
                 Path.GetFileNameWithoutExtension(mapChoice)
             );
-            Console.WriteLine("\n\nPress any key to restore the original map and return to the main menu");
+            Console.WriteLine("\n\nPress any key to restore the original map and return to the main menu.");
             Console.ReadKey();
             Console.Clear();
 
@@ -101,23 +112,55 @@ namespace Challengeloader
             Console.ReadKey();*/
         }
 
+        static void RestoreFiles()
+        {
+            Console.Clear();
+            string[] vanillaFiles = Directory.GetFiles(vanillaBackup);
+
+            foreach(string mapFile in vanillaFiles)
+            {
+                File.Copy(
+                    mapFile,
+                    Path.Combine(vanillaFolder, Path.GetFileName(mapFile)),
+                    true
+                );
+            }
+
+            Console.WriteLine("\n\nAll original challenge files have been restored. Start/Restart the game now.");
+            Console.ReadKey();
+            Console.Clear();
+            Main();
+        }
+
         static int CheckInput(string input, int maxVal)
         {
             bool inputOK = false;
             int inputConv = 0;
+
+            if (input == "exit")
+            {
+                Environment.Exit(0);
+            }
+
             while (!inputOK)
             {
-                if (int.TryParse(input, out inputConv))
+                if (input.Length < 4) { // required to prevent program from stopping to run if user input too big (eg 998273482374982374)
+                    if (int.TryParse(input, out inputConv))
+                    {
+                        if (inputConv < 1 || inputConv > maxVal)
+                        {
+                            Console.WriteLine("Invalid input. Write a number from 1 to {0}", maxVal);
+                            input = Console.ReadLine();
+                        }
+                        else
+                        {
+                            inputOK = true;
+                        }
+                    }
+                } else
                 {
-                    if (inputConv < 1 || inputConv > maxVal)
-                    {
-                        Console.WriteLine("Invalid input. Write a number from 1 to {0}", maxVal);
-                        input = Console.ReadLine();
-                    }
-                    else
-                    {
-                        inputOK = true;
-                    }
+                    Console.WriteLine("Invalid input. Write a number from 1 to {0}", maxVal);
+                    input = Console.ReadLine();
                 }
             }
             return inputConv-1;
