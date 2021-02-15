@@ -93,7 +93,16 @@ namespace Challengeloader
                 "\n\n Type \"exit\" if you want to exit the program." +
                 "\n\n Type desc + number (e.g. desc1) to view the description of the map.\n"
             );
+            /*string[,] specialNames;
+            XPathDocument description = new XPathDocument(Path.Combine(difficultyFolders[dirChoice], "description.xml"));
+            XPathNavigator descNav = description.CreateNavigator();
+            descNav.MoveToFirstChild();
+            foreach (XPathNavigator node in descNav.SelectChildren("map", ""))
+            {
+                node.MoveToChild("filename", "");
 
+                node.MoveToParent(); node.MoveToChild("name", "");
+            }*/
             var availableMaps = Directory.GetFiles(difficultyFolders[dirChoice], "chs_*");
             for (int i = 0; i < availableMaps.Length; i++)
             {
@@ -111,16 +120,7 @@ namespace Challengeloader
             Console.WriteLine();
             string mapChoice = Console.ReadLine();
 
-            if (mapChoice.StartsWith("d"))
-            {
-
-                DisplaySpecialDescription(dirChoice, mapChoice);
-            }
-            else
-            {
-                int checkedInput = CheckInput(mapChoice, availableMaps.Length);
-                MoveFile(availableMaps[checkedInput], dirChoice);
-            }
+                CheckInput(mapChoice, availableMaps.Length, dirChoice, availableMaps);
 
         }
 
@@ -156,27 +156,9 @@ namespace Challengeloader
             Console.ReadKey();*/
         }
 
-        static void DisplaySpecialDescription(int dirChoice, string descChoice)
+        static void DisplaySpecialDescription(int dirChoice, int mapChoice)
         {
-            Console.Clear();
-            int mapChoice;
-            int.TryParse(descChoice.Remove(0, 1), out mapChoice);
-            mapChoice -= 1;
             string mapChoiceString = Path.GetFileName(Path.Combine(difficultyFolders[dirChoice], Directory.GetFiles(difficultyFolders[dirChoice], "chs_*")[mapChoice]));
-
-            /*Console.WriteLine("\ndiff folder with dirchoice:   " +
-                Path.Combine(difficultyFolders[dirChoice], Directory.GetFiles(difficultyFolders[dirChoice], "chs_*")[mapChoice]) +
-                "\n\n");
-            Console.WriteLine("\nmapchoicestring:   " +
-                mapChoiceString +
-                "\n\n");
-            Console.WriteLine("\nmapchoicestring with directoryinfo().Name:   " +
-                new DirectoryInfo(mapChoiceString).Name +
-                "\n\n");
-            Console.WriteLine("\nmapchoicestring with path getfilename:   " +
-                Path.GetFileName(mapChoiceString) +
-                "\n\n");*/
-
 
             XPathDocument description = new XPathDocument(Path.Combine(difficultyFolders[dirChoice], "description.xml"));
             XPathNavigator descNav = description.CreateNavigator();
@@ -187,22 +169,17 @@ namespace Challengeloader
                 node.MoveToChild("filename", "");
                 if(node.Value == mapChoiceString)
                 {
-                    node.MoveToNext();
-                    Console.WriteLine("\n " + node.Value); //name
-                    node.MoveToNext();
-                    Console.WriteLine("\n " + node.Value); //description
+                    node.MoveToParent(); node.MoveToChild("name","");
+                    Console.WriteLine("\n ~~~~~~~~~~ " + node.Value + " ~~~~~~~~~~");
+                    node.MoveToParent(); node.MoveToChild("description", "");
+                    Console.WriteLine("\n " + node.Value);
                 }
-                //Console.WriteLine("inner xml:   " + node.MoveToFirstChild());
             }
 
-            /*descNav.MoveToFirstChild(); //maps
-            descNav.MoveToFirstChild(); //map
-            descNav.MoveToChild("filename", "");
-            Console.WriteLine(descNav.Name + descNav.InnerXml);
-            */
-            //description.Load(Path.Combine(difficultyFolders[dirChoice], "description.xml"));
+            Console.WriteLine("\n\n\n\nPress any key to return to the challenge selection.");
+            Console.ReadKey();
 
-
+            DisplaySpecialFiles(dirChoice);
         }
 
         static void RestoreFiles()
@@ -229,21 +206,21 @@ namespace Challengeloader
         {
             bool inputOK = false;
             int inputConv = 0;
+            string errorMsg = "Invalid input. Write a number from 1 to {0}";
 
 
             while (!inputOK)
             {
                 if (input == "exit")
-                {
                     Environment.Exit(0);
-                }
 
-                if (input.Length < 5 && input.Length > 0) { // required to prevent program from stopping to run if user input too big (eg 998273482374982374)
+                if (input.Length < 5 && input.Length > 0)
+                {
                     if (int.TryParse(input, out inputConv))
                     {
                         if (inputConv < 1 || inputConv > maxVal)
                         {
-                            Console.WriteLine("Invalid input. Write a number from 1 to {0}", maxVal);
+                            Console.WriteLine(errorMsg, maxVal);
                             input = Console.ReadLine();
                         }
                         else
@@ -251,13 +228,86 @@ namespace Challengeloader
                             inputOK = true;
                         }
                     }
-                } else
+                    else
+                    {
+                        Console.WriteLine(errorMsg, maxVal);
+                        input = Console.ReadLine();
+                    }
+                }
+                else
                 {
-                    Console.WriteLine("Invalid input. Write a number from 1 to {0}", maxVal);
+                    Console.WriteLine(errorMsg, maxVal);
                     input = Console.ReadLine();
                 }
             }
-            return inputConv-1;
+            return inputConv - 1;
+        }
+        static void CheckInput(string input, int maxVal, int dirChoice, string[] availableMaps)
+        {
+            bool inputOK = false;
+            int inputConv = 0;
+            int mapChoice = 0;
+            string errorMsg = "Invalid input. Write desc + a number from 1 to {0}. For example  desc2. \nOr, to load a map, write a number from 1 to {0}";
+
+
+            while (!inputOK)
+            {
+                if (input == "exit")
+                    Environment.Exit(0);
+
+                if (input.StartsWith("desc"))
+                {
+                    Console.WriteLine(input.Remove(0, 4));
+                    Console.WriteLine(input.Length);
+                    if (int.TryParse(input.Remove(0, 4), out mapChoice))
+                    {
+                        if (mapChoice < 1 || mapChoice > maxVal)
+                        {
+                            Console.WriteLine("#1");
+                            Console.WriteLine(errorMsg, maxVal);
+                            input = Console.ReadLine();
+                        } else
+                        {
+                            Console.Clear();
+                            DisplaySpecialDescription(dirChoice, mapChoice-1);
+                        }
+                    } else
+                    {
+                        Console.WriteLine("#2");
+                        Console.WriteLine(errorMsg, maxVal);
+                        input = Console.ReadLine();
+                    }
+                }
+
+                if (input.Length < 5 && input.Length > 0)
+                {
+                    if (int.TryParse(input, out inputConv))
+                    {
+                        if (inputConv < 1 || inputConv > maxVal)
+                        {
+                            Console.WriteLine("#3");
+                            Console.WriteLine(errorMsg, maxVal);
+                            input = Console.ReadLine();
+                        }
+                        else
+                        {
+                            MoveFile(availableMaps[inputConv-1], dirChoice);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("#4");
+                        Console.WriteLine(errorMsg, maxVal);
+                        input = Console.ReadLine();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("#5");
+                    Console.WriteLine(errorMsg, maxVal);
+                    input = Console.ReadLine();
+                }
+            }
         }
     }
 }
