@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Text;
+using System.Xml.XPath;
 
 namespace Challengeloader
 {
@@ -32,13 +34,13 @@ namespace Challengeloader
             Console.WriteLine(
                 "\n Press the corresponding number to view maps in each category." +
                 "\n Type \"exit\" if you want to exit the program." +
-                "\n Type \"restore\" to restore all original challenge files. \n"
+                "\n Type \"restore\" to restore all original challenge files. \n" +
+                "\n Special Maps require every player in the lobby to load the map using this program. \n"
             );
 
             for (int i = 0; i < difficultyFolders.Length; i++)
             {
                 var folder = new DirectoryInfo(difficultyFolders[i]).Name;
-                //Console.WriteLine("   " + (i + 1) + ") " + folder);
                 Console.WriteLine("   {0}) {1}", i+1 , folder);
             }
 
@@ -47,7 +49,12 @@ namespace Challengeloader
             if (diffSelection == "restore") RestoreFiles();
 
             int checkedInput = CheckInput(diffSelection, difficultyFolders.Length);
-            DisplayFiles(checkedInput);
+            if(new DirectoryInfo(difficultyFolders[checkedInput]).Name.StartsWith("Special") != false) {
+                DisplaySpecialFiles(checkedInput);
+            } else
+            {
+                DisplayFiles(checkedInput);
+            }
         }
 
         static void DisplayFiles(int dirChoice)
@@ -55,19 +62,47 @@ namespace Challengeloader
             Console.Clear();
             Console.WriteLine(
                 "\n Press the corresponding number to load the challenge map" +
-                "\n Type \"exit\" if you want to exit the program."
+                "\n\n Type \"exit\" if you want to exit the program."
             );
 
-            var availableMaps = Directory.GetFiles(difficultyFolders[dirChoice]);
+            var availableMaps = Directory.GetFiles(difficultyFolders[dirChoice], "chs_*");
             for (int i = 0; i < availableMaps.Length; i++)
             {
                 var map = Path.GetFileNameWithoutExtension(availableMaps[i]);
-                for(int j = 0; j < challengeNames.Length; j++)
+                for (int j = 0; j < challengeNames.Length; j++)
                 {
-                    if(map == challengeNames[j,0])
+                    if (map == challengeNames[j, 0]) //change this to description.xml read
                     {
-                        //Console.WriteLine("   " + (i + 1) + ") " + challengeNames[j,1]);
-                        Console.WriteLine("   {0}) {1}", i+1, challengeNames[j,1]);
+                        Console.WriteLine("   {0}) {1}", i + 1, challengeNames[j, 1]);
+                        break;
+                    }
+                }
+            }
+
+            Console.WriteLine();
+            string mapChoice = Console.ReadLine();
+            int checkedInput = CheckInput(mapChoice, availableMaps.Length);
+            MoveFile(availableMaps[checkedInput], dirChoice);
+        }
+
+        static void DisplaySpecialFiles(int dirChoice)
+        {
+            Console.Clear();
+            Console.WriteLine(
+                "\n Press the corresponding number to load the challenge map" +
+                "\n\n Type \"exit\" if you want to exit the program." +
+                "\n\n Type desc + number (e.g. desc1) to view the description of the map.\n"
+            );
+
+            var availableMaps = Directory.GetFiles(difficultyFolders[dirChoice], "chs_*");
+            for (int i = 0; i < availableMaps.Length; i++)
+            {
+                var map = Path.GetFileNameWithoutExtension(availableMaps[i]);
+                for (int j = 0; j < challengeNames.Length; j++)
+                {
+                    if (map == challengeNames[j, 0])
+                    {
+                        Console.WriteLine("   {0}) {1}", i + 1, challengeNames[j, 1]);
                         break;
                     }
                 }
@@ -76,8 +111,17 @@ namespace Challengeloader
             Console.WriteLine();
             string mapChoice = Console.ReadLine();
 
-            int checkedInput = CheckInput(mapChoice, availableMaps.Length);
-            MoveFile(availableMaps[checkedInput], dirChoice);
+            if (mapChoice.StartsWith("d"))
+            {
+
+                DisplaySpecialDescription(dirChoice, mapChoice);
+            }
+            else
+            {
+                int checkedInput = CheckInput(mapChoice, availableMaps.Length);
+                MoveFile(availableMaps[checkedInput], dirChoice);
+            }
+
         }
 
         static void MoveFile(string mapChoice, int dirChoice)
@@ -112,6 +156,55 @@ namespace Challengeloader
             Console.ReadKey();*/
         }
 
+        static void DisplaySpecialDescription(int dirChoice, string descChoice)
+        {
+            Console.Clear();
+            int mapChoice;
+            int.TryParse(descChoice.Remove(0, 1), out mapChoice);
+            mapChoice -= 1;
+            string mapChoiceString = Path.GetFileName(Path.Combine(difficultyFolders[dirChoice], Directory.GetFiles(difficultyFolders[dirChoice], "chs_*")[mapChoice]));
+
+            /*Console.WriteLine("\ndiff folder with dirchoice:   " +
+                Path.Combine(difficultyFolders[dirChoice], Directory.GetFiles(difficultyFolders[dirChoice], "chs_*")[mapChoice]) +
+                "\n\n");
+            Console.WriteLine("\nmapchoicestring:   " +
+                mapChoiceString +
+                "\n\n");
+            Console.WriteLine("\nmapchoicestring with directoryinfo().Name:   " +
+                new DirectoryInfo(mapChoiceString).Name +
+                "\n\n");
+            Console.WriteLine("\nmapchoicestring with path getfilename:   " +
+                Path.GetFileName(mapChoiceString) +
+                "\n\n");*/
+
+
+            XPathDocument description = new XPathDocument(Path.Combine(difficultyFolders[dirChoice], "description.xml"));
+            XPathNavigator descNav = description.CreateNavigator();
+            descNav.MoveToFirstChild();
+
+            foreach (XPathNavigator node in descNav.SelectChildren("map", ""))
+            {
+                node.MoveToChild("filename", "");
+                if(node.Value == mapChoiceString)
+                {
+                    node.MoveToNext();
+                    Console.WriteLine("\n " + node.Value); //name
+                    node.MoveToNext();
+                    Console.WriteLine("\n " + node.Value); //description
+                }
+                //Console.WriteLine("inner xml:   " + node.MoveToFirstChild());
+            }
+
+            /*descNav.MoveToFirstChild(); //maps
+            descNav.MoveToFirstChild(); //map
+            descNav.MoveToChild("filename", "");
+            Console.WriteLine(descNav.Name + descNav.InnerXml);
+            */
+            //description.Load(Path.Combine(difficultyFolders[dirChoice], "description.xml"));
+
+
+        }
+
         static void RestoreFiles()
         {
             Console.Clear();
@@ -137,14 +230,15 @@ namespace Challengeloader
             bool inputOK = false;
             int inputConv = 0;
 
-            if (input == "exit")
-            {
-                Environment.Exit(0);
-            }
 
             while (!inputOK)
             {
-                if (input.Length < 4) { // required to prevent program from stopping to run if user input too big (eg 998273482374982374)
+                if (input == "exit")
+                {
+                    Environment.Exit(0);
+                }
+
+                if (input.Length < 5 && input.Length > 0) { // required to prevent program from stopping to run if user input too big (eg 998273482374982374)
                     if (int.TryParse(input, out inputConv))
                     {
                         if (inputConv < 1 || inputConv > maxVal)
