@@ -247,7 +247,7 @@ namespace Challengeloader
             bool inputOK = false;
             int inputConv = 0;
             int mapChoice = 0;
-            string errorMsg = "Invalid input. Write desc + a number from 1 to {0}. For example  desc2. \nOr, to load a map, write a number from 1 to {0}";
+            string errorMsg = "Write desc + a number from 1 to {0}. For example  desc2. \nOr, to load a map, write a number from 1 to {0}";
 
 
             while (!inputOK)
@@ -257,14 +257,11 @@ namespace Challengeloader
 
                 if (input.StartsWith("desc"))
                 {
-                    Console.WriteLine(input.Remove(0, 4));
-                    Console.WriteLine(input.Length);
                     if (int.TryParse(input.Remove(0, 4), out mapChoice))
                     {
                         if (mapChoice < 1 || mapChoice > maxVal)
                         {
-                            Console.WriteLine("#1");
-                            Console.WriteLine(errorMsg, maxVal);
+                            Console.WriteLine("Number of description out of possible range.\n"+errorMsg, maxVal);
                             input = Console.ReadLine();
                         } else
                         {
@@ -273,8 +270,7 @@ namespace Challengeloader
                         }
                     } else
                     {
-                        Console.WriteLine("#2");
-                        Console.WriteLine(errorMsg, maxVal);
+                        Console.WriteLine("Description number is not a number.\n"+errorMsg, maxVal);
                         input = Console.ReadLine();
                     }
                 }
@@ -285,8 +281,7 @@ namespace Challengeloader
                     {
                         if (inputConv < 1 || inputConv > maxVal)
                         {
-                            Console.WriteLine("#3");
-                            Console.WriteLine(errorMsg, maxVal);
+                            Console.WriteLine("Number for map loading out of possible range.\n" + errorMsg, maxVal);
                             input = Console.ReadLine();
                         }
                         else
@@ -296,15 +291,13 @@ namespace Challengeloader
                     }
                     else
                     {
-                        Console.WriteLine("#4");
-                        Console.WriteLine(errorMsg, maxVal);
+                        Console.WriteLine("Neither a valid description nor a valid map loading number .\n" + errorMsg, maxVal);
                         input = Console.ReadLine();
                     }
                 }
                 else
                 {
-                    Console.WriteLine("#5");
-                    Console.WriteLine(errorMsg, maxVal);
+                    Console.WriteLine("Input exceeds 4 characters.\n" + errorMsg, maxVal);
                     input = Console.ReadLine();
                 }
             }
