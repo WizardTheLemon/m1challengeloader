@@ -228,8 +228,8 @@ namespace Challengeloader
             bool inputOK = false;
             int inputConv = 0;
             int mapChoice = 0;
-            string errorMsg = "Write desc + a number from 1 to {0}. For example  desc2. \nOr, to load a map, write a number from 1 to {0}";
-
+            string errorMsg = "Write desc + a number from 1 to {0}. For example  desc2.\n" +
+                              "Or, to load a map, write a number from 1 to {0}";
 
             while (!inputOK)
             {
@@ -254,32 +254,33 @@ namespace Challengeloader
                         Console.WriteLine("Description number is not a number.\n"+errorMsg, maxVal);
                         input = Console.ReadLine();
                     }
-                }
-
-                if (input.Length < 5 && input.Length > 0)
+                } else
                 {
-                    if (int.TryParse(input, out inputConv))
+                    if (input.Length < 5 && input.Length > 0)
                     {
-                        if (inputConv < 1 || inputConv > maxVal)
+                        if (int.TryParse(input, out inputConv))
                         {
-                            Console.WriteLine("Number for map loading out of possible range.\n" + errorMsg, maxVal);
-                            input = Console.ReadLine();
+                            if (inputConv < 1 || inputConv > maxVal)
+                            {
+                                Console.WriteLine("Number for map loading out of possible range.\n" + errorMsg, maxVal);
+                                input = Console.ReadLine();
+                            }
+                            else
+                            {
+                                MoveFile(availableMaps[inputConv - 1], dirChoice);
+                            }
                         }
                         else
                         {
-                            MoveFile(availableMaps[inputConv-1], dirChoice);
+                            Console.WriteLine("Neither a valid description nor a valid map loading number .\n" + errorMsg, maxVal);
+                            input = Console.ReadLine();
                         }
                     }
                     else
                     {
-                        Console.WriteLine("Neither a valid description nor a valid map loading number .\n" + errorMsg, maxVal);
+                        Console.WriteLine("Input exceeds 4 characters.\n" + errorMsg, maxVal);
                         input = Console.ReadLine();
                     }
-                }
-                else
-                {
-                    Console.WriteLine("Input exceeds 4 characters.\n" + errorMsg, maxVal);
-                    input = Console.ReadLine();
                 }
             }
         }
