@@ -7,9 +7,9 @@ namespace Challengeloader
 {
     class Program
     {
-        static string[] difficultyFolders = Directory.GetDirectories(Path.Combine(Directory.GetCurrentDirectory(), "ChallengeloaderMaps", "Modded"));
-        static string vanillaBackup = Path.Combine(Directory.GetCurrentDirectory(), "ChallengeloaderMaps", "Original");
-        static string vanillaFolder = Path.Combine(Directory.GetCurrentDirectory(), "Content", "Levels", "Challenges", "Test");
+        static string[] difficultyFolders = Directory.GetDirectories(Path.Combine(Directory.GetCurrentDirectory(), "Challengeloader Maps", "Modded"));
+        static string vanillaBackup = Path.Combine(Directory.GetCurrentDirectory(), "Challengeloader Maps", "Original");
+        static string vanillaFolder = Path.Combine(Directory.GetCurrentDirectory(), "Content", "Levels", "Challenges");
 
         static string[,] challengeNames = {
             {"chs_end_of_world","End of World"},
@@ -29,7 +29,7 @@ namespace Challengeloader
         };
         public static void Main()
         {
-            Console.Title = "Magicka Challengeloader";
+            Console.Title = "Magicka Challengeloader - V21-02-16-1";
 
             Console.WriteLine(
                 "\n Press the corresponding number to view maps in each category." +
@@ -93,16 +93,6 @@ namespace Challengeloader
                 "\n\n Type \"exit\" if you want to exit the program." +
                 "\n\n Type desc + number (e.g. desc1) to view the description of the map.\n"
             );
-            /*string[,] specialNames;
-            XPathDocument description = new XPathDocument(Path.Combine(difficultyFolders[dirChoice], "description.xml"));
-            XPathNavigator descNav = description.CreateNavigator();
-            descNav.MoveToFirstChild();
-            foreach (XPathNavigator node in descNav.SelectChildren("map", ""))
-            {
-                node.MoveToChild("filename", "");
-
-                node.MoveToParent(); node.MoveToChild("name", "");
-            }*/
             var availableMaps = Directory.GetFiles(difficultyFolders[dirChoice], "chs_*");
             for (int i = 0; i < availableMaps.Length; i++)
             {
@@ -119,9 +109,7 @@ namespace Challengeloader
 
             Console.WriteLine();
             string mapChoice = Console.ReadLine();
-
-                CheckInput(mapChoice, availableMaps.Length, dirChoice, availableMaps);
-
+            CheckInput(mapChoice, availableMaps.Length, dirChoice, availableMaps);
         }
 
         static void MoveFile(string mapChoice, int dirChoice)
@@ -146,14 +134,7 @@ namespace Challengeloader
                 Path.Combine(vanillaFolder, Path.GetFileName(mapChoice)),
                 true
             );
-
             Main();
-
-            /*Console.WriteLine("mapChoice:   " + mapChoice);
-            Console.WriteLine("vanillaFolder:   " + vanillaFolder);
-            Console.WriteLine("path extract:   " + Path.GetFileName(mapChoice));
-            Console.WriteLine("path combine:   " + Path.Combine(vanillaFolder,Path.GetFileName(mapChoice)));
-            Console.ReadKey();*/
         }
 
         static void DisplaySpecialDescription(int dirChoice, int mapChoice)
@@ -208,7 +189,6 @@ namespace Challengeloader
             int inputConv = 0;
             string errorMsg = "Invalid input. Write a number from 1 to {0}";
 
-
             while (!inputOK)
             {
                 if (input == "exit")
@@ -242,6 +222,7 @@ namespace Challengeloader
             }
             return inputConv - 1;
         }
+
         static void CheckInput(string input, int maxVal, int dirChoice, string[] availableMaps)
         {
             bool inputOK = false;
