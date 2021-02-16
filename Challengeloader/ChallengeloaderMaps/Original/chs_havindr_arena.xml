@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Scene>
+  <model>ch_havindr_arena</model>
+  <reverb roomType="10" mix="40" />
+  <trigger id="Start" repeat="false">
+    <if />
+    <then>
+      <cameramagnify magnification="0.8"/>
+      <playMusic cue="music_encounter" delay="3"/>
+      <playAnimation name="rope1" loop="true"/>
+      <playAnimation name="rope2" loop="true"/>
+      <playAnimation name="rope3" loop="true"/>
+      <playAnimation name="rope4" loop="true"/>
+
+      <playSound id="ch_arena_bars01" volume="0" area="ch_arena_bars01" radius="150" apply3d="true" cue="Misc/misc_arena_gate01" />
+    </then>
+  </trigger>
+
+  <RuleSet type="Survival" waves="20">
+    <spawnAreas>
+      <area>north</area>
+      <area>west</area>
+      <area>east</area>
+      <area>south</area>
+    </spawnAreas>
+  </RuleSet>
+
+  <!--<area>southeast</area>
+      <area>southwest</area>
+      <area>northeast</area>
+      <area>northwest</area>-->
+
+  <!--Up until wave (including) wave 8, only spawn units from two directions. Boss-waves might have exceptions.-->
+  <!--Usable units-->
+  <!--
+  Orcs (All types)
+  Trolls (All types)
+  Firedrakes
+  Beholder
+  Spiders (All types)
+  Warlocks
+  Khan 
+    
+  # Means that the wave gets reinforcements after 15 seconds. 
+    From these waves onward, mixed creature races may be used.
+    
+  ¤ Means that the wave needs to be tough as hell, use whatever means necessary.
+  -->
+
+  <!--WAVE 1 - Basic units-->
+  <!--Shows your average orcs-->
+  <wave>
+    <waveActions area="any" delay="0">
+      <spawn type="orc_regular" nr="2"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="orc_regular" nr="2"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="orc_regular" nr="2"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 2 - Additional units-->
+  <!--Shows spiders-->
+  <wave>
+    <playAnimation name="grate_anim" loop="false" children="true" speed="1" />
+    <waveActions area="any" delay="0">
+      <spawn type="spider_forest" nr="3"/>
+      <spawn type="spider_poison" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="spider_forest" nr="3"/>
+      <spawn type="spider_poison" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="spider_forest" nr="3"/>
+      <spawn type="spider_poison" nr="1"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 3 - Basic wave example-->
+  <!---->
+  <wave >
+    <playAnimation name="grate_anim" loop="false" children="true" speed="-1" />
+    
+    <waveActions area="any" delay="2">
+      <spawn type="orc_regular" nr="3"/>
+      <spawn type="orc_berserk" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="2">
+      <spawn type="orc_regular" nr="3"/>
+      <spawn type="orc_berserk" nr="1"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 4 - First challenge/boss-->
+  <!--Warriors from every gate. 12 in total.-->
+  <wave>
+    <waveActions area="north" delay="0">
+      <spawn type="orc_warrior" nr="2"/>
+    </waveActions>
+    <waveActions area="south" delay="0">
+      <spawn type="orc_warrior" nr="2"/>
+    </waveActions>
+    <waveActions area="east" delay="0">
+      <spawn type="orc_warrior" nr="2"/>
+    </waveActions>
+    <waveActions area="west" delay="0">
+      <spawn type="orc_warrior" nr="2"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 5 - First real wave-->
+  <!---->
+  <wave>
+    <playAnimation name="grate_anim" loop="false" children="true" speed="-1" />
+    
+    <waveActions area="any" delay="0">
+      <spawn type="spider_forest" nr="3"/>
+      <spawn type="firedrake"     nr="2"/>
+      <spawn type="spider_poison" nr="3"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="spider_forest" nr="3"/>
+      <spawn type="firedrake"     nr="2"/>
+      <spawn type="spider_poison" nr="3"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="spider_forest" nr="4"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="spider_forest" nr="4"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 6 - Real wave, variation-->
+  <!---->
+  <wave>
+    <waveActions area="any" delay="0">
+      <spawn type="troll_war" nr="1"/>
+      <spawn type="orc_regular" nr="3"/>
+      <spawn type="orc_warrior" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="orc_regular" nr="3"/>
+      <spawn type="orc_warrior" nr="1"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 7 - Real wave, variation-->
+  <!---->
+  <wave>
+    <waveActions area="any" delay="0">
+      <spawn type="orc_berserk" nr="4"/>
+      <spawn type="warlock" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="orc_berserk" nr="4"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 8 - Second Challenge/Boss-->
+  <!--Beholders. Always hard.-->
+  <wave>
+    <waveActions area="any" delay="0">
+      <spawn type="beholder_malign" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="beholder_malign" nr="1"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 9 - # Tough wave with reinforcment-->
+  <!---->
+  <wave>
+    <waveActions area="any" delay="0">
+      <spawn type="warlock" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="warlock" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="troll_stone_unarmed" nr="1" />
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="troll_stone_unarmed" nr="1" />
+    </waveActions>
+
+    <waveActions area="any" delay="15">
+      <spawn type="troll_stone" nr="1" />
+    </waveActions>
+  </wave>
+
+  <!--WAVE 10 - # Tough wave with reinforcment-->
+  <!---->
+  <wave>
+    <waveActions area="any" delay="0">
+      <spawn type="orc_captain" nr="1"/>
+      <spawn type="orc_warrior" nr="2"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="orc_warrior" nr="1"/>
+      <spawn type="orc_regular" nr="3"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="orc_warrior" nr="1"/>
+      <spawn type="orc_regular" nr="3"/>
+    </waveActions>
+
+    <waveActions area="any" delay="15">
+      <spawn type="orc_warrior" nr="1"/>
+      <spawn type="orc_regular" nr="3"/>
+    </waveActions>
+    <waveActions area="any" delay="15">
+      <spawn type="orc_warrior" nr="1"/>
+      <spawn type="orc_regular" nr="3"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 11 - # Tough wave with reinforcment-->
+  <!--Spiders slow you down so the troll can get'ya-->
+  <wave>
+    <waveActions area="any" delay="0">
+      <spawn type="troll_stone" nr="2"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="beholder_malign" nr="1"/>
+      <spawn type="spider_forest" nr="5"/>
+      <spawn type="spider_poison" nr="2"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="spider_forest" nr="5"/>
+      <spawn type="spider_poison" nr="2"/>
+    </waveActions>
+
+    <waveActions area="any" delay="15">
+      <spawn type="spider_forest" nr="6"/>
+      <spawn type="spider_poison" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="15">
+      <spawn type="spider_forest" nr="6"/>
+      <spawn type="spider_poison" nr="1"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 12 - Tough boss-->
+  <!--Kahn and a couple of orc warriors.-->
+  <wave>
+    <waveActions area="north" delay="0">
+      <spawn type="boss_warlord" nr="1"/>
+    </waveActions>
+    <waveActions area="south" delay="0">
+      <spawn type="orc_warrior" nr="1"/>
+    </waveActions>
+    <waveActions area="east" delay="0">
+      <spawn type="orc_warrior" nr="1"/>
+    </waveActions>
+    <waveActions area="west" delay="0">
+      <spawn type="orc_warrior" nr="1"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 13 - ¤ Real tough wave-->
+  <!--Running tough enemies.-->
+  <wave>    
+    <waveActions area="any" delay="0">
+      <spawn type="troll_snow" nr="1"/>
+      <spawn type="orc_berserk" nr="3"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="troll_snow" nr="1"/>
+      <spawn type="orc_berserk" nr="3"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="orc_berserk" nr="4"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 14 - ¤ Real tough wave-->
+  <!--The idea here is that the players will have to focus on one target at a time to stand a chance.
+      They also have to protect eachother by use of barriers or slowing effects to keep the other targets at bay.-->
+  <wave>
+    <waveActions area="any" delay="2">
+      <spawn type="troll_war" nr="1"/>
+      <spawn type="troll_war_arbalest" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="2">
+      <spawn type="troll_war" nr="1"/>
+      <spawn type="troll_war_arbalest" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="2">
+      <spawn type="troll_war" nr="1"/>
+      <spawn type="troll_war_arbalest" nr="1"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 15 - ¤ Real tough wave-->
+  <!---->
+  <wave>
+    <waveActions area="any" delay="0">
+      <spawn type="warlock" nr="1"/>
+      <spawn type="spider_poison" nr="2"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="warlock" nr="1"/>
+      <spawn type="spider_poison" nr="2"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="warlock" nr="1"/>
+      <spawn type="spider_poison" nr="2"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 16 - Real tough challenge/boss-->
+  <!--4 Beholders.-->
+  <wave>
+    <waveActions area="north" delay="0">
+      <spawn type="beholder_malign" nr="1"/>
+    </waveActions>
+    <waveActions area="south" delay="0">
+      <spawn type="beholder_malign" nr="1"/>
+    </waveActions>
+    <waveActions area="east" delay="0">
+      <spawn type="beholder_malign" nr="1"/>
+    </waveActions>
+    <waveActions area="west" delay="0">
+      <spawn type="beholder_malign" nr="1"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 17 - ¤# Real tough wave with reinforcment-->
+  <!---->
+  <wave>
+    <waveActions area="any" delay="0">
+      <spawn type="troll_war_arbalest" nr="1"/>
+      <spawn type="orc_regular" nr="2"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="warlock" nr="1"/>
+      <spawn type="orc_regular" nr="2"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="troll_war_arbalest" nr="1"/>
+      <spawn type="orc_regular" nr="2"/>
+    </waveActions>
+
+    <waveActions area="any" delay="15">
+      <spawn type="orc_regular" nr="2"/>
+    </waveActions>
+    <waveActions area="any" delay="15">
+      <spawn type="orc_regular" nr="2"/>
+    </waveActions>
+    <waveActions area="any" delay="15">
+      <spawn type="orc_regular" nr="2"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 18 - ¤# Real tough wave with reinforcment-->
+  <!--Once again focusing on targets and taking them out completely is the key to victory-->
+  <wave>
+    <waveActions area="any" delay="0">
+      <spawn type="orc_captain" nr="1"/>
+      <spawn type="warlock" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="orc_captain" nr="1"/>
+      <spawn type="warlock" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="warlock" nr="2"/>
+    </waveActions>
+    
+    <waveActions area="any" delay="15">
+      <spawn type="orc_berserk" nr="3"/>
+    </waveActions>
+    <waveActions area="any" delay="15">
+      <spawn type="orc_berserk" nr="3"/>
+    </waveActions>
+    <waveActions area="any" delay="15">
+      <spawn type="orc_berserk" nr="3"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 19 - ¤# REAL tough wave with reinforcment-->
+  <!---->
+  <wave>
+    <waveActions area="any" delay="0">
+      <spawn type="troll_snow" nr="1"/>
+      <spawn type="troll_stone_unarmed" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="troll_snow" nr="1"/>
+      <spawn type="troll_stone" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn type="troll_war" nr="1"/>
+      <spawn type="troll_stone_unarmed" nr="1"/>
+    </waveActions>
+    
+    <waveActions area="any" delay="15">
+      <spawn type="troll_war_arbalest" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="15">
+      <spawn type="troll_snow" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="15">
+      <spawn type="troll_stone_unarmed" nr="1"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 20 - THE BOSS WAVE-->
+  <!---->
+  <wave>
+    <waveActions area="north" delay="0">
+      <spawn type="boss_warlord" nr="1"/>
+    </waveActions>
+    <waveActions area="south" delay="0">
+      <spawn type="orc_captain" nr="1"/>
+      <spawn type="warlock" nr="1"/>
+    </waveActions>
+    <waveActions area="east" delay="0">
+      <spawn type="orc_captain" nr="1"/>
+      <spawn type="warlock" nr="1"/>
+    </waveActions>
+    <waveActions area="west" delay="0">
+      <spawn type="beholder_malign" nr="1"/>
+    </waveActions>
+    <waveActions area="west" delay="0">
+      <spawn type="beholder_malign" nr="1"/>
+    </waveActions>
+  </wave>
+</Scene>
+  
+  
+

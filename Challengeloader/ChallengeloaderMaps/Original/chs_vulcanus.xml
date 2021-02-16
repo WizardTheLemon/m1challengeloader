@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Scene>
+  <model>../Versus/vs_vulcanus_arena</model>
+  <reverb roomType="10" mix="40" />
+  <trigger id="Start" repeat="false">
+    <if />
+    <then>
+      <cameramagnify magnification="0.8"/>
+      <playMusic cue="music_encounter" delay="3"/>
+      
+      <spawnPhys object="Vulcanus_fire"  area="fire_0"/>
+
+      <spawnPhys object="vulcanus_gong" id="gong" area="spawn_gong" onDeath="break_gong"/>
+    </then>
+  </trigger>
+
+  <RuleSet type="Survival" waves="20">
+    <spawnAreas>
+      <area>north</area>
+      <area>west</area>
+      <area>east</area>
+    </spawnAreas>
+  </RuleSet>
+
+
+
+  <!--Only enemy wizards (Fight your friends). Behaviour differs depending on what robe they wear.-->
+  <!--Usable units-->
+  <!--
+  Wizard
+  Wizard
+  Wizard
+  Wizard
+    
+  # 
+    
+  ¤
+  -->
+  
+  <trigger id="break_gong" repeat="false" autorun="false">
+    <then>
+      <playAnimation name="anim_shield_hit" children="true" loop="false"/>
+      <!--Playsound-->
+    </then>
+  </trigger>
+  
+  <!--WAVE 1 -->
+  <!--Introducing redshirt robes -->
+  <wave>
+    <waveActions area="any" delay="5">
+      <spawn type="Wizard_Trekkie" nr="1" spawnanimation="revive"/>
+    </waveActions>
+    <waveActions area="any" delay="5">
+      <spawn type="Wizard_Trekkie" nr="1" spawnanimation="revive"/>
+    </waveActions>
+    <waveActions area="any" delay="5">
+      <spawn type="Wizard_Trekkie" nr="1" spawnanimation="revive"/>
+    </waveActions>
+
+  </wave>
+  
+  <!--WAVE 2 -->
+  <!--Shows your average wizards-->
+  <wave>
+    <waveActions area="any" delay="3.5">
+      <spawn type="wizard" nr="1" spawnanimation="revive"/>
+    </waveActions>
+    <waveActions area="any" delay="3">
+      <spawn type="wizard" nr="1"  spawnanimation="revive"/>
+    </waveActions>
+    <waveActions area="any" delay="4">
+      <spawn type="wizard" nr="1"  spawnanimation="revive"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 3 -->
+  <!--Add a wizard hater-->
+  <wave>
+    <waveActions area="any" delay="3.5">
+      <spawn type="wizard" nr="2" spawnanimation="revive"/>
+    </waveActions>
+    <waveActions area="any" delay="3">
+      <spawn type="wizard" nr="2"  spawnanimation="revive"/>
+    </waveActions>
+    <waveActions area="any" delay="4">
+      <spawn type="wizard_hat" nr="1"  spawnanimation="revive"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 4 -->
+  <!--Introduce Party Robes -->
+  <wave>
+    <waveActions area="any" delay="2.5">
+      <spawn type="wizard_rogue"   nr="3" spawnanimation="revive"/>
+      <spawn type="wizard_tank"    nr="2" spawnanimation="revive"/>
+      <spawn type="wizard_support" nr="1" spawnanimation="revive"/>
+    </waveActions>
+
+  </wave>
+
+
+
+  <!--WAVE 5 -->
+  <!-- Different wizards -->
+  <wave>
+    <waveActions area="any" delay="4">
+      <spawn type="wizard" nr="4"  spawnanimation="revive"/>
+      <spawn type="wizard_hat" nr="1"  spawnanimation="revive"/>
+    </waveActions>
+    <waveActions area="any" delay="12.5">
+      <spawn type="wizard_support" nr="1" spawnanimation="revive"/>
+      <spawn type="Wizard_Trekkie" nr="8"  spawnanimation="revive"/>
+    </waveActions>
+
+  </wave>
+
+  <!--WAVE 6 -->
+  <!--Redshirt robes -->
+  <wave>
+    <waveActions area="any" delay="2.5">
+      <spawn type="Wizard_Trekkie" nr="3" spawnanimation="revive"/>
+    </waveActions>
+    <waveActions area="any" delay="5">
+      <spawn type="Wizard_Trekkie" nr="3" spawnanimation="revive"/>
+    </waveActions>
+    <waveActions area="any" delay="7.5">
+      <spawn type="Wizard_Trekkie" nr="3" spawnanimation="revive"/>
+    </waveActions>
+    <waveActions area="any" delay="10">
+      <spawn type="Wizard_Trekkie" nr="3" spawnanimation="revive"/>
+    </waveActions>
+    <waveActions area="any" delay="12.5">
+      <spawn type="Wizard_Trekkie" nr="3"  spawnanimation="revive"/>
+    </waveActions>
+    <waveActions area="any" delay="15">
+      <spawn type="Wizard_Trekkie" nr="3"  spawnanimation="revive"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 7 -->
+  <!--rogue mission -->
+  <wave>
+    <waveActions area="north" delay="5">
+      <spawn type="wizard_rogue"   nr="3" spawnanimation="revive"/>
+    </waveActions>
+    <waveActions area="west" delay="5">
+      <spawn type="wizard_rogue"   nr="3" spawnanimation="revive"/>
+    </waveActions>
+    <waveActions area="east" delay="5">
+      <spawn type="wizard_rogue"   nr="3" spawnanimation="revive"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 8 -->
+  <!-- supported robes -->
+  <wave>
+    <waveActions area="any" delay="5">
+      <spawn type="wizard_support"   nr="1" spawnanimation="revive"/>
+      <spawn type="wizard" nr="4"  spawnanimation="revive"/>
+    </waveActions>
+    <waveActions area="any" delay="10">
+      <spawn type="wizard_support"   nr="3" spawnanimation="revive"/>
+      <spawn type="wizard" nr="4"  spawnanimation="revive"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 9 -->
+  <!-- supported robes -->
+  <wave>
+    <waveActions area="any" delay="5">
+      <spawn type="wizard_tank"   nr="8" spawnanimation="revive"/>
+    </waveActions>
+    <waveActions area="any" delay="10">
+      <spawn type="wizard_tank"   nr="8" spawnanimation="revive"/>
+    </waveActions>
+    <waveActions area="any" delay="15">
+      <spawn type="wizard_tank"   nr="8" spawnanimation="revive"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 10 -->
+  <!-- full blown attack -->
+  <wave>
+    <waveActions area="any" delay="5">
+      <spawn type="wizard_tank"       nr="2" spawnanimation="revive"/>
+      <spawn type="wizard_support"    nr="1" spawnanimation="revive"/>
+      <spawn type="wizard_rogue"      nr="2" spawnanimation="revive"/>
+      <spawn type="wizard"            nr="4" spawnanimation="revive"/>
+    </waveActions>
+    
+    <waveActions area="any" delay="10">
+      <spawn type="wizard_trekkie"       nr="10" spawnanimation="revive"/>
+    </waveActions>
+    <waveActions area="any" delay="13">
+      <spawn type="wizard_hat"   nr="2" spawnanimation="revive"/>
+    </waveActions>
+
+    <waveActions area="any" delay="18">
+      <spawn type="wizard_hat"    nr="2" spawnanimation="revive"/>
+      <spawn type="wizard_support"   nr="1" spawnanimation="revive"/>
+      <spawn type="wizard"           nr="2" spawnanimation="revive"/>
+    </waveActions>
+
+    <waveActions area="any" delay="22">
+      <spawn type="wizard_tank"       nr="2" spawnanimation="revive"/>
+      <spawn type="wizard_support"    nr="1" spawnanimation="revive"/>
+      <spawn type="wizard_rogue"      nr="2" spawnanimation="revive"/>
+      <spawn type="wizard"            nr="4" spawnanimation="revive"/>
+    </waveActions>
+  </wave>
+
+</Scene>
+  
+  
+

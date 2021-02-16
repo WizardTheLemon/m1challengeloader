@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Scene forcenavmesh="true">
+  <model>ch_fields</model>
+  <reverb roomType="forest" mix="20" />
+  <trigger id="Start" repeat="false">
+    <if />
+    <then>
+      <cameramagnify magnification="0.75"/>
+      <playMusic cue="Additionalmusic/music_vietnam" />
+      <playSound id="frgs_an_shit_yo" volume="0" cue="Additionalmusic/amb_jungle" />
+			<!--<playMusic cue="Additionalmusic/music_vtn_s2" />-->
+      <unlockMagick magicktype="napalm" />
+    </then>
+  </trigger>
+
+  <RuleSet type="Survival" waves="20">
+    <spawnAreas>
+      <area>north</area>
+      <area>west</area>
+      <area>east</area>
+      <area>south</area>
+    </spawnAreas>
+  </RuleSet>
+
+  <!--REGULAR RULE FOR WAVE BASED CHALLENGES-->
+  <!--Up until wave (including) wave 8, only spawn units from two directions. Boss-waves might have exceptions.
+  After that, anything goes.-->
+  <!--Wave 4,8,12,16,20 are extra tough/boss waves-->
+  <!--Usable units-->
+  <!--
+  goblin_vietnam_farmer_mat49
+  goblin_vietnam_farmer_nagant
+  goblin_vietnam_soldier_ak47
+  goblin_vietnam_soldier_mortar
+  goblin_vietnam_soldier_rpg7
+  orc_vietcong_rpd
+  troll_vietcong_machinegun
+  -->
+
+  <!--WAVE 1 -->
+  <wave>
+    <waveActions area="west" delay="0">
+      <spawn type="goblin_vietnam_farmer_mat49" nr="12"/>
+    </waveActions>
+  </wave>
+  
+  <!--WAVE 2 -->
+  <wave>
+    <waveActions area="west" delay="0">
+      <spawn type="goblin_vietnam_farmer_mat49" nr="12"/>
+    </waveActions>
+	
+	<waveActions area="any" delay="10">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="6"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 3 -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="2"/>
+      <spawn type="goblin_vietnam_farmer_mat49" nr="5"/>
+    </waveActions>
+
+    <waveActions area="any" delay="0">
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="2"/>
+      <spawn type="goblin_vietnam_farmer_mat49" nr="5"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 4 -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="3"/>
+    </waveActions>
+
+	<waveActions area="any" delay="0">
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="3"/>
+    </waveActions>
+
+    <waveActions area="any" delay="5">
+      <spawn type="goblin_vietnam_farmer_mat49" nr="10"/>
+    </waveActions>
+	
+	<waveActions area="any" delay="10">
+      <spawn type="orc_vietcong_rpd" nr="1"/>
+      </waveActions>
+  </wave>
+  
+<!--WAVE 5 -->
+  <wave>
+    <waveActions area="any" delay="0">
+		<spawn type="goblin_vietnam_soldier_mortar" nr="2"/>
+		<spawn type="goblin_vietnam_farmer_nagant" nr="7"/>
+    </waveActions>
+
+	<waveActions area="any" delay="8">
+		<spawn type="goblin_vietnam_soldier_mortar" nr="2"/>
+		<spawn type="goblin_vietnam_farmer_nagant" nr="10"/>
+    </waveActions>
+	
+    <waveActions area="any" delay="15">
+		<spawn type="goblin_vietnam_farmer_nagant" nr="10"/>
+    </waveActions>
+  </wave>
+    
+  
+  
+  <!--WAVE 6 -->
+  <wave>
+    <waveActions area="east" delay="0">
+      <spawn type="goblin_vietnam_farmer_mat49" nr="3"/>
+      <spawn type="orc_vietcong_rpd" nr="1"/>
+    </waveActions>
+
+    <waveActions area="west" delay="0">
+      <spawn type="goblin_vietnam_farmer_mat49" nr="3"/>
+      <spawn type="orc_vietcong_rpd" nr="1"/>
+    </waveActions>
+
+    <waveActions area="east" delay="10">
+      <spawn type="goblin_vietnam_farmer_nagant" nr="3"/>
+      <spawn type="orc_vietcong_rpd" nr="1"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 6 -->
+  <wave >
+    <waveActions area="north" delay="0">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="5"/>
+      <spawn type="orc_vietcong_rpd" nr="1"/>
+    </waveActions>
+
+    <waveActions area="west" delay="0">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="5"/>
+      <spawn type="goblin_vietnam_farmer_nagant" nr="4"/>
+    </waveActions>
+
+    <waveActions area="any" delay="9">
+      <spawn type="orc_vietcong_rpd" nr="3"/>
+    </waveActions>
+
+    <waveActions area="any" delay="12">
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="3"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 8 -->
+  <wave >
+    <waveActions area="north" delay="0">
+      <spawn type="goblin_vietnam_soldier_mortar" nr="1"/>
+      <spawn type="goblin_vietnam_soldier_ak47" nr="6"/>
+    </waveActions>
+
+    <waveActions area="east" delay="0">
+      <spawn type="goblin_vietnam_soldier_mortar" nr="1"/>
+      <spawn type="goblin_vietnam_soldier_ak47" nr="6"/>
+    </waveActions>
+
+    <waveActions area="south" delay="6">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="12"/>
+    </waveActions>
+  </wave>
+
+  <!-- WAVE 9   -->
+  <wave>
+    <waveActions area="east" delay="0">
+      <spawn type="goblin_vietnam_farmer_nagant" nr="3" />
+    </waveActions>
+
+    <waveActions area="east" delay="5">
+      <spawn type="goblin_vietnam_farmer_nagant" nr="5" />
+    </waveActions>
+
+    <waveActions area="east" delay="8">
+      <spawn type="goblin_vietnam_farmer_nagant" nr="5" />
+    </waveActions>
+
+    <waveActions area="east" delay="9">
+      <spawn type="goblin_vietnam_farmer_nagant" nr="5" />
+    </waveActions>
+
+    <waveActions area="east" delay="12">
+      <spawn type="goblin_vietnam_farmer_nagant" nr="5" />
+    </waveActions>
+
+    <waveActions area="east" delay="20">
+      <spawn type="goblin_vietnam_farmer_mat49" nr="10" />
+    </waveActions>
+
+    <waveActions area="west" delay="30">
+      <spawn type="troll_vietcong_machinegun" nr="2" />
+    </waveActions>
+  </wave>
+
+  <!-- WAVE 10   -->
+  <wave>
+    <waveActions area="east" delay="0">
+      <spawn type="goblin_vietnam_farmer_nagant" nr="3" />
+    </waveActions>
+
+    <waveActions area="east" delay="5">
+      <spawn type="goblin_vietnam_farmer_nagant" nr="5" />
+    </waveActions>
+
+    <waveActions area="east" delay="10">
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="1" />
+    </waveActions>
+
+    <waveActions area="east" delay="12">
+      <spawn type="goblin_vietnam_farmer_nagant" nr="5" />
+    </waveActions>
+
+    <waveActions area="east" delay="15">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="5" />
+    </waveActions>
+
+    <waveActions area="east" delay="16">
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="2" />
+    </waveActions>
+  </wave>
+
+
+  <!-- WAVE 11  -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <spawn type="goblin_vietnam_soldier_mortar" nr="2" />
+      <spawn type="goblin_vietnam_soldier_ak47" nr="2" />
+      <spawn type="orc_vietcong_rpd" nr="2" />
+    </waveActions>
+
+    <waveActions area="any" delay="0">
+      <spawn type="goblin_vietnam_soldier_mortar" nr="2" />
+      <spawn type="goblin_vietnam_soldier_ak47" nr="4" />
+      <spawn type="orc_vietcong_rpd" nr="2" />
+    </waveActions>
+
+    <waveActions area="any" delay="15">
+      <spawn type="goblin_vietnam_soldier_mortar" nr="2" />
+      <spawn type="goblin_vietnam_soldier_ak47" nr="2" />
+      <spawn type="orc_vietcong_rpd" nr="2" />
+    </waveActions>
+
+    <waveActions area="any" delay="19">
+      <spawn type="goblin_vietnam_soldier_mortar" nr="2" />
+      <spawn type="goblin_vietnam_soldier_ak47" nr="4" />
+      <spawn type="orc_vietcong_rpd" nr="2" />
+    </waveActions>
+
+    <waveActions area="any" delay="22">
+      <spawn type="troll_vietcong_machinegun" nr="2" />
+      <spawn type="orc_vietcong_rpd" nr="4" />
+    </waveActions>
+  </wave>
+
+
+  <!-- WAVE 12  -->
+  <wave>
+    <waveActions area="south" delay="0">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="2" />
+    </waveActions>
+
+    <waveActions area="north" delay="0">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="2" />
+    </waveActions>
+
+    <waveActions area="west" delay="0">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="2" />
+    </waveActions>
+
+    <waveActions area="east" delay="0">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="2" />
+    </waveActions>
+
+    <waveActions area="south" delay="12">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="4" />
+    </waveActions>
+
+    <waveActions area="north" delay="12">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="4" />
+    </waveActions>
+
+    <waveActions area="west" delay="12">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="4" />
+    </waveActions>
+
+    <waveActions area="east" delay="12">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="4" />
+    </waveActions>
+
+    <waveActions area="south" delay="20">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="6" />
+    </waveActions>
+
+    <waveActions area="north" delay="20">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="6" />
+    </waveActions>
+
+    <waveActions area="west" delay="20">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="6" />
+    </waveActions>
+  </wave>
+  
+  <!-- WAVE 13  -->
+  <wave>
+    <waveActions area="west" delay="0">
+      <spawn type="troll_vietcong_machinegun" nr="2" />
+    </waveActions>
+
+    <waveActions area="south" delay="0">
+      <spawn type="troll_vietcong_machinegun" nr="2" />
+    </waveActions>
+
+    <waveActions area="north" delay="0">
+      <spawn type="troll_vietcong_machinegun" nr="2" />
+    </waveActions>
+
+    <waveActions area="west" delay="0">
+      <spawn type="troll_vietcong_machinegun" nr="2" />
+    </waveActions>
+  </wave>
+
+  <!--WAVE 14 -->
+  <wave>
+    <waveActions area="north" delay="0">
+      <spawn type="goblin_vietnam_soldier_mortar" nr="2"/>
+      <spawn type="goblin_vietnam_soldier_ak47" nr="6"/>
+    </waveActions>
+
+    <waveActions area="south" delay="5">
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="2"/>
+    </waveActions>
+
+    <waveActions area="north" delay="12">
+      <spawn type="goblin_vietnam_soldier_mortar" nr="2"/>
+      <spawn type="goblin_vietnam_soldier_ak47" nr="6"/>
+    </waveActions>
+
+    <waveActions area="south" delay="15">
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="2"/>
+    </waveActions>
+
+    <waveActions area="any" delay="15">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="2"/>
+    </waveActions>
+
+    <waveActions area="any" delay="15">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="2"/>
+    </waveActions>
+
+    <waveActions area="any" delay="15">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="2"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 15 -->
+  <wave>
+    <waveActions area="north" delay="0">
+      <spawn type="troll_vietcong_machinegun" nr="6"/>
+    </waveActions>
+
+    <waveActions area="south" delay="30">
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="8"/>
+    </waveActions>
+
+    <waveActions area="north" delay="40">
+      <spawn type="troll_vietcong_machinegun" nr="6"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 16 -->
+  <wave>
+    <waveActions area="east" delay="0">
+      <spawn type="goblin_vietnam_farmer_mat49" nr="2"/>
+      <spawn type="goblin_vietnam_farmer_nagant" nr="2"/>
+      <spawn type="goblin_vietnam_soldier_ak47" nr="2"/>
+      <spawn type="goblin_vietnam_soldier_mortar" nr="2"/>
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="2"/>
+      <spawn type="orc_vietcong_rpd" nr="2"/>
+      <spawn type="troll_vietcong_machinegun" nr="2"/>
+    </waveActions>
+
+    <waveActions area="any" delay="60">
+      <spawn type="goblin_vietnam_farmer_mat49" nr="2"/>
+      <spawn type="goblin_vietnam_farmer_nagant" nr="2"/>
+      <spawn type="goblin_vietnam_soldier_ak47" nr="2"/>
+      <spawn type="goblin_vietnam_soldier_mortar" nr="2"/>
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="2"/>
+      <spawn type="orc_vietcong_rpd" nr="2"/>
+      <spawn type="troll_vietcong_machinegun" nr="2"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 17 -->
+  <wave>
+    <waveActions area="north" delay="0">
+      <spawn type="troll_vietcong_machinegun" nr="3"/>
+      <spawn type="orc_vietcong_rpd" nr="3"/>
+    </waveActions>
+
+    <waveActions area="south" delay="30">
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="5"/>
+    </waveActions>
+
+    <waveActions area="north" delay="65">
+      <spawn type="goblin_vietnam_soldier_ak47" nr="12"/>
+    </waveActions>
+  </wave>
+
+
+  <!--WAVE 18 -->
+  <wave>
+    <waveActions area="north" delay="0">
+      <spawn type="goblin_vietnam_soldier_mortar" nr="2"/>
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="2"/>
+    </waveActions>
+
+    <waveActions area="south" delay="10">
+      <spawn type="goblin_vietnam_soldier_mortar" nr="2"/>
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="2"/>
+    </waveActions>
+
+    <waveActions area="west" delay="20">
+      <spawn type="goblin_vietnam_soldier_mortar" nr="2"/>
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="2"/>
+    </waveActions>
+
+	<waveActions area="north" delay="20">
+      <spawn type="troll_vietcong_machinegun" nr="3"/>
+      <spawn type="orc_vietcong_rpd" nr="3"/>
+    </waveActions>
+	
+    <waveActions area="east" delay="30">
+      <spawn type="goblin_vietnam_soldier_mortar" nr="2"/>
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="2"/>
+    </waveActions>
+
+    <waveActions area="north" delay="40">
+      <spawn type="goblin_vietnam_soldier_mortar" nr="2"/>
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="2"/>
+    </waveActions>
+
+    <waveActions area="south" delay="50">
+      <spawn type="goblin_vietnam_soldier_mortar" nr="2"/>
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="2"/>
+    </waveActions>
+
+    <waveActions area="west" delay="60">
+      <spawn type="goblin_vietnam_soldier_mortar" nr="2"/>
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="2"/>
+    </waveActions>
+
+    <waveActions area="east" delay="70">
+      <spawn type="goblin_vietnam_soldier_mortar" nr="2"/>
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="2"/>
+    </waveActions>
+
+    <waveActions area="north" delay="80">
+      <spawn type="goblin_vietnam_soldier_mortar" nr="2"/>
+      <spawn type="goblin_vietnam_soldier_rpg7" nr="2"/>
+    </waveActions>
+  </wave>
+  
+    <!--WAVE 19 -->
+  <wave>
+    <waveActions area="north" delay="0">
+      <spawn type="troll_vietcong_machinegun" nr="3"/>
+	  <spawn type="goblin_vietnam_soldier_mortar" nr="2"/>
+      <spawn type="orc_vietcong_rpd" nr="3"/>
+    </waveActions>
+
+    <waveActions area="south" delay="0">
+      <spawn type="goblin_vietnam_soldier_mortar" nr="4"/>
+	  <spawn type="goblin_vietnam_soldier_ak47" nr="12"/>
+    </waveActions>
+  
+	<waveActions area="any" delay="30">
+      <spawn type="troll_vietcong_machinegun" nr="4"/>
+	  <spawn type="goblin_vietnam_soldier_mortar" nr="2"/>
+      <spawn type="orc_vietcong_rpd" nr="3"/>
+    </waveActions>
+  </wave>
+  
+  <!--WAVE 20 - Good Luck-->
+  <wave>
+    <waveActions area="north" delay="0">
+      <spawn type="troll_vietcong_machinegun" nr="6"/>
+	</waveActions>
+
+    <waveActions area="south" delay="5">
+      <spawn type="goblin_vietnam_soldier_mortar" nr="4"/> 
+    </waveActions>
+  
+    <waveActions area="west" delay="20">
+      <spawn type="troll_vietcong_machinegun" nr="6"/>
+	</waveActions>
+	
+    <waveActions area="east" delay="20">
+		<spawn type="orc_vietcong_rpd" nr="8"/>
+	</waveActions>
+	
+	<waveActions area="south" delay="40">
+		<spawn type="goblin_vietnam_soldier_mortar" nr="4"/> 
+    </waveActions>
+	
+  <waveActions area="any" delay="70">
+		<spawn type="goblin_vietnam_soldier_ak47" nr="12"/>
+  </waveActions>
+	
+	<waveActions area="south" delay="120">
+      <spawn type="troll_vietcong_machinegun" nr="12"/>
+    </waveActions>	
+  </wave>
+  
+  
+</Scene>

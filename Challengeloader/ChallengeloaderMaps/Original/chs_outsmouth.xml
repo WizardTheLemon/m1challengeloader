@@ -1,0 +1,819 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Scene forceNavMesh="true">
+  <model>ch_outsmouth</model>
+  
+  <RuleSet type="Survival" waves="12">
+    <spawnAreas>
+      <area>spawn_west</area>
+      <area>spawn_house01</area>
+			<area>spawn_house02</area>
+			<area>spawn_house03</area>
+			<area>spawn_house04</area>	
+			<area>spawn_house05</area>
+			<area>spawn_house06</area>
+			<area>spawn_house07</area>
+			
+			<area>spawn_church01</area>
+			<area>spawn_church02</area>
+
+			<area>spawn_water01</area>
+			<area>spawn_water02</area>
+			<area>spawn_water03</area>
+    </spawnAreas>
+  </RuleSet>
+
+	<trigger id="Start" repeat="false">
+		<then>
+			<cameramagnify magnification="0.85"/>
+			<playMusic cue="music_encounter" />
+			<disableElement element="earth,fire,water,cold,lightning,arcane,shield"/>
+			<spawnEffect name="PyreFire" effect="Special_pyre_fire" area="spawn_fire" />
+			<spawnPhys ID="hurtFire" object="Vulcanus_fire"  area="spawn_fire"/>
+		</then>
+	</trigger>
+
+	<!--====================================WAVE 1==============================-->
+	<!--Introduction to the fact that cultists comes from houses and that you have no elements but life-->
+  <wave value = "1">
+		
+    <waveActions area="spawn_church01" delay="0">
+			<playAnimation name="anim_doors_longhouse" children="true" start="0" end="1" speed="1"/>
+      <spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+			<playAnimation name="anim_doors_longhouse" children="true" start="1" end="0" speed="-1" delay="3"/>
+    </waveActions>
+		<waveActions area="spawn_church02" delay="0">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+  </wave>
+	
+	<!--====================================WAVE 2==============================-->
+	<!--No really dangerous enemies are spawned as you only have life and lightning. You can now revive your dead friends!-->
+  <wave value = "2">
+    <waveActions area="spawn_church01" delay="0">
+			<enableElement element="lightning"/>
+			<playAnimation name="anim_doors_longhouse" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_doors_longhouse" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+    </waveActions>
+		<waveActions area="spawn_church02" delay="0">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house05" delay="0">
+			<playAnimation name="anim_door_house05" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house05" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house04" delay="1">
+			<playAnimation name="anim_door_house04" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house04" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>	
+		
+  </wave>
+
+	<!--====================================WAVE 3==============================-->
+	<!--Full on cultist spawns to put a bit of pressure on the player. Hey, at least you have lightning and something more! :D-->
+	<wave value = "3">
+		<waveActions area="spawn_church01" delay="0">
+			<executeTrigger trigger="randomElementUnlocker"/>
+			<playAnimation name="anim_doors_longhouse" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_doors_longhouse" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+		<waveActions area="spawn_church02" delay="0">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house05" delay="0">
+			<playAnimation name="anim_door_house05" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house05" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house04" delay="1">
+			<playAnimation name="anim_door_house04" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house04" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house03" delay="1">
+			<playAnimation name="anim_door_house03" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house03" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+		
+		<waveActions area="spawn_house02" delay="1">
+			<playAnimation name="anim_door_house02" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house02" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+		
+		<waveActions area="spawn_house01" delay="1">
+			<playAnimation name="anim_door_house01" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house01" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+		
+		<waveActions area="spawn_house06" delay="1">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+		<waveActions area="spawn_house07" delay="1">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+	</wave>
+
+<!--=======================================WAVE 4=========================-->
+	<!--Guaranteed to be able to do some good damage. Introducing water spawns.-->
+	<wave value="4">
+		<waveActions area="spawn_water01" delay="0">
+			<executeTrigger trigger="randomElementUnlocker"/>
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water02" delay="1">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water03" delay="1">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water01" delay="3">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water02" delay="2">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water03" delay="4">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+	</wave>
+
+
+	<!--==============================WAVE 5===============================-->
+	<!--Piling on the pressure, both cutists and deep ones.-->
+	<wave value="5">
+		<waveActions area="spawn_church01" delay="4">
+			<playAnimation name="anim_doors_longhouse" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_doors_longhouse" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+		<waveActions area="spawn_church02" delay="0">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+
+		<waveActions area="spawn_water01" delay="0">
+			<executeTrigger trigger="randomElementUnlocker"/>
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water02" delay="1">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water03" delay="1">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water01" delay="3">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water02" delay="2">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water03" delay="4">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+	</wave>
+
+<!--===========================WAVE 6==========================-->
+	<!--Full on spawns, it only gets harder from here. You now have almost all elements-->
+	<wave value = "6">
+		<waveActions area="spawn_church01" delay="0">
+			<executeTrigger trigger="randomElementUnlocker"/>
+			<playAnimation name="anim_doors_longhouse" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_doors_longhouse" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+		<waveActions area="spawn_church02" delay="0">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house05" delay="0">
+			<playAnimation name="anim_door_house05" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house05" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house04" delay="1">
+			<playAnimation name="anim_door_house04" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house04" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house03" delay="1">
+			<playAnimation name="anim_door_house03" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house03" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house02" delay="1">
+			<playAnimation name="anim_door_house02" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house02" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house01" delay="1">
+			<playAnimation name="anim_door_house01" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house01" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house06" delay="1">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+		<waveActions area="spawn_house07" delay="1">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+
+		<waveActions area="spawn_water01" delay="0">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water02" delay="1">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water03" delay="1">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water01" delay="3">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water02" delay="2">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water03" delay="4">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+	</wave>
+	
+	<!--============================WAVE 7==============================-->
+	<!--Final unlock, you now have all elements. Adding a shoggoth for happy family fun times!-->
+	<wave value = "7">
+		<waveActions area="spawn_church01" delay="0">
+			<executeTrigger trigger="randomElementUnlocker"/>
+			<playAnimation name="anim_doors_longhouse" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_doors_longhouse" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+		<waveActions area="spawn_church02" delay="0">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house05" delay="0">
+			<playAnimation name="anim_door_house05" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house05" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house04" delay="1">
+			<playAnimation name="anim_door_house04" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house04" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house03" delay="1">
+			<playAnimation name="anim_door_house03" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house03" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house02" delay="1">
+			<playAnimation name="anim_door_house02" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house02" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house01" delay="1">
+			<playAnimation name="anim_door_house01" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house01" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house06" delay="1">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+		<waveActions area="spawn_house07" delay="1">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+
+		<waveActions area="spawn_water01" delay="0">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water02" delay="1">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water03" delay="1">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water01" delay="3">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water02" delay="2">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water03" delay="4">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_west" delay="7">
+			<spawn type="shoggoth" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+	</wave>
+
+	<!--===========================WAVE 8===============================-->
+	<!--More danger, adding elder things into the mix-->
+	<wave value = "8">
+		<waveActions area="spawn_church01" delay="0">
+			<playAnimation name="anim_doors_longhouse" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_doors_longhouse" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+		<waveActions area="spawn_church02" delay="0">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house05" delay="0">
+			<playAnimation name="anim_door_house05" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house05" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house04" delay="8">
+			<spawn type="elder_thing" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house03" delay="1">
+			<playAnimation name="anim_door_house03" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house03" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house02" delay="1">
+			<playAnimation name="anim_door_house02" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house02" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house01" delay="3">
+			<playAnimation name="anim_door_house01" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house01" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house06" delay="1">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+		<waveActions area="spawn_house07" delay="1">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+
+		<waveActions area="spawn_water01" delay="0">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water02" delay="1">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water03" delay="1">
+			<spawn type="elder_thing" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water01" delay="3">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water02" delay="2">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water03" delay="4">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+	</wave>
+	
+	<!--===========================WAVE 9===============================-->
+	<!--OH SHIEEEEEEET!-->
+	<wave value = "9">
+		<waveActions area="spawn_church01" delay="0">
+			<playAnimation name="anim_doors_longhouse" children="true" start="0" end="1" speed="1"/>
+			
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+		<waveActions area="spawn_church02" delay="0">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_church01" delay="2">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_church02" delay="2">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+			<playAnimation name="anim_doors_longhouse" children="true" start="1" end="0" speed="-1" delay="3"/>
+		</waveActions>
+		
+		
+		<waveActions area="spawn_house05" delay="0">
+			<playAnimation name="anim_door_house05" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house05" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house04" delay="4">
+			<spawn type="elder_thing" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house03" delay="1">
+			<playAnimation name="anim_door_house03" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house03" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house02" delay="1">
+			<playAnimation name="anim_door_house02" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house02" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house01" delay="3">
+			<playAnimation name="anim_door_house01" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house01" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house06" delay="1">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+		<waveActions area="spawn_house07" delay="6">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+
+		<waveActions area="spawn_water01" delay="0">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water02" delay="1">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water03" delay="1">
+			<spawn type="elder_thing" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water01" delay="3">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water02" delay="2">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water03" delay="4">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water01" delay="14">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water02" delay="13">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_water03" delay="13.5">
+			<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_west" delay="12">
+			<spawn type="shoggoth" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+	</wave>
+
+	<!--===========================WAVE 10===============================-->
+	<!--==========================BOSS WAVE==============================-->
+	<wave value = "1">
+		
+		<!--========================BIG BOSS SPAWN===================================-->
+		<waveActions area="spawn_starspawn" delay="0">
+			<playAnimation name="anim_pyre" loop="false" delay="4" />
+			<stopEffect name="PyreFire" delay="4.5"/>
+			<kill ID="hurtFire" delay="0"/>
+			<spawnEffect effect="Special_pyre_crash" name="PyreCrash" area="spawn_fire" delay="4.5" />
+			<spawn type="starspawn" area="spawn_starspawn" id="starspawn" animation="spawn" order="idle" reactto="none" delay="4"/>
+			<giveOrder id="starspawn" order="idle" delay="4">
+				<face facingdirection="-1,0,-0.8"/>
+				<Animation    animation="spawn"/>
+				<Animation animation="attack_melee4" trigger="spawn_attack"/>
+			</giveOrder>
+		</waveActions>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<!--=======================BOSS MINIONS SPAWN====================================-->
+		<waveActions area="spawn_church01" delay="0">
+			<playAnimation name="anim_doors_longhouse" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_doors_longhouse" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+		<waveActions area="spawn_church02" delay="0">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house05" delay="0">
+			<playAnimation name="anim_door_house05" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house05" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house04" delay="1">
+			<playAnimation name="anim_door_house04" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house04" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house03" delay="4">
+			<playAnimation name="anim_door_house03" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house03" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house02" delay="6">
+			<playAnimation name="anim_door_house02" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house02" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house01" delay="1">
+			<playAnimation name="anim_door_house01" children="true" start="0" end="1" speed="1"/>
+			<playAnimation name="anim_door_house01" children="true" start="1" end="0" speed="-1" delay="3"/>
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+
+		<waveActions area="spawn_house06" delay="3">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+		<waveActions area="spawn_house07" delay="1">
+			<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+		</waveActions>
+	</wave>
+
+
+
+	<trigger id="spawn_attack" autorun="false" repeat="false">
+		<then>		
+			<giveOrder id="starspawn" order="attack" delay="0" />
+		</then>
+	</trigger>
+
+	<!--===========================RANDOM UNLOCK==============================-->
+	<!--Advanced Random Unlocking Functionality (or ARUF for short) Copyright:The awesomez TantorZ-->
+	<!--Also a thank you to KrietoR for the idea of unlocking elements!-->
+	<trigger ID="randomElementUnlocker" autorun="false" repeat="true">
+		<if>
+			<counter name="earth" compareMethod="equal" value="0"/>
+		</if>
+		<if>
+			<counter name="fire" compareMethod="equal" value="0"/>
+		</if>
+		<if>
+			<counter name="water" compareMethod="equal" value="0"/>
+		</if>
+		<if>
+			<counter name="cold" compareMethod="equal" value="0"/>
+		</if>
+		<if>
+			<counter name="arcane" compareMethod="equal" value="0"/>
+		</if>
+		<if>
+			<counter name="shield" compareMethod="equal" value="0"/>
+		</if>
+		<then>
+			<random>
+				<executeTrigger trigger="unlockEarth"/>
+				<executeTrigger trigger="loopEarth" />
+			</random>
+			<random>
+				<executeTrigger trigger="unlockFire"/>
+				<executeTrigger trigger="loopFire" />
+			</random>
+			<random>
+				<executeTrigger trigger="unlockWater"/>
+				<executeTrigger trigger="loopWater" />
+			</random>
+			<random>
+				<executeTrigger trigger="unlockCold"/>
+				<executeTrigger trigger="loopCold" />
+			</random>
+			<random>
+				<executeTrigger trigger="unlockArcane"/>
+				<executeTrigger trigger="loopArcane" />
+			</random>
+			<random>
+				<executeTrigger trigger="unlockShield"/>
+				<executeTrigger trigger="loopShield" />
+			</random>
+		</then>
+	</trigger>
+	
+	<!--====================UNLOCK EARTH AND LOOP==================-->
+	<trigger ID="unlockEarth" autorun="false" repeat="false">
+		<then>
+			<enableElement element="Earth"/>
+			<counter name="Earth" action="set" value="1" delay="0.5"/>
+		</then>
+	</trigger>
+
+	<trigger ID="loopEarth" autorun="false" repeat="true">
+		<if>
+			<counter name="Earth" compareMethod="equal" value="1"/>
+		</if>
+		<then>
+			<executeTrigger trigger="randomElementUnlocker"/>
+		</then>
+	</trigger>
+
+	<!--====================UNLOCK FIRE AND LOOP==================-->
+	<trigger ID="unlockFire" autorun="false" repeat="false">
+		<then>
+			<enableElement element="Fire"/>
+			<counter name="Fire" action="set" value="1" delay="0.5"/>
+		</then>
+	</trigger>
+
+	<trigger ID="loopFire" autorun="false" repeat="true">
+		<if>
+			<counter name="Fire" compareMethod="equal" value="1"/>
+		</if>
+		<then>
+			<executeTrigger trigger="randomElementUnlocker"/>
+		</then>
+	</trigger>
+	<!--====================UNLOCK WATER AND LOOP==================-->
+	<trigger ID="unlockWater" autorun="false" repeat="false">
+		<then>
+			<enableElement element="Water"/>
+			<counter name="Water" action="set" value="1" delay="0.5"/>
+		</then>
+	</trigger>
+
+	<trigger ID="loopWater" autorun="false" repeat="true">
+		<if>
+			<counter name="Water" compareMethod="equal" value="1"/>
+		</if>
+		<then>
+			<executeTrigger trigger="randomElementUnlocker"/>
+		</then>
+	</trigger>
+
+	<!--====================UNLOCK COLD AND LOOP==================-->
+	<trigger ID="unlockCold" autorun="false" repeat="false">
+		<then>
+			<enableElement element="Cold"/>
+			<counter name="Cold" action="set" value="1" delay="0.5"/>
+		</then>
+	</trigger>
+
+	<trigger ID="loopCold" autorun="false" repeat="true">
+		<if>
+			<counter name="Cold" compareMethod="equal" value="1"/>
+		</if>
+		<then>
+			<executeTrigger trigger="randomElementUnlocker"/>
+		</then>
+	</trigger>
+
+
+	<!--====================UNLOCK ARCANE AND LOOP==================-->
+	<trigger ID="unlockArcane" autorun="false" repeat="false">
+		<then>
+			<enableElement element="Arcane"/>
+			<counter name="Arcane" action="set" value="1" delay="0.5"/>
+		</then>
+	</trigger>
+
+	<trigger ID="loopArcane" autorun="false" repeat="true">
+		<if>
+			<counter name="Arcane" compareMethod="equal" value="1"/>
+		</if>
+		<then>
+			<executeTrigger trigger="randomElementUnlocker"/>
+		</then>
+	</trigger>
+
+	<!--====================UNLOCK SHIELD AND LOOP==================-->
+	<trigger ID="unlockShield" autorun="false" repeat="false">
+		<then>
+			<enableElement element="Shield"/>
+			<counter name="Shield" action="set" value="1" delay="0.5"/>
+		</then>
+	</trigger>
+
+	<trigger ID="loopShield" autorun="false" repeat="true">
+		<if>
+			<counter name="Shield" compareMethod="equal" value="1"/>
+		</if>
+		<then>
+			<executeTrigger trigger="randomElementUnlocker"/>
+		</then>
+	</trigger>
+
+	<!--======================ALL SPAWNERS AND THEIR ANIMATIONS===============================-->
+	<!--<waveActions area="spawn_church01" delay="0">
+		<executeTrigger trigger="randomElementUnlocker"/>
+		<playAnimation name="anim_doors_longhouse" children="true" start="0" end="1" speed="1"/>
+		<playAnimation name="anim_doors_longhouse" children="true" start="1" end="0" speed="-1" delay="3"/>
+		<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+	</waveActions>
+	<waveActions area="spawn_church02" delay="0">
+		<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+	</waveActions>
+
+	<waveActions area="spawn_house05" delay="0">
+		<playAnimation name="anim_door_house05" children="true" start="0" end="1" speed="1"/>
+		<playAnimation name="anim_door_house05" children="true" start="1" end="0" speed="-1" delay="3"/>
+		<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+	</waveActions>
+
+	<waveActions area="spawn_house04" delay="1">
+		<playAnimation name="anim_door_house04" children="true" start="0" end="1" speed="1"/>
+		<playAnimation name="anim_door_house04" children="true" start="1" end="0" speed="-1" delay="3"/>
+		<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+	</waveActions>
+
+	<waveActions area="spawn_house03" delay="1">
+		<playAnimation name="anim_door_house03" children="true" start="0" end="1" speed="1"/>
+		<playAnimation name="anim_door_house03" children="true" start="1" end="0" speed="-1" delay="3"/>
+		<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+	</waveActions>
+
+	<waveActions area="spawn_house02" delay="1">
+		<playAnimation name="anim_door_house02" children="true" start="0" end="1" speed="1"/>
+		<playAnimation name="anim_door_house02" children="true" start="1" end="0" speed="-1" delay="3"/>
+		<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+	</waveActions>
+
+	<waveActions area="spawn_house01" delay="1">
+		<playAnimation name="anim_door_house01" children="true" start="0" end="1" speed="1"/>
+		<playAnimation name="anim_door_house01" children="true" start="1" end="0" speed="-1" delay="3"/>
+		<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+	</waveActions>
+
+	<waveActions area="spawn_house06" delay="1">
+		<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+	</waveActions>
+	<waveActions area="spawn_house07" delay="1">
+		<spawn type="cultist" nr="1" spawnAnimation="spawn"/>
+	</waveActions>
+
+	<waveActions area="spawn_water01" delay="1">
+		<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+	</waveActions>
+
+	<waveActions area="spawn_water02" delay="1">
+		<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+	</waveActions>
+
+	<waveActions area="spawn_water03" delay="1">
+		<spawn type="deep_one" nr="1" spawnAnimation="spawn"/>
+	</waveActions>-->
+
+</Scene>
