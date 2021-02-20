@@ -78,6 +78,7 @@
 	</trigger>
   
   
+  
     <trigger id="boostwiz1" repeat="true" autorun="false">
 	<if>
 		<characterHealth id="wiz1" compareMethod="greater" health="0.2" />
@@ -106,7 +107,7 @@
 		<characterHealth id="wiz1" compareMethod="less" health="0.1" />
 	</if>
 	<then>
-		<spawn type="Wizard_Hat" nr="1" spawnanimation="revive" area="east" id="wiz1" delay="6"/>
+		<spawn type="Wizard_Coldarr" nr="1" spawnanimation="revive" area="east" id="wiz1" delay="6"/>
 		<setFaction id="wiz1" action="set" faction="wild" delay="6.2"/>
 		<executeTrigger trigger="boostwiz1" delay="8"/>
     </then>
@@ -140,7 +141,7 @@
 	<if>
 		<idPresent id="wiz2" area="any" invert="true"/>
 		<characterHealth id="wiz2" compareMethod="less" health="0.1" />
-		<timer name="progressiontimer" compareMethod="greater" value="15"/>
+		<timer name="progressiontimer" compareMethod="greater" value="50"/>
 	</if>
 	<then>
 		<spawn type="Wizard" nr="1" spawnanimation="revive" area="north" id="wiz2" delay="6"/>
@@ -177,7 +178,7 @@
 	<if>
 		<idPresent id="wiz3" area="any" invert="true"/>
 		<characterHealth id="wiz3" compareMethod="less" health="0.1" />
-		<timer name="progressiontimer" compareMethod="greater" value="40"/>
+		<timer name="progressiontimer" compareMethod="greater" value="100"/>
 	</if>
 	<then>
 		<spawn type="Wizard_evil" nr="1" spawnanimation="revive" area="north" id="wiz3" delay="6"/>
@@ -206,7 +207,7 @@
 		
       <!--<giveOrder id="wiz4" area="any" delay="1.2" order="attack" reactto="proximity,attack" reaction="attack"/>-->
 	  
-		<executeTrigger trigger="boostwiz4" delay="5"/>
+		<executeTrigger trigger="boostwiz4" delay="4"/>
     </then>
   </trigger>
   
@@ -214,7 +215,7 @@
 	<if>
 		<idPresent id="wiz4" area="any" invert="true"/>
 		<characterHealth id="wiz4" compareMethod="less" health="0.1" />
-		<timer name="progressiontimer" compareMethod="greater" value="60"/>
+		<timer name="progressiontimer" compareMethod="greater" value="150"/>
 	</if>
 	<then>
 		<spawn type="Wizard_rogue" nr="1" spawnanimation="revive" area="north" id="wiz4" delay="6"/>
@@ -251,7 +252,7 @@
 	<if>
 		<idPresent id="wiz5" area="any" invert="true"/>
 		<characterHealth id="wiz5" compareMethod="less" health="0.1" />
-		<timer name="progressiontimer" compareMethod="greater" value="80"/>
+		<timer name="progressiontimer" compareMethod="greater" value="200"/>
 	</if>
 	<then>
 		<spawn type="Wizard_Trekkie" nr="1" spawnanimation="revive" area="north" id="wiz5" delay="6"/>
@@ -288,12 +289,88 @@
 	<if>
 		<idPresent id="wiz6" area="any" invert="true"/>
 		<characterHealth id="wiz6" compareMethod="less" health="0.1" />
-		<timer name="progressiontimer" compareMethod="greater" value="120"/>
+		<timer name="progressiontimer" compareMethod="greater" value="300"/>
 	</if>
 	<then>
 		<spawn type="Wizard_Hat_Evil" nr="1" spawnanimation="revive" area="north" id="wiz6" delay="6"/>
 		<setFaction id="wiz6" action="set" faction="wild" delay="6.2"/>
 		<executeTrigger trigger="boostwiz6" delay="8"/>
+    </then>
+  </trigger>
+  
+  
+  
+    <trigger id="boostwiz7" repeat="true" autorun="false">
+	<if>
+		<characterHealth id="wiz7" compareMethod="greater" health="0.2" />
+	</if>
+	<then>
+		<!--<giveOrder id="wiz7" delay="0" order="idle" reactto="none"/>
+		<giveOrder id="wiz7" delay="0.2">
+			<Animation animation="cast_spell1"/>
+			<Animation animation="cast_spell1" delay="0.3"/>
+		</giveOrder>-->
+	  
+		<magick id="wiz7" magicktype="Haste" delay="0"/>
+		<magick id="wiz7" magicktype="performanceenchantment" delay="0"/>
+		<magick id="wiz7" magicktype="shrink" delay="0"/>
+		<damage id="wiz7" delay="0" ignoreShields="true">
+			<damage attackProperty="damage" element="physical" magnitude="1" amount="-300"/>
+        </damage>
+		
+     <!-- <giveOrder id="wiz7" area="any" delay="1.2" order="attack" reactto="proximity,attack" reaction="attack"/>-->
+	  
+		<executeTrigger trigger="boostwiz7" delay="4"/>
+    </then>
+  </trigger>
+  
+    <trigger id="spawnwiz7" repeat="14" autorun="true">
+	<if>
+		<idPresent id="wiz7" area="any" invert="true"/>
+		<characterHealth id="wiz7" compareMethod="less" health="0.1" />
+		<timer name="progressiontimer" compareMethod="greater" value="350"/>
+	</if>
+	<then>
+		<spawn type="Wizard_Necromancer" nr="1" spawnanimation="revive" area="north" id="wiz7" delay="6"/>
+		<setFaction id="wiz7" action="set" faction="wild" delay="6.2"/>
+		<executeTrigger trigger="boostwiz7" delay="8"/>
+    </then>
+  </trigger>
+  
+  
+  
+    <trigger id="boostwiz8" repeat="true" autorun="false">
+	<if>
+		<characterHealth id="wiz8" compareMethod="greater" health="0.2" />
+	</if>
+	<then>
+		<giveOrder id="wiz8" delay="0" order="idle" reactto="none"/>
+		<giveOrder id="wiz8" delay="0.2">
+			<Animation animation="cast_spell1"/>
+			<Animation animation="cast_spell1" delay="0.3"/>
+		</giveOrder>
+	  
+		<magick id="wiz8" magicktype="Haste" delay="0.2"/>
+		<damage id="wiz8" delay="0.4" ignoreShields="true">
+			<damage attackProperty="damage" element="physical" magnitude="1" amount="-300"/>
+        </damage>
+		
+     <giveOrder id="wiz8" area="any" delay="1.2" order="attack" reactto="proximity,attack" reaction="attack"/>
+	  
+		<executeTrigger trigger="boostwiz8" delay="15"/>
+    </then>
+  </trigger>
+  
+    <trigger id="spawnwiz8" repeat="14" autorun="true">
+	<if>
+		<idPresent id="wiz8" area="any" invert="true"/>
+		<characterHealth id="wiz8" compareMethod="less" health="0.1" />
+		<timer name="progressiontimer" compareMethod="greater" value="400"/>
+	</if>
+	<then>
+		<spawn type="Wizard_IceRegent" nr="1" spawnanimation="revive" area="north" id="wiz8" delay="6"/>
+		<setFaction id="wiz8" action="set" faction="wild" delay="6.2"/>
+		<executeTrigger trigger="boostwiz8" delay="8"/>
     </then>
   </trigger>
   
