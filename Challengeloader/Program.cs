@@ -153,7 +153,7 @@ namespace Challengeloader
                     node.MoveToParent(); node.MoveToChild("name","");
                     Console.WriteLine("\n ~~~~~~~~~~ " + node.Value + " ~~~~~~~~~~");
                     node.MoveToParent(); node.MoveToChild("description", "");
-                    Console.WriteLine("\n " + node.Value);
+                    Console.WriteLine(node.Value);
                 }
             }
 

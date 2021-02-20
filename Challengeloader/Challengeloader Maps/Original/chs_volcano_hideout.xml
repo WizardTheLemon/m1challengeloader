@@ -1,0 +1,1181 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Scene>
+  <Bloom Threshold="4" Multiplier="0.2" Blur="2.5"/>
+  <model>ch_volcano_hideout</model>
+  <reverb roomType="StoneRoom" mix="40" />
+  <Indoor>true</Indoor>
+  <killplaneposition>-10</killplaneposition>
+
+  <!--
+      Lava can cover 3rds of the map at different times. Either there is no lava,
+      1/3, 2/3 or full 3/3 "flood". This can be walked on by players using ice,
+      and some enemies are designed to hinder that by shooting fire and/or luring
+      the players to do that themselves. Lava does NOT cover the very middle
+      of the map where mobs will spawn (and move out from before attacking).
+      When the map is filled with lava, there should be no place to stand for
+      players unless using ice.
+      
+      Lava should probably only animate inbetween waves.
+      
+      IMPORTANT: Do not go from "no lava" to "flood" using all floors at once, as
+      the player will have technically no time to safely ice and walk onto the ice
+      if suddenly all the ground has turned to lava.
+  
+      Total of 20 waves, divided into 4 themes/chunks.
+      1. Melee (with some ranged support)
+      2. Ranged (with some melee support)
+      3. Melee & Ranged (lots of it)
+      4. Like chunk 3, but where the floors move mid-wave
+         Also, the concept "opposing elements" is not used as much
+      
+      The anatomy of a theme chunk of 5 waves is:
+      1-3. Just escalating difficulty with 3rd adding most support
+      4. Swarm (lots of something)
+      5. Boss (difficult, heavy enemies with support)
+      
+      The anatomy of a wave is usually:
+      1. The "main" enemy wave comes first
+      2. A trickle of support from smaller enemies with a delay
+      
+      Don't forget that there is supposed to be lava covering
+      different parts of the map during different waves, severely
+      trickifying the challenge which otherwise might seem too easy.
+  -->
+  
+  <trigger id="Start" repeat="false">
+    <if />
+    <then>
+      <cameramagnify magnification="0.8"/>
+      <playMusic cue="music_encounter" delay="3"/>
+      <counter name="floorNW_up" action="set" value="1" />
+      <counter name="floorNE_up" action="set" value="1" />
+      <counter name="floorS_up" action="set" value="1" />
+
+      <counter name="floor_moved" action="set" value="1" />
+      
+      <!-- Fire some ambience sounds... -->
+      <playSound id="ambient_lava" cue="ambience/amb_lava_drone" volume="-20" apply3d="false" />
+      <playSound id="ambient_lava_fizz" cue="ambience/amb_lava_fizz" volume="-15" apply3d="false" />
+    </then>
+  </trigger>
+
+  <!--
+      Scripts for lowering and raising floors.
+      
+      If a floor is already lowered or raised when calling the same function
+      the animation will not run.
+      
+      Currently, the floor animation is 5 seconds long. When lowering,
+      lava till cover the entire floor at 4 seconds.
+  -->
+  <trigger id="floorNW_down" repeat="true" autorun="false">
+    <if>
+      <counter name="floorNW_up" compareMethod="equal" value="1" />
+    </if>
+    <then>
+      <spawnEffect name="warning_NW" effect="ambient_fire_house" area="lavaEffect_NW" />
+      <stopEffect name="warning_NW" delay="7" />
+      <!--<spawnEffect name="warning_NW_2" effect="Special_fire_hazard" area="lavaEffect_NW" />-->
+      <spawnEffect name="warning_NW_2" effect="lava_splash_big" area="lavaEffect_NW" />
+      <stopEffect name="warning_NW_2" delay="9" />
+      
+      <executeTrigger trigger="floor_move_global_effects" delay="3" />
+      <playAnimation name="floorNW" start="0" end="5" speed="1" delay="4"/>
+
+      <playSound id="sound_warning_NW" cue="Misc/misc_explosive_barrel_onfire" volume="3" area="soundLavaNW" radius="80" apply3d="true" />
+      <playSound id="sound_floor_NW" cue="Ambience/amb_conveyor01" volume="-5" area="soundLavaNW" radius="80" apply3d="true" delay="4" />
+      <stopSound id="sound_floor_NW" delay="9" />
+
+      <counter name="floorNW_up" action="set" value="0" />
+      <counter name="floor_moved" action="set" value="1" />
+    </then>
+  </trigger>
+
+  <trigger id="floorNW_up" repeat="true" autorun="false">
+    <if>
+      <counter name="floorNW_up" compareMethod="equal" value="0" />
+    </if>
+    <then>
+      <executeTrigger trigger="floor_move_global_effects" />
+      <playAnimation name="floorNW" start="5" end="0" speed="-1" delay="0"/>
+      
+      <playSound id="sound_floor_NW" cue="Ambience/amb_conveyor01" volume="-5" area="soundLavaNW" radius="80" apply3d="true" />
+      <stopSound id="sound_floor_NW" delay="5" />
+      
+      <counter name="floorNW_up" action="set" value="1" />
+      <counter name="floor_moved" action="set" value="1" />
+    </then>
+  </trigger>
+
+  <trigger id="floorNE_down" repeat="true" autorun="false">
+    <if>
+      <counter name="floorNE_up" compareMethod="equal" value="1" />
+    </if>
+    <then>
+      <spawnEffect name="warning_NE" effect="ambient_fire_house" area="lavaEffect_NE" />
+      <stopEffect name="warning_NE" delay="7" />
+      <spawnEffect name="warning_NE_2" effect="lava_splash_big" area="lavaEffect_NE" />
+      <stopEffect name="warning_NE_2" delay="9" />
+
+      <executeTrigger trigger="floor_move_global_effects" delay="3" />
+      <playAnimation name="floorNE" start="0" end="5" speed="1" delay="4"/>
+
+      <playSound id="sound_warning_NE" cue="Misc/misc_explosive_barrel_onfire" volume="3" area="soundLavaNE" radius="80" apply3d="true" />
+      <playSound id="sound_floor_NE" cue="Ambience/amb_conveyor01" volume="-5" area="soundLavaNE" radius="80" apply3d="true" delay="4" />
+      <stopSound id="sound_floor_NE" delay="9" />
+
+      <counter name="floorNE_up" action="set" value="0" />
+      <counter name="floor_moved" action="set" value="1" />
+    </then>
+  </trigger>
+
+  <trigger id="floorNE_up" repeat="true" autorun="false">
+    <if>
+      <counter name="floorNE_up" compareMethod="equal" value="0" />
+    </if>
+    <then>
+      <executeTrigger trigger="floor_move_global_effects" />
+      <playAnimation name="floorNE" start="5" end="0" speed="-1" delay="0"/>
+      
+      <playSound id="sound_floor_NE" cue="Ambience/amb_conveyor01" volume="-5" area="soundLavaNE" radius="80" apply3d="true" />
+      <stopSound id="sound_floor_NE" delay="5" />
+
+      <counter name="floorNE_up" action="set" value="1" />
+      <counter name="floor_moved" action="set" value="1" />
+    </then>
+  </trigger>
+
+  <trigger id="floorS_down" repeat="true" autorun="false">
+    <if>
+      <counter name="floorS_up" compareMethod="equal" value="1" />
+    </if>
+    <then>
+      <spawnEffect name="warning_S" effect="ambient_fire_house" area="lavaEffect_S" />
+      <stopEffect name="warning_S" delay="7" />
+      <spawnEffect name="warning_S_2" effect="lava_splash_big" area="lavaEffect_S" />
+      <stopEffect name="warning_S_2" delay="9" />
+
+      <executeTrigger trigger="floor_move_global_effects" delay="3" />
+      <playAnimation name="floorS" start="0" end="5" speed="1" delay="4"/>
+
+      <playSound id="sound_warning_S" cue="Misc/misc_explosive_barrel_onfire" volume="3" area="soundLavaS" radius="80" apply3d="true" />
+      <playSound id="sound_floor_S" cue="Ambience/amb_conveyor01" volume="-5" area="soundLavaS" radius="80" apply3d="true" delay="4" />
+      <stopSound id="sound_floor_S" delay="9" />
+
+      <counter name="floorS_up" action="set" value="0" />
+      <counter name="floor_moved" action="set" value="1" />
+    </then>
+  </trigger>
+
+  <trigger id="floorS_up" repeat="true" autorun="false">
+    <if>
+      <counter name="floorS_up" compareMethod="equal" value="0" />
+    </if>
+    <then>
+      <executeTrigger trigger="floor_move_global_effects" />
+      <playAnimation name="floorS" start="5" end="0" speed="-1" delay="0"/>
+      
+      <playSound id="sound_floor_S" cue="Ambience/amb_conveyor01" volume="-5" area="soundLavaS" radius="80" apply3d="true" />
+      <stopSound id="sound_floor_S" delay="5" />
+
+      <counter name="floorS_up" action="set" value="1" />
+      <counter name="floor_moved" action="set" value="1" />
+    </then>
+  </trigger>
+  
+  <!-- Call this script after running a bunch of floor animations.
+        It will animate the lava level slightly, preventing people from falling through it.
+        Stationary surfaces don't get tested for collision as often as moving ones.
+        It has an IF to prevent lava from moving when floors haven't moved. -->
+  <trigger id="move_lava" repeat="true" autorun="false">
+    <if>
+      <counter name="floor_moved" compareMethod="equal" value="1" />
+    </if>
+    <then>
+      <playAnimation name="lava" start="0" end="5" speed="1" delay="4"/>
+      <counter name="floor_moved" action="set" value="0" />
+    </then>
+  </trigger>
+
+  <!-- Script called when floors move. Put general effects here. -->
+  <trigger id="floor_move_global_effects" repeat="true" autorun="false">
+    <then>
+      <cameraShake magnitude="3.5" time="5" />
+    </then>
+  </trigger>
+  
+  <!-- The following are scripts to switch to all 7 navmesh modes.
+        NW, NE, S, NW+NE, NW+S, NE+S, NW+NE+S
+        
+        Simply call the appropriate trigger for the situation and it will
+        automatically move aside all the wrong navmeshes and insert its own
+        into the map.
+  -->
+  <trigger id="navmesh_NW" repeat="true" autorun="false">
+    <then>
+      <playAnimation name="navNE" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navS" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNW_NE" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNW_S" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNE_S" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navAll" start="0" end="0.5" speed="1" delay="1" />
+
+      <playAnimation name="navNW" start="0.5" end="0" speed="-1" />
+    </then>
+  </trigger>
+
+  <trigger id="navmesh_NE" repeat="true" autorun="false">
+    <then>
+      <playAnimation name="navNW" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navS" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNW_NE" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNW_S" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNE_S" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navAll" start="0" end="0.5" speed="1" delay="1" />
+      
+      <playAnimation name="navNE" start="0.5" end="0" speed="-1" />
+    </then>
+  </trigger>
+
+  <trigger id="navmesh_S" repeat="true" autorun="false">
+    <then>
+      <playAnimation name="navNW" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNE" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNW_NE" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNW_S" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNE_S" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navAll" start="0" end="0.5" speed="1" delay="1" />
+      
+      <playAnimation name="navS" start="0.5" end="0" speed="-1" />
+    </then>
+  </trigger>
+
+  <trigger id="navmesh_NW_NE" repeat="true" autorun="false">
+    <then>
+      <playAnimation name="navNW" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNE" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navS" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNW_S" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNE_S" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navAll" start="0" end="0.5" speed="1" delay="1" />
+      
+      <playAnimation name="navNW_NE" start="0.5" end="0" speed="-1" />
+    </then>
+  </trigger>
+
+  <trigger id="navmesh_NW_S" repeat="true" autorun="false">
+    <then>
+      <playAnimation name="navNW" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNE" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navS" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNW_NE" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNE_S" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navAll" start="0" end="0.5" speed="1" delay="1" />
+      
+      <playAnimation name="navNW_S" start="0.5" end="0" speed="-1" />
+    </then>
+  </trigger>
+
+  <trigger id="navmesh_NE_S" repeat="true" autorun="false">
+    <then>
+      <playAnimation name="navNW" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNE" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navS" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNW_NE" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNW_S" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navAll" start="0" end="0.5" speed="1" delay="1" />
+      
+      <playAnimation name="navNE_S" start="0.5" end="0" speed="-1" />
+    </then>
+  </trigger>
+
+  <trigger id="navmesh_NW_NE_S" repeat="true" autorun="false">
+    <then>
+      <playAnimation name="navNW" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNE" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navS" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNW_NE" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNW_S" start="0" end="0.5" speed="1" delay="1" />
+      <playAnimation name="navNE_S" start="0" end="0.5" speed="1" delay="1" />
+      
+      <playAnimation name="navAll" start="0.5" end="0" speed="-1" />
+    </then>
+  </trigger>
+  
+  <!--
+        Define only the outer spawn areas so they can be used with "any".
+        Hand-pick middle area when spawning things there.
+  -->
+  <RuleSet type="Survival" waves="20">
+    <spawnAreas>
+      <area>northeast</area>
+      <area>northwest</area>
+      <area>south</area>
+    </spawnAreas>
+  </RuleSet>
+
+  <!--  WAVE 1
+        Notes:    Goblins, warm-up
+                  Lava: no lava
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="0">
+      <executeTrigger trigger="floorNW_up" />
+      <executeTrigger trigger="floorNE_up" />
+      <executeTrigger trigger="floorS_up" />
+
+      <executeTrigger trigger="navmesh_NW_NE_S" />
+
+      <executeTrigger trigger="move_lava" />
+    </waveActions>
+
+    <waveActions area="any" delay="0">
+      <spawn ForceNavMesh="true" type="goblin_warrior" nr="3" />
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn ForceNavMesh="true" type="goblin_warrior" nr="4" />
+    </waveActions>
+
+    <!-- Spawn small mobs from center in groups over time -->
+    <waveActions area="middle" delay="5">
+      <spawn ForceNavMesh="true" type="goblin_bomber" nr="4" order="attack" />
+      <spawn ForceNavMesh="true" type="goblin_rogue" nr="2" order="attack" />
+    </waveActions>
+    <waveActions area="middle" delay="8">
+      <spawn ForceNavMesh="true" type="goblin_bomber" nr="2" order="attack" />
+      <spawn ForceNavMesh="true" type="goblin_rogue" nr="4" order="attack" />
+    </waveActions>
+    <waveActions area="middle" delay="11">
+      <spawn ForceNavMesh="true" type="goblin_rogue" nr="8" order="attack" />  <!-- No bombers - save the previous for boom boom -->
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 2
+        Notes:    Goblins, Beastmen, Firedrake
+                  Lava: NW
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="0">
+      <executeTrigger trigger="floorNE_up" />
+      <executeTrigger trigger="floorS_up" />
+
+      <executeTrigger trigger="floorNW_down" />
+
+      <executeTrigger trigger="navmesh_NE_S" />
+
+      <executeTrigger trigger="move_lava" />
+    </waveActions>
+
+    <waveActions area="northeast" delay="5">
+      <spawn ForceNavMesh="true" type="goblin_warrior" nr="3" />
+    </waveActions>
+    <waveActions area="south" delay="5">
+      <spawn ForceNavMesh="true" type="goblin_warrior" nr="4" />
+    </waveActions>
+    
+    <waveActions area="northeast" delay="5">
+      <spawn ForceNavMesh="true" type="beastman_raider" nr="3" />
+    </waveActions>
+
+    <!-- Spawn small mobs from center in groups over time -->
+    <waveActions area="middle" delay="10">
+      <spawn ForceNavMesh="true" type="goblin_bomber" nr="3" />
+      <spawn ForceNavMesh="true" type="firedrake" nr="1" />
+    </waveActions>
+    <waveActions area="middle" delay="13">
+      <spawn ForceNavMesh="true" type="goblin_bomber" nr="3" order="attack" />
+      <spawn ForceNavMesh="true" type="firedrake" nr="1" order="attack" />
+    </waveActions>
+    <waveActions area="middle" delay="16">
+      <spawn ForceNavMesh="true" type="goblin_bomber" nr="3" order="attack" />
+      <spawn ForceNavMesh="true" type="firedrake" nr="1" order="attack" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 3
+        Notes:    Goblins, Beastmen, Firedrake
+                  Lava: NE
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="0">
+      <executeTrigger trigger="floorNW_up" />
+      <executeTrigger trigger="floorS_up" />
+      <executeTrigger trigger="move_lava" />
+
+      <executeTrigger trigger="navmesh_NW_S" />
+
+      <executeTrigger trigger="floorNE_down" delay="5" />
+      <executeTrigger trigger="move_lava" delay="5" />
+    </waveActions>
+
+    <waveActions area="northwest" delay="10">
+      <spawn ForceNavMesh="true" type="goblin_warrior" nr="3" />
+    </waveActions>
+    <waveActions area="south" delay="10">
+      <spawn ForceNavMesh="true" type="goblin_warrior" nr="4" />
+    </waveActions>
+    
+    <waveActions area="northwest" delay="10">
+      <spawn ForceNavMesh="true" type="beastman_raider" nr="2" />
+    </waveActions>
+    <waveActions area="south" delay="10">
+      <spawn ForceNavMesh="true" type="beastman_brute" nr="2" />
+      <spawn ForceNavMesh="true" type="beastman_brute_fire" nr="1" />
+    </waveActions>
+
+    <!-- Spawn small mobs from center in groups over time -->
+    <waveActions area="middle" delay="10">
+      <spawn ForceNavMesh="true" type="goblin_warrior" nr="2" order="attack" />
+      <spawn ForceNavMesh="true" type="firedrake" nr="2" order="attack" />
+    </waveActions>
+    <waveActions area="middle" delay="15">
+      <spawn ForceNavMesh="true" type="goblin_warrior" nr="2" order="attack" />
+      <spawn ForceNavMesh="true" type="goblin_shaman" nr="1" order="attack" />
+    </waveActions>
+    <waveActions area="middle" delay="20">
+      <spawn ForceNavMesh="true" type="goblin_warrior" nr="2" order="attack" />
+      <spawn ForceNavMesh="true" type="goblin_shaman" nr="1" order="attack" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 4
+        Notes:    Goblins, Spiders, Beastmen, Firedrake (SWARM)
+                  Lava: S
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="0">
+      <executeTrigger trigger="floorNW_up" />
+      <executeTrigger trigger="floorNE_up" />
+      <executeTrigger trigger="move_lava" />
+
+      <executeTrigger trigger="navmesh_NW_NE" />
+
+      <executeTrigger trigger="floorS_down" delay="5" />
+      <executeTrigger trigger="move_lava" delay="5" />
+    </waveActions>
+    
+    <waveActions area="northwest" delay="10">
+      <spawn ForceNavMesh="true" type="beastman_raider" nr="4" />
+      <spawn ForceNavMesh="true" type="beastman_raider_lightning" nr="1" />
+    </waveActions>
+    <waveActions area="northeast" delay="10">
+      <spawn ForceNavMesh="true" type="beastman_raider" nr="4" />
+      <spawn ForceNavMesh="true" type="beastman_raider_water" nr="1" />
+    </waveActions>
+
+    <!-- Spawn small mobs from center in groups over time -->
+    <waveActions area="middle" delay="15">
+      <spawn ForceNavMesh="true" type="spider_forest" nr="3" order="attack" />
+      <spawn ForceNavMesh="true" type="spider_poison" nr="1" order="attack" />
+      <spawn ForceNavMesh="true" type="goblin_bomber" nr="4" order="attack" />  <!-- Make use of these later if possible -->
+    </waveActions>
+    <waveActions area="middle" delay="19">
+      <spawn ForceNavMesh="true" type="spider_forest" nr="3" order="attack" />
+      <spawn ForceNavMesh="true" type="spider_poison" nr="1" order="attack" />
+    </waveActions>
+    <waveActions area="middle" delay="23">
+      <spawn ForceNavMesh="true" type="spider_forest" nr="3" order="attack" />
+      <spawn ForceNavMesh="true" type="spider_poison" nr="1" order="attack" />
+      <spawn ForceNavMesh="true" type="firedrake" nr="1" order="attack" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 5
+        Notes:    Orcs, War Troll (BOSS
+                  Lava: no lava
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="0">
+      <executeTrigger trigger="floorNW_up" />
+      <executeTrigger trigger="floorNE_up" />
+      <executeTrigger trigger="floorS_up" />
+
+      <executeTrigger trigger="navmesh_NW_NE_S" />
+
+      <executeTrigger trigger="move_lava" />
+    </waveActions>
+    
+    <waveActions area="northwest" delay="5">
+      <spawn ForceNavMesh="true" type="orc_regular" nr="4" />
+    </waveActions>
+    <waveActions area="northeast" delay="5">
+      <spawn ForceNavMesh="true" type="orc_regular" nr="4" />
+    </waveActions>
+    <waveActions area="south" delay="5">
+      <spawn ForceNavMesh="true" type="orc_captain" nr="2" />
+    </waveActions>
+
+    <waveActions area="northwest" delay="15">
+      <spawn type="troll_war" nr="1" ForceNavMesh="false" />
+    </waveActions>
+    <waveActions area="northeast" delay="15">
+      <spawn type="troll_war" nr="1" ForceNavMesh="false" />
+    </waveActions>
+    
+    <!-- Spawn small mobs from center in groups over time -->
+    <waveActions area="middle" delay="10">
+      <spawn ForceNavMesh="true" type="goblin_ranger" nr="2" order="attack" />
+    </waveActions>
+    <waveActions area="middle" delay="14">
+      <spawn ForceNavMesh="true" type="goblin_ranger" nr="2" order="attack" />
+    </waveActions>
+    <waveActions area="middle" delay="18">
+      <spawn ForceNavMesh="true" type="goblin_rogue" nr="5" order="attack" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 6
+        Notes:    Goblins, Spiders, Elementals, Firedrake
+                  Lava: NW, NE
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="0">
+      <executeTrigger trigger="floorS_up" />
+
+      <executeTrigger trigger="floorNW_down" />
+      <executeTrigger trigger="floorNE_down" delay="5" />
+
+      <executeTrigger trigger="navmesh_S" />
+
+      <executeTrigger trigger="move_lava" />
+      <executeTrigger trigger="move_lava" delay="5" />
+    </waveActions>
+
+    <waveActions area="south" delay="10">
+      <spawn ForceNavMesh="true" type="elemental_cold" nr="2" />
+    </waveActions>
+
+    <waveActions area="south" delay="13">
+      <spawn ForceNavMesh="true" type="goblin_warlock" nr="1" />
+    </waveActions>
+
+    <waveActions area="south" delay="23">
+      <spawn ForceNavMesh="true" type="goblin_warrior_archer" nr="3" />
+    </waveActions>
+
+    <!-- Spawn small mobs from center in groups over time -->
+    <waveActions area="middle" delay="15">
+      <spawn ForceNavMesh="true" type="goblin_rogue_archer" nr="2" order="attack" />
+      <spawn ForceNavMesh="true" type="spider_poison" nr="1" order="attack" />
+    </waveActions>
+    <waveActions area="middle" delay="19">
+      <spawn ForceNavMesh="true" type="goblin_rogue_archer" nr="2" order="attack" />
+      <spawn ForceNavMesh="true" type="spider_poison" nr="1" order="attack" />
+    </waveActions>
+    <waveActions area="middle" delay="23">
+      <spawn ForceNavMesh="true" type="spider_poison" nr="1" order="attack" />
+      <spawn ForceNavMesh="true" type="firedrake" nr="2" order="attack" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 7
+        Notes:    Goblins, Dwarves
+                  Lava: NW, S
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="0">
+      <executeTrigger trigger="floorNE_up" />
+      <executeTrigger trigger="move_lava" />
+
+      <executeTrigger trigger="navmesh_NE" />
+
+      <executeTrigger trigger="floorS_down" delay="5" />
+      <executeTrigger trigger="move_lava" delay="5" />
+    </waveActions>
+    
+    <waveActions area="middle" delay="10">
+      <spawn ForceNavMesh="true" type="goblin_warlock" nr="1" order="attack" />
+    </waveActions>
+
+    <waveActions area="middle" delay="20">
+      <spawn ForceNavMesh="true" type="dwarf_mage" nr="1" order="attack" />
+    </waveActions>
+
+    <!-- Trickle from edge this time -->
+    <waveActions area="northeast" delay="10">
+      <spawn ForceNavMesh="true" type="goblin_rogue" nr="10" />
+    </waveActions>
+    <waveActions area="northeast" delay="15">
+      <spawn ForceNavMesh="true" type="goblin_bomber" nr="3" />
+    </waveActions>
+    <waveActions area="northeast" delay="20">
+      <spawn ForceNavMesh="true" type="goblin_bomber" nr="3" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 8
+        Notes:    Beholder, Darksouls, Orcs
+                  Lava: S, NE
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="0">
+      <executeTrigger trigger="floorNW_up" />
+      <executeTrigger trigger="move_lava" />
+
+      <executeTrigger trigger="navmesh_NW" />
+
+      <executeTrigger trigger="floorNE_down" delay="5" />
+      <executeTrigger trigger="move_lava" delay="5" />
+    </waveActions>
+    
+    <waveActions area="northwest" delay="10">
+      <spawn ForceNavMesh="true" type="orc_regular" nr="3" />
+      <spawn ForceNavMesh="true" type="orc_captain" nr="1" />
+    </waveActions>
+
+    <waveActions area="northwest" delay="16">
+      <spawn ForceNavMesh="true" type="beholder_malign" nr="1" />
+    </waveActions>
+
+    <!-- Trickle darksouls from edge over time -->
+    <waveActions area="northwest" delay="15">
+      <spawn ForceNavMesh="true" type="skeleton_darksoul_arcane" nr="3" />
+    </waveActions>
+    <waveActions area="northwest" delay="19">
+      <spawn ForceNavMesh="true" type="skeleton_darksoul_frost" nr="3" />
+    </waveActions>
+    <waveActions area="northwest" delay="23">
+      <spawn ForceNavMesh="true" type="skeleton_darksoul_arcane" nr="3" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 9
+        Notes:    Darksouls, Skeletons, Firedrake (SWARM)
+                  Lava: NW, NE
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="0">
+      <executeTrigger trigger="floorS_up" />
+      <executeTrigger trigger="move_lava" />
+
+      <executeTrigger trigger="navmesh_S" />
+
+      <executeTrigger trigger="floorNW_down" delay="5" />
+      <executeTrigger trigger="move_lava" delay="5" />
+    </waveActions>
+
+    <!-- Trickle darksouls from edge over time -->
+    <waveActions area="south" delay="10">
+      <spawn ForceNavMesh="true" type="skeleton_darksoul_arcane" nr="6" delay="0" />
+      <spawn ForceNavMesh="true" type="skeleton_darksoul_frost" nr="6" delay="5" />
+      <spawn ForceNavMesh="true" type="skeleton_darksoul_lightning" nr="6" delay="10" />
+      <spawn ForceNavMesh="true" type="skeleton_darksoul_frost" nr="6" delay="15" />
+    </waveActions>
+
+    <!-- Spawn stuff from middle -->
+    <waveActions area="middle" delay="10">
+      <spawn ForceNavMesh="true" type="skeleton_noob" nr="5" order="attack" />
+      <spawn ForceNavMesh="true" type="firedrake" nr="2" order="attack" />
+    </waveActions>
+    <waveActions area="middle" delay="15">
+      <spawn ForceNavMesh="true" type="skeleton_noob" nr="5" order="attack" />
+      <spawn ForceNavMesh="true" type="firedrake" nr="2" order="attack" />
+    </waveActions>
+    <waveActions area="middle" delay="20">
+      <spawn ForceNavMesh="true" type="firedrake" nr="4" order="attack" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 10
+        Notes:    Beholder, Beastmen, Dwarves (BOSS)
+                  Lava: no lava
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="0">
+      <executeTrigger trigger="floorNW_up" />
+      <executeTrigger trigger="floorNE_up" />
+      <executeTrigger trigger="floorS_up" />
+
+      <executeTrigger trigger="navmesh_NW_NE_S" />
+
+      <executeTrigger trigger="move_lava" />
+    </waveActions>
+    
+    <!-- The support and tanks... -->
+    <waveActions area="any" delay="5">
+      <spawn ForceNavMesh="true" type="beastman_brute" nr="4" delay="0" />
+      <spawn ForceNavMesh="true" type="beastman_brute_fire" nr="1" delay="0" />
+      <spawn ForceNavMesh="true" type="dwarf_mage" nr="1" delay="3" />
+    </waveActions>
+    <waveActions area="any" delay="5">
+      <spawn ForceNavMesh="true" type="beastman_brute" nr="4" delay="0" />
+      <spawn ForceNavMesh="true" type="beastman_brute" nr="2" delay="0" />
+      <spawn ForceNavMesh="true" type="dwarf_mage" nr="1" delay="3" />
+    </waveActions>
+
+    <!-- The DPS -->
+    <waveActions area="northeast" delay="15">
+      <spawn ForceNavMesh="true" type="beholder_malign" nr="1" />
+    </waveActions>
+    <waveActions area="northwest" delay="20">
+      <spawn ForceNavMesh="true" type="beholder_malign" nr="1" />
+    </waveActions>
+    <waveActions area="south" delay="25">
+      <spawn ForceNavMesh="true" type="beholder_malign" nr="1" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 11
+        Notes:    Dwarves, Beholders, Firedrake
+                  Lava: no lava
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="0">
+      <executeTrigger trigger="floorNW_up" />
+      <executeTrigger trigger="floorNE_up" />
+      <executeTrigger trigger="floorS_up" />
+      
+      <executeTrigger trigger="move_lava" />
+    </waveActions>
+    
+    <!-- Slight delay on dwarf mages so that they come in after the warriors -->
+    <waveActions area="any" delay="2">
+      <spawn ForceNavMesh="true" type="dwarf_mage" nr="1" />
+    </waveActions>
+    <waveActions area="any" delay="2">
+      <spawn ForceNavMesh="true" type="dwarf_mage" nr="1" />
+    </waveActions>
+    
+    <!-- A pair of malign beholders -->
+    <waveActions area="any" delay="7">
+      <spawn ForceNavMesh="true" type="beholder_malign" nr="1" />
+    </waveActions>
+    <waveActions area="any" delay="9">
+      <spawn ForceNavMesh="true" type="beholder_malign" nr="1" />
+    </waveActions>
+
+    <!-- Trickle from all directions -->
+    <waveActions area="middle" delay="0">
+      <spawn ForceNavMesh="true" type="dwarf_warrior" nr="2" delay="0" order="attack" />
+      <spawn ForceNavMesh="true" type="dwarf_warrior" nr="1" delay="6" order="attack" />
+      <spawn ForceNavMesh="true" type="dwarf_warrior" nr="1" delay="12" order="attack" />
+    </waveActions>
+    <waveActions area="northwest" delay="0">
+      <spawn ForceNavMesh="true" type="dwarf_warrior" nr="1" delay="0" />
+      <spawn ForceNavMesh="true" type="dwarf_warrior" nr="1" delay="6" />
+      <spawn ForceNavMesh="true" type="dwarf_warrior" nr="1" delay="12" />
+      <spawn ForceNavMesh="true" type="firedrake" nr="1" delay="12" />
+    </waveActions>
+    <waveActions area="northeast" delay="0">
+      <spawn ForceNavMesh="true" type="dwarf_warrior" nr="1" delay="0" />
+      <spawn ForceNavMesh="true" type="dwarf_warrior" nr="1" delay="6" />
+      <spawn ForceNavMesh="true" type="dwarf_warrior" nr="1" delay="12" />
+      <spawn ForceNavMesh="true" type="firedrake" nr="1" delay="12" />
+    </waveActions>
+    <waveActions area="south" delay="0">
+      <spawn ForceNavMesh="true" type="dwarf_warrior" nr="1" delay="0" />
+      <spawn ForceNavMesh="true" type="dwarf_warrior" nr="1" delay="6" />
+      <spawn ForceNavMesh="true" type="dwarf_warrior" nr="1" delay="12" />
+      <spawn ForceNavMesh="true" type="firedrake" nr="1" delay="12" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 12
+        Notes:    Necromancers, Skeletons, Elementals
+                  Lava: S
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="0">
+      <executeTrigger trigger="floorNW_up" />
+      <executeTrigger trigger="floorNE_up" />
+
+      <executeTrigger trigger="navmesh_NW_NE" />
+
+      <executeTrigger trigger="floorS_down" />
+      <executeTrigger trigger="move_lava" />
+    </waveActions>
+    
+    <!-- Spawn necromancers with slight delay to cover them by Elementals -->
+    <waveActions area="northwest" delay="9">
+      <spawn ForceNavMesh="true" type="necromancer" nr="1" />
+    </waveActions>
+    <waveActions area="northeast" delay="9">
+      <spawn ForceNavMesh="true" type="necromancer" nr="1" />
+    </waveActions>
+
+    <!-- Trickle elementals from edges -->
+    <waveActions area="northwest" delay="5">
+      <spawn ForceNavMesh="true" type="elemental_life" nr="1" delay="0" />
+      <spawn ForceNavMesh="true" type="firedrake" nr="1" delay="3" />
+      <spawn ForceNavMesh="true" type="elemental_arcane" nr="1" delay="6" />
+    </waveActions>
+    <waveActions area="northeast" delay="5">
+      <spawn ForceNavMesh="true" type="elemental_arcane" nr="1" delay="0" />
+      <spawn ForceNavMesh="true" type="firedrake" nr="1" delay="3" />
+      <spawn ForceNavMesh="true" type="elemental_life" nr="1" delay="6" />
+    </waveActions>
+
+    <!-- Trickle skeleton noobs from middle -->
+    <waveActions area="middle" delay="5">
+      <spawn ForceNavMesh="true" type="skeleton_noob" nr="2" delay="5" order="attack" />
+      <spawn ForceNavMesh="true" type="skeleton_noob" nr="2" delay="9" order="attack" />
+      <spawn ForceNavMesh="true" type="skeleton_noob" nr="2" delay="13" order="attack" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 13
+        Notes:    Dwarves, Trolls, Necromancer
+                  Lava: S, NW
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="0">
+      <executeTrigger trigger="floorNE_up" />
+
+      <executeTrigger trigger="navmesh_NE" />
+
+      <executeTrigger trigger="floorNW_down" />
+      <executeTrigger trigger="move_lava" />
+    </waveActions>
+    
+    <waveActions area="northeast" delay="15">
+      <spawn type="troll_war" nr="1" ForceNavMesh="false" />
+    </waveActions>
+
+    <!-- Trickle dwarf mages from edges and middle -->
+    <waveActions area="northeast" delay="5">
+      <spawn ForceNavMesh="true" type="dwarf_mage" nr="1" delay="0" />
+      <spawn ForceNavMesh="true" type="necromancer" nr="1" delay="15" />
+    </waveActions>
+    <waveActions area="middle" delay="5">
+      <spawn ForceNavMesh="true" type="dwarf_mage" nr="1" delay="15" order="attack" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 14
+        Notes:    Imp (SWARM... not really)
+                  Lava: S, NW, NE (FLOOD)
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="0">
+      <executeTrigger trigger="floorNE_down" />
+      <executeTrigger trigger="floorNW_down" />
+      <executeTrigger trigger="floorS_down" />
+
+      <executeTrigger trigger="navmesh_NW_NE_S" />
+
+      <executeTrigger trigger="move_lava" />
+    </waveActions>
+
+    <!-- Spawn an Imp after a few seconds... and remove it automatically, ending the wave -->
+    <waveActions area="middle" delay="20">
+      <spawn id="shortlivedimp" type="imp" nr="1" delay="0" />
+      <remove id="shortlivedimp" delay="0" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 15
+        Notes:    Troll, Beholder, Goblin (BOSS)
+                  Lava: no lava
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="0">
+      <executeTrigger trigger="floorNW_up" />
+      <executeTrigger trigger="floorNE_up" />
+      <executeTrigger trigger="floorS_up" />
+
+      <executeTrigger trigger="navmesh_NW_NE_S" />
+
+      <executeTrigger trigger="move_lava" />
+    </waveActions>
+
+    <waveActions area="northeast" delay="5">
+      <spawn type="troll_war" nr="1" ForceNavMesh="false" />
+      <spawn type="troll_stone" nr="1" ForceNavMesh="false" />
+    </waveActions>
+    <waveActions area="northwest" delay="5">
+      <spawn type="troll_war" nr="1" ForceNavMesh="false" />
+      <spawn type="troll_stone" nr="1" ForceNavMesh="false" />
+    </waveActions>
+    <waveActions area="south" delay="5">
+      <spawn type="troll_war" nr="1" ForceNavMesh="false" />
+      <spawn type="troll_stone" nr="1" ForceNavMesh="false" />
+    </waveActions>
+
+    <!-- Trickle goblin bombers from edges and middle -->
+    <waveActions area="middle" delay="5">
+      <spawn ForceNavMesh="true" type="goblin_bomber" nr="5" delay="0" />
+      <spawn ForceNavMesh="true" type="goblin_bomber" nr="5" delay="5" />
+      <spawn ForceNavMesh="true" type="goblin_bomber" nr="5" delay="10" />
+      <spawn ForceNavMesh="true" type="goblin_bomber" nr="5" delay="15" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 16
+        Notes:    Troll, Orc, Beastman
+                  Lava: no lava, S after delay
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="0">
+      <executeTrigger trigger="floorNW_up" />
+      <executeTrigger trigger="floorNE_up" />
+      <executeTrigger trigger="floorS_up" />
+
+      <executeTrigger trigger="navmesh_NW_NE_S" />
+
+      <executeTrigger trigger="move_lava" />
+    </waveActions>
+
+    <waveActions delay="15">
+        <!-- Add floor movement with delay -->
+      <executeTrigger trigger="navmesh_NW_NE" />
+
+      <executeTrigger trigger="floorS_down" delay="0" />
+      <executeTrigger trigger="move_lava" delay="0" />
+    </waveActions>
+
+    <waveActions area="northeast" delay="5">
+      <spawn type="troll_war" nr="1" ForceNavMesh="false" />
+    </waveActions>
+    <waveActions area="northwest" delay="5">
+      <spawn type="troll_war" nr="1" ForceNavMesh="false" />
+    </waveActions>
+
+    <!-- Squads of Orcs and Beastmen from edge -->
+    <waveActions area="northeast" delay="5">
+      <spawn ForceNavMesh="true" type="orc_regular" nr="3" delay="0" />
+      <spawn ForceNavMesh="true" type="beastman_raider_water" nr="1" delay="5" />
+    </waveActions>
+    <waveActions area="northwest" delay="5">
+      <spawn ForceNavMesh="true" type="orc_regular_axe" nr="3" delay="0" />
+      <spawn ForceNavMesh="true" type="beastman_raider_water" nr="1" delay="5" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 17
+        Notes:    Troll, Goblin, Spider
+                  Lava: S, NE after delay
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="15">
+      <!-- Add floor movement with delay -->
+      <executeTrigger trigger="navmesh_NW" />
+      
+      <executeTrigger trigger="floorNE_down" delay="0" />
+      <executeTrigger trigger="move_lava" delay="0" />
+    </waveActions>
+
+    <waveActions area="northwest" delay="5">
+      <spawn type="troll_stone" nr="2" ForceNavMesh="false" />
+    </waveActions>
+
+    <!-- Trickle goblin bombers and poison spiders from middle -->
+    <waveActions area="middle" delay="5">
+      <spawn ForceNavMesh="true" type="goblin_bomber" nr="7" delay="0" />
+      <spawn ForceNavMesh="true" type="spider_poison" nr="5" delay="5" />
+      <spawn ForceNavMesh="true" type="goblin_bomber" nr="7" delay="10" />
+      <spawn ForceNavMesh="true" type="spider_poison" nr="5" delay="15" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 18
+        Notes:    Troll, Goblin, Spider
+                  Lava: NE, NW after delay
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="0">
+      <executeTrigger trigger="navmesh_NW_S" />
+      
+      <executeTrigger trigger="floorS_up" />
+      <executeTrigger trigger="move_lava" />
+    </waveActions>
+
+    <waveActions delay="15">
+      <!-- Add floor movement with delay -->
+      <executeTrigger trigger="navmesh_S" />
+      
+      <executeTrigger trigger="floorNW_down" delay="0" />
+      <executeTrigger trigger="move_lava" delay="0" />
+    </waveActions>
+
+    <waveActions area="south" delay="5">
+      <spawn type="troll_stone" nr="3" ForceNavMesh="false" />
+    </waveActions>
+
+    <!-- Trickle goblin casters from south -->
+    <waveActions area="south" delay="5">
+      <spawn ForceNavMesh="true" type="goblin_shaman" nr="2" delay="0" />
+      <spawn ForceNavMesh="true" type="goblin_warlock" nr="2" delay="5" />
+      <spawn ForceNavMesh="true" type="goblin_shaman" nr="2" delay="10" />
+      <spawn ForceNavMesh="true" type="goblin_warlock" nr="2" delay="15" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 19
+        Notes:    Troll, Darksoul
+                  Lava: NW, S after delay
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="0">
+      <executeTrigger trigger="navmesh_NE_S" />
+      <executeTrigger trigger="floorNE_up" />
+      <executeTrigger trigger="move_lava" />
+    </waveActions>
+
+    <waveActions delay="15">
+      <!-- Add floor movement with delay -->
+      <executeTrigger trigger="navmesh_NE" />
+
+      <executeTrigger trigger="floorS_down" delay="0" />
+      <executeTrigger trigger="move_lava" delay="0" />
+    </waveActions>
+
+    <waveActions area="northeast" delay="5">
+      <spawn type="troll_snow" nr="2" ForceNavMesh="false" />
+    </waveActions>
+
+    <!-- Trickle hordes of darksouls from edge -->
+    <waveActions area="northeast" delay="5">
+      <spawn ForceNavMesh="true" type="skeleton_darksoul_frost" nr="5" delay="0" />
+      <spawn ForceNavMesh="true" type="skeleton_darksoul_frost" nr="5" delay="5" />
+      <spawn ForceNavMesh="true" type="skeleton_darksoul_frost" nr="5" delay="10" />
+      <spawn ForceNavMesh="true" type="skeleton_darksoul_frost" nr="5" delay="15" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 20
+        Notes:    Goblins, Beastmen, Orcs, Dwarves, Trolls (BOSS)
+                  Firedrakes all the while
+                  Druid followed by Necromancer at end
+                  Lava: no lava, then cycle of lava (S -> NE -> NW -> S -> NE ...)
+                  The player needs to work FAST as reinforcements are timed!
+        -->
+  <wave>
+    <!-- Move floor parts -->
+    <waveActions delay="0">
+      <executeTrigger trigger="navmesh_NW_NE_S" />
+      
+      <executeTrigger trigger="floorS_up" />
+      <executeTrigger trigger="floorNE_up" />
+      <executeTrigger trigger="floorNW_up" />
+
+      <executeTrigger trigger="move_lava" />
+    </waveActions>
+
+    <!-- Part 1 -->
+    <waveActions area="northwest" delay="5">
+      <!-- Add floor downs and ups with delay -->
+      <executeTrigger trigger="navmesh_NW_NE" />
+
+      <executeTrigger trigger="floorS_down" />
+      <executeTrigger trigger="move_lava" />
+
+      <spawn ForceNavMesh="true" type="goblin_warrior_archer" nr="4" delay="3" />
+    </waveActions>
+    <waveActions area="northwest" delay="5">
+      <spawn ForceNavMesh="true" type="goblin_warrior_archer" nr="4" delay="3" />
+    </waveActions>
+
+    <!-- Part 2 -->
+    <waveActions area="south" delay="13">
+      <!-- Add floor downs and ups with delay -->
+      <executeTrigger trigger="navmesh_NW_S" />
+
+      <executeTrigger trigger="floorS_up" />
+      <executeTrigger trigger="floorNE_down" />
+      <executeTrigger trigger="move_lava" />
+
+      <spawn ForceNavMesh="true" type="beastman_brute" nr="2" delay="3" />
+    </waveActions>
+    <waveActions area="south" delay="13">
+      <spawn ForceNavMesh="true" type="beastman_brute" nr="2" delay="3" />
+    </waveActions>
+    <waveActions area="south" delay="13">
+      <spawn ForceNavMesh="true" type="beastman_raider" nr="4" delay="3" />
+      <spawn ForceNavMesh="true" type="beastman_raider_lightning" nr="2" delay="3" />
+    </waveActions>
+    <waveActions area="south" delay="13">
+      <spawn ForceNavMesh="true" type="beastman_raider" nr="4" delay="3" />
+      <spawn ForceNavMesh="true" type="beastman_raider_water" nr="2" delay="3" />
+    </waveActions>
+
+    <!-- Part 3 -->
+    <waveActions area="northeast" delay="21">
+      <!-- Add floor downs and ups with delay -->
+      <executeTrigger trigger="navmesh_NE_S" />
+
+      <executeTrigger trigger="floorNE_up" />
+      <executeTrigger trigger="floorNW_down" />
+      <executeTrigger trigger="move_lava" />
+
+      <spawn ForceNavMesh="true" type="orc_regular" nr="3" delay="3" />
+    </waveActions>
+    <waveActions area="northeast" delay="21">
+      <spawn ForceNavMesh="true" type="orc_regular" nr="3" delay="3" />
+    </waveActions>
+    <waveActions area="northeast" delay="21">
+      <spawn ForceNavMesh="true" type="orc_berserk" nr="2" delay="3" />
+    </waveActions>
+
+    <!-- Part 4 -->
+    <waveActions area="northwest" delay="29">
+      <!-- Up with all floors for the rest of the wave to cut players (and mobs) a break -->
+      <executeTrigger trigger="navmesh_NW_NE_S" />
+
+      <executeTrigger trigger="floorS_up" />
+      <executeTrigger trigger="floorNE_up" />
+      <executeTrigger trigger="floorNW_up" />
+
+      <executeTrigger trigger="move_lava" />
+
+      <spawn ForceNavMesh="true" type="orc_berserk" nr="6" delay="3" order="attack" />
+      <spawn ForceNavMesh="true" type="orc_captain" nr="2" delay="5" order="attack" />
+    </waveActions>
+    <waveActions area="northwest" delay="29">
+      <spawn ForceNavMesh="true" type="dwarf_captain" nr="1" delay="3" />
+      <spawn ForceNavMesh="true" type="dwarf_mage" nr="1" delay="3" />
+    </waveActions>
+    <waveActions area="northwest" delay="29">
+      <spawn ForceNavMesh="true" type="dwarf_warrior" nr="2" delay="3" />
+    </waveActions>
+
+    <!-- Part 5 -->
+    <waveActions area="south" delay="37">
+      <spawn type="troll_war" nr="1" delay="3" ForceNavMesh="false" />
+    </waveActions>
+    <waveActions area="south" delay="37">
+      <spawn type="troll_stone" nr="1" delay="3" ForceNavMesh="false" />
+    </waveActions>
+    <waveActions area="south" delay="37">
+      <spawn type="troll_war" nr="2" delay="3" ForceNavMesh="false" />
+    </waveActions>
+
+    <!-- Part 5b... Just add a druid (rain) for fun as forest troll support -->
+    <waveActions area="middle" delay="40">
+      <spawn ForceNavMesh="true" type="druid" nr="1" delay="0" />
+    </waveActions>
+
+    <!-- Trickle various smaller things from middle -->
+    <waveActions area="middle" delay="29">
+      <spawn ForceNavMesh="true" type="goblin_bomber" nr="4" delay="8" order="attack" />
+
+      <spawn ForceNavMesh="true" type="goblin_bomber" nr="4" delay="16" order="attack" />
+      <spawn ForceNavMesh="true" type="firedrake" nr="6" delay="16" order="attack" />
+
+      <spawn ForceNavMesh="true" type="spider_poison" nr="6" delay="24" order="attack" />
+
+      <spawn ForceNavMesh="true" type="necromancer" nr="2" delay="32" order="attack" />
+    </waveActions>
+  </wave>
+</Scene>
+  
+  
+

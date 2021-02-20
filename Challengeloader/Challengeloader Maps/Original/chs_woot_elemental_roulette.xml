@@ -1,0 +1,1492 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Scene>
+  <!-- AUTHOR:   Dan Eriksson @ Pieces Interactive, 2012 -->
+
+  <model>ch_woot_elemental_roulette</model>
+  <reverb roomType="10" mix="40" />
+  <killplaneposition>-35</killplaneposition>
+
+  <trigger id="Start" repeat="false">
+    <if />
+    <then>
+
+      <!--
+        Still too easy, master solo (wo)man? Honestly?
+        Then, change the counter line right below to say value="1" instead of value="0".
+        (Anything other than 1 will be the same as 0.)
+        This will count as modded content and disables leaderboards and achievements.
+      -->
+      <counter name="master_switch" action="set" value="0" />
+
+      <cameramagnify magnification="0.8"/>
+      <playMusic cue="music_wizardcastle" delay="3.5" />
+      <playSound id="ambient_audience" volume="0" cue="Additionalmusic/woot_amb_audience_hum" />
+
+      <playSound volume="0" cue="Additional/woot_short_fanfare" delay="1" />
+
+      <playAnimation name="door1" delay="0.8" loop="false" speed="0.35" />
+      <playAnimation name="door2" delay="0.8" loop="false" speed="0.35" />
+      <playAnimation name="door3" delay="0.8" loop="false" speed="0.35" />
+
+      <executeTrigger trigger="confettiOfMisfortune_cycle" delay="0.5" />
+
+      <!--<playSound id="ch_arena_bars01" volume="0" area="ch_arena_bars01" radius="150" apply3d="true" cue="Misc/misc_arena_gate01" />-->
+    </then>
+  </trigger>
+
+  <RuleSet type="Survival" waves="20">
+    <spawnAreas>
+      <area>monsterspawn_left</area>
+      <area>monsterspawn_middle</area>
+      <area>monsterspawn_right</area>
+    </spawnAreas>
+  </RuleSet>
+
+  <!--
+      #####################################################################################################################################
+      #####################################################################################################################################
+        Scripts for handling the enabling and disabling of elements
+        
+        For versus, simply call trigger "roulette_versus_init" once in the beginning to start a random cycle of elements.
+        
+        For challenge, manually enable elements using triggers "enable_ELEMENT" where ELEMENT is the element you wish to enable.
+        Use "roulette_disableAllEnableLifeLightning" to disable all elements in challenge while enabling Life and Lightning (Revive).
+      #####################################################################################################################################
+      #####################################################################################################################################
+  -->
+  <trigger id="roulette_versus_init" repeat="true" autorun="false">
+    <if />
+    <then>
+      <counter name="versus_roulette_active" action="set" value="1" />
+
+      <!--<counter name="elements_active" action="set" value="8" />-->
+
+      <executeTrigger trigger="roulette_versus_cycle" delay="1" />
+    </then>
+  </trigger>
+
+  <trigger id="roulette_versus_cycle" repeat="true" autorun="false">
+    <if>
+      <counter name="versus_roulette_active" compareMethod="equal" value="1" />
+    </if>
+    <then>
+      <!-- Disable all elements & Enable life temporarily -->
+      <executeTrigger trigger="roulette_disableAllEnableLife" delay="0" />
+
+      <!-- TODO: Add sound and effects to elements being enabled -->
+
+      <executeTrigger trigger="roulette_disableAll" delay="5" />
+
+      <!-- Set amount of elements we would like... -->
+      <counter name="new_random_elements" action="set" value="3" delay="5.5" />
+
+      <!-- ...and roll that amount of random elements -->
+      <executeTrigger trigger="roulette_rollElements" delay="6" />
+
+      <!-- Nullify, then call self again after a set amount of time -->
+      <magick magicktype="Nullify"                      delay="22" />
+      <executeTrigger trigger="roulette_versus_cycle"   delay="22" />
+    </then>
+  </trigger>
+
+  <trigger id="roulette_disableAll" repeat="true" autorun="false">
+    <if />
+    <then>
+      <disableElement element="Water,Life,Shield,Cold,Lightning,Arcane,Earth,Fire" />
+
+      <counter name="element_water" action="set" value="0" />
+      <counter name="element_life" action="set" value="0" />
+      <counter name="element_shield" action="set" value="0" />
+      <counter name="element_cold" action="set" value="0" />
+      <counter name="element_lightning" action="set" value="0" />
+      <counter name="element_arcane" action="set" value="0" />
+      <counter name="element_earth" action="set" value="0" />
+      <counter name="element_fire" action="set" value="0" />
+
+      <!-- Reset the elements animations -->
+      <playAnimation name="element1_anim" start="0.5" end="0" speed="-1" resume="true" />
+      <playAnimation name="element2_anim" start="0.5" end="0" speed="-1" resume="true" />
+      <playAnimation name="element3_anim" start="0.5" end="0" speed="-1" resume="true" />
+      <playAnimation name="element4_anim" start="0.5" end="0" speed="-1" resume="true" />
+      <playAnimation name="element5_anim" start="0.5" end="0" speed="-1" resume="true" />
+      <playAnimation name="element6_anim" start="0.5" end="0" speed="-1" resume="true" />
+      <playAnimation name="element7_anim" start="0.5" end="0" speed="-1" resume="true" />
+      <playAnimation name="element8_anim" start="0.5" end="0" speed="-1" resume="true" />
+
+      <!-- Used to make sure we don't get stuck in an endless loop when enabling a random element -->
+      <counter name="elements_active" action="set" value="0" />
+    </then>
+  </trigger>
+
+  <trigger id="roulette_disableAllEnableLife" repeat="true" autorun="false">
+    <if />
+    <then>
+      <disableElement element="Water,Shield,Cold,Lightning,Arcane,Earth,Fire" />
+      <enableElement element="Life" />
+
+      <counter name="element_water" action="set" value="0" />
+      <counter name="element_life" action="set" value="1" />
+      <counter name="element_shield" action="set" value="0" />
+      <counter name="element_cold" action="set" value="0" />
+      <counter name="element_lightning" action="set" value="0" />
+      <counter name="element_arcane" action="set" value="0" />
+      <counter name="element_earth" action="set" value="0" />
+      <counter name="element_fire" action="set" value="0" />
+
+      <!-- Reset the elements animations -->
+      <playAnimation name="element1_anim" start="0.5" end="0" speed="-1" resume="true" />
+      <playAnimation name="element2_anim" start="0" end="0.5" speed="1" resume="true" />
+      <playAnimation name="element3_anim" start="0.5" end="0" speed="-1" resume="true" />
+      <playAnimation name="element4_anim" start="0.5" end="0" speed="-1" resume="true" />
+      <playAnimation name="element5_anim" start="0.5" end="0" speed="-1" resume="true" />
+      <playAnimation name="element6_anim" start="0.5" end="0" speed="-1" resume="true" />
+      <playAnimation name="element7_anim" start="0.5" end="0" speed="-1" resume="true" />
+      <playAnimation name="element8_anim" start="0.5" end="0" speed="-1" resume="true" />
+
+      <!-- Used to make sure we don't get stuck in an endless loop when enabling a random element -->
+      <counter name="elements_active" action="set" value="1" />
+    </then>
+  </trigger>
+
+  <trigger id="roulette_disableAllEnableLifeLightning" repeat="true" autorun="false">
+    <if />
+    <then>
+      <disableElement element="Water,Shield,Cold,Arcane,Earth,Fire" />
+      <enableElement element="Life,Lightning" />
+
+      <counter name="element_water" action="set" value="0" />
+      <counter name="element_life" action="set" value="1" />
+      <counter name="element_shield" action="set" value="0" />
+      <counter name="element_cold" action="set" value="0" />
+      <counter name="element_lightning" action="set" value="1" />
+      <counter name="element_arcane" action="set" value="0" />
+      <counter name="element_earth" action="set" value="0" />
+      <counter name="element_fire" action="set" value="0" />
+
+      <!-- Reset the elements animations -->
+      <playAnimation name="element1_anim" start="0.5" end="0" speed="-1" resume="true" />
+      <playAnimation name="element2_anim" start="0" end="0.5" speed="1" resume="true" />
+      <playAnimation name="element3_anim" start="0.5" end="0" speed="-1" resume="true" />
+      <playAnimation name="element4_anim" start="0.5" end="0" speed="-1" resume="true" />
+      <playAnimation name="element5_anim" start="0" end="0.5" speed="1" resume="true" />
+      <playAnimation name="element6_anim" start="0.5" end="0" speed="-1" resume="true" />
+      <playAnimation name="element7_anim" start="0.5" end="0" speed="-1" resume="true" />
+      <playAnimation name="element8_anim" start="0.5" end="0" speed="-1" resume="true" />
+
+      <!-- Used to make sure we don't get stuck in an endless loop when enabling a random element -->
+      <counter name="elements_active" action="set" value="2" />
+    </then>
+  </trigger>
+
+  <trigger id="roulette_enableAll" repeat="true" autorun="false">
+    <if />
+    <then>
+      <enableElement element="Water,Life,Shield,Cold,Lightning,Arcane,Earth,Fire" />
+
+      <counter name="element_water" action="set" value="1" />
+      <counter name="element_life" action="set" value="1" />
+      <counter name="element_shield" action="set" value="1" />
+      <counter name="element_cold" action="set" value="1" />
+      <counter name="element_lightning" action="set" value="1" />
+      <counter name="element_arcane" action="set" value="1" />
+      <counter name="element_earth" action="set" value="1" />
+      <counter name="element_fire" action="set" value="1" />
+
+      <!--<playSound id="new_element_sound" volume="0" cue="Additional/woot_new_element_signal" delay="0" />
+      <stopSound id="new_element_sound" delay="2" />-->
+
+      <!-- Play the elements animations -->
+      <playAnimation name="element1_anim" start="0" end="0.5" speed="1" resume="true" />
+      <playAnimation name="element2_anim" start="0" end="0.5" speed="1" resume="true" />
+      <playAnimation name="element3_anim" start="0" end="0.5" speed="1" resume="true" />
+      <playAnimation name="element4_anim" start="0" end="0.5" speed="1" resume="true" />
+      <playAnimation name="element5_anim" start="0" end="0.5" speed="1" resume="true" />
+      <playAnimation name="element6_anim" start="0" end="0.5" speed="1" resume="true" />
+      <playAnimation name="element7_anim" start="0" end="0.5" speed="1" resume="true" />
+      <playAnimation name="element8_anim" start="0" end="0.5" speed="1" resume="true" />
+
+      <counter name="elements_active" action="set" value="8" />
+    </then>
+  </trigger>
+
+  <!-- This is the main roulette script.
+  
+      First, manually set the "new_random_elements" counter to the number of elements you wish to enable.
+      Second, call this script. It will roll new elements until that count has been reached or if all elements are
+      already enabled. Note, however, that this script cannot detect the correct count of already enabled elements
+      if you manually enable/disable elements with the <enableElement> tag.
+  -->
+  <trigger id="roulette_rollElements" repeat="true" autorun="false">
+    <if>
+      <!-- Make sure we haven't already enabled all the elements before trying to enable another one -->
+      <counter name="elements_active" compareMethod="less" value="8" />
+      <!-- Only roll new elements as long as new_random_elements is above 0 (we subtract 1 from this every time we enable an element) -->
+      <counter name="new_random_elements" compareMethod="greater" value="0" />
+    </if>
+    <then>
+      <!-- Roll a new element. This should be guaranteed to succeed. -->
+      <executeTrigger trigger="roulette_performRoll" delay="0.02" />
+
+      <!-- Subtract 1 from elements to roll. This is a counter only used by this script to know when to keep rolling. -->
+      <counter name="new_random_elements" action="dec" value="1" />
+    </then>
+  </trigger>
+
+  <trigger id="roulette_performRoll" repeat="true" autorun="false">
+    <if />
+    <then>
+      <counter name="element_roll_done" action="set" value="0" />
+
+      <!-- Delays added to prevent the bug where counters don't set immediately -->
+
+      <!-- Call the enabler of a random element -->
+      <random>
+        <executeTrigger trigger="enable_water" delay="0.02" />
+      </random>
+      <random>
+        <executeTrigger trigger="enable_life" delay="0.02" />
+      </random>
+      <random>
+        <executeTrigger trigger="enable_shield" delay="0.02" />
+      </random>
+      <random>
+        <executeTrigger trigger="enable_cold" delay="0.02" />
+      </random>
+      <random>
+        <executeTrigger trigger="enable_lightning" delay="0.02" />
+      </random>
+      <random>
+        <executeTrigger trigger="enable_arcane" delay="0.02" />
+      </random>
+      <random>
+        <executeTrigger trigger="enable_earth" delay="0.02" />
+      </random>
+      <random>
+        <executeTrigger trigger="enable_fire" delay="0.02" />
+      </random>
+
+      <executeTrigger trigger="roulette_checkRetry" delay="0.5"/>
+      <executeTrigger trigger="roulette_checkDone" delay="0.5"/>
+    </then>
+  </trigger>
+
+  <trigger id="roulette_checkRetry" repeat="true" autorun="false">
+    <if>
+      <!-- Did the roll fail? If so, roll again -->
+      <counter name="element_roll_done" compareMethod="equal" value="0" />
+    </if>
+    <then>
+      <executeTrigger trigger="roulette_performRoll" />
+    </then>
+  </trigger>
+
+  <trigger id="roulette_checkDone" repeat="true" autorun="false">
+    <if>
+      <!-- Did the roll succeed? If so, return to the main roll handler script -->
+      <counter name="element_roll_done" compareMethod="equal" value="1" />
+    </if>
+    <then>
+      <executeTrigger trigger="roulette_rollElements" />
+    </then>
+  </trigger>
+
+  <!-- Element enablers -->
+
+  <trigger id="enable_water" repeat="true" autorun="false">
+    <if>
+      <!-- Check to see if we've already flagged the element as active -->
+      <counter name="element_water" compareMethod="equal" value="0" />
+    </if>
+    <then>
+      <!-- The element isn't active so we enable it -->
+      <enableElement element="water" />
+      <counter name="element_water" action="set" value="1" />
+
+      <!-- We switch the "element roll done" variable to 1 now that we succeeded in enabling the element -->
+      <counter name="element_roll_done" action="set" value="1" />
+      <!-- Add 1 to the enabled elements counter -->
+      <counter name="elements_active" action="inc" value="1" />
+
+      <!-- Play the element's animation -->
+      <playAnimation name="element1_anim" start="0" end="0.5" speed="1" resume="true" />
+      <spawneffect name="watereffect" area="water" effect="special_woot_elements" delay="0"/>
+      <playSound id="new_element_sound" volume="5" cue="Additional/woot_new_element_signal" delay="0" />
+      <stopSound id="new_element_sound" delay="2" />
+    </then>
+  </trigger>
+
+  <trigger id="enable_life" repeat="true" autorun="false">
+    <if>
+      <!-- Check to see if we've already flagged the element as active -->
+      <counter name="element_life" compareMethod="equal" value="0" />
+    </if>
+    <then>
+      <!-- The element isn't active so we enable it -->
+      <enableElement element="life" />
+      <counter name="element_life" action="set" value="1" />
+
+      <!-- We switch the "element roll done" variable to 1 now that we succeeded in enabling the element -->
+      <counter name="element_roll_done" action="set" value="1" />
+      <!-- Add 1 to the enabled elements counter -->
+      <counter name="elements_active" action="inc" value="1" />
+
+      <!-- Play the element's animation -->
+      <playAnimation name="element2_anim" start="0" end="0.5" speed="1" resume="true" />
+      <spawneffect name="lifeeffect" area="life" effect="special_woot_elements" delay="0"/>
+      <playSound id="new_element_sound" volume="5" cue="Additional/woot_new_element_signal" delay="0" />
+      <stopSound id="new_element_sound" delay="2" />
+    </then>
+  </trigger>
+
+  <trigger id="enable_shield" repeat="true" autorun="false">
+    <if>
+      <!-- Check to see if we've already flagged the element as active -->
+      <counter name="element_shield" compareMethod="equal" value="0" />
+    </if>
+    <then>
+      <!-- The element isn't active so we enable it -->
+      <enableElement element="shield" />
+      <counter name="element_shield" action="set" value="1" />
+
+      <!-- We switch the "element roll done" variable to 1 now that we succeeded in enabling the element -->
+      <counter name="element_roll_done" action="set" value="1" />
+      <!-- Add 1 to the enabled elements counter -->
+      <counter name="elements_active" action="inc" value="1" />
+
+      <!-- Play the element's animation -->
+      <playAnimation name="element3_anim" start="0" end="0.5" speed="1" resume="true" />
+      <spawneffect name="shieldeffect" area="shield" effect="special_woot_elements" delay="0"/>
+      <playSound id="new_element_sound" volume="5" cue="Additional/woot_new_element_signal" delay="0" />
+      <stopSound id="new_element_sound" delay="2" />
+    </then>
+  </trigger>
+
+  <trigger id="enable_cold" repeat="true" autorun="false">
+    <if>
+      <!-- Check to see if we've already flagged the element as active -->
+      <counter name="element_cold" compareMethod="equal" value="0" />
+    </if>
+    <then>
+      <!-- The element isn't active so we enable it -->
+      <enableElement element="cold" />
+      <counter name="element_cold" action="set" value="1" />
+
+      <!-- We switch the "element roll done" variable to 1 now that we succeeded in enabling the element -->
+      <counter name="element_roll_done" action="set" value="1" />
+      <!-- Add 1 to the enabled elements counter -->
+      <counter name="elements_active" action="inc" value="1" />
+
+      <!-- Play the element's animation -->
+      <playAnimation name="element4_anim" start="0" end="0.5" speed="1" resume="true" />
+      <spawneffect name="frosteffect" area="frost" effect="special_woot_elements" delay="0"/>
+      <playSound id="new_element_sound" volume="5" cue="Additional/woot_new_element_signal" delay="0" />
+      <stopSound id="new_element_sound" delay="2" />
+    </then>
+  </trigger>
+
+  <trigger id="enable_lightning" repeat="true" autorun="false">
+    <if>
+      <!-- Check to see if we've already flagged the element as active -->
+      <counter name="element_lightning" compareMethod="equal" value="0" />
+    </if>
+    <then>
+      <!-- The element isn't active so we enable it -->
+      <enableElement element="lightning" />
+      <counter name="element_lightning" action="set" value="1" />
+
+      <!-- We switch the "element roll done" variable to 1 now that we succeeded in enabling the element -->
+      <counter name="element_roll_done" action="set" value="1" />
+      <!-- Add 1 to the enabled elements counter -->
+      <counter name="elements_active" action="inc" value="1" />
+
+      <!-- Play the element's animation -->
+      <playAnimation name="element5_anim" start="0" end="0.5" speed="1" resume="true" />
+      <spawneffect name="lightningeffect" area="lightning" effect="special_woot_elements" delay="0"/>
+      <playSound id="new_element_sound" volume="5" cue="Additional/woot_new_element_signal" delay="0" />
+      <stopSound id="new_element_sound" delay="2" />
+    </then>
+  </trigger>
+
+  <trigger id="enable_arcane" repeat="true" autorun="false">
+    <if>
+      <!-- Check to see if we've already flagged the element as active -->
+      <counter name="element_arcane" compareMethod="equal" value="0" />
+    </if>
+    <then>
+      <!-- The element isn't active so we enable it -->
+      <enableElement element="arcane" />
+      <counter name="element_arcane" action="set" value="1" />
+
+      <!-- We switch the "element roll done" variable to 1 now that we succeeded in enabling the element -->
+      <counter name="element_roll_done" action="set" value="1" />
+      <!-- Add 1 to the enabled elements counter -->
+      <counter name="elements_active" action="inc" value="1" />
+
+      <!-- Play the element's animation -->
+      <playAnimation name="element6_anim" start="0" end="0.5" speed="1" resume="true" />
+      <spawneffect name="arcaneeffect" area="arcane" effect="special_woot_elements" delay="0"/>
+      <playSound id="new_element_sound" volume="5" cue="Additional/woot_new_element_signal" delay="0" />
+      <stopSound id="new_element_sound" delay="2" />
+    </then>
+  </trigger>
+
+  <trigger id="enable_earth" repeat="true" autorun="false">
+    <if>
+      <!-- Check to see if we've already flagged the element as active -->
+      <counter name="element_earth" compareMethod="equal" value="0" />
+    </if>
+    <then>
+      <!-- The element isn't active so we enable it -->
+      <enableElement element="earth" />
+      <counter name="element_earth" action="set" value="1" />
+
+      <!-- We switch the "element roll done" variable to 1 now that we succeeded in enabling the element -->
+      <counter name="element_roll_done" action="set" value="1" />
+      <!-- Add 1 to the enabled elements counter -->
+      <counter name="elements_active" action="inc" value="1" />
+
+      <!-- Play the element's animation -->
+      <playAnimation name="element7_anim" start="0" end="0.5" speed="1" resume="true" />
+      <spawneffect name="eartheffect" area="earth" effect="special_woot_elements" delay="0"/>
+      <playSound id="new_element_sound" volume="5" cue="Additional/woot_new_element_signal" delay="0" />
+      <stopSound id="new_element_sound" delay="2" />
+    </then>
+  </trigger>
+
+  <trigger id="enable_fire" repeat="true" autorun="false">
+    <if>
+      <!-- Check to see if we've already flagged the element as active -->
+      <counter name="element_fire" compareMethod="equal" value="0" />
+    </if>
+    <then>
+      <!-- The element isn't active so we enable it -->
+      <enableElement element="fire" />
+      <counter name="element_fire" action="set" value="1" />
+
+      <!-- We switch the "element roll done" variable to 1 now that we succeeded in enabling the element -->
+      <counter name="element_roll_done" action="set" value="1" />
+      <!-- Add 1 to the enabled elements counter -->
+      <counter name="elements_active" action="inc" value="1" />
+
+      <!-- Play the element's animation -->
+      <playAnimation name="element8_anim" start="0" end="0.5" speed="1" resume="true" />
+      <spawneffect name="fireeffect" area="fire" effect="special_woot_elements" delay="0"/>
+      <playSound id="new_element_sound" volume="5" cue="Additional/woot_new_element_signal" delay="0" />
+      <stopSound id="new_element_sound" delay="2" />
+    </then>
+  </trigger>
+
+
+  <!-- Challenge map specific element scripts -->
+  <trigger id="timed_element_unlock" repeat="true" autorun="false">
+    <if />
+    <then>
+      <!-- Remember to reset timers for this script at the beginning of the wave that comes after to stop it from continuing -->
+      <!-- They are activated twice to prevent clients not getting it -->
+      <executeTrigger trigger="enable_life"             delay="0" />
+      <executeTrigger trigger="enable_life"             delay="2" />
+      <executeTrigger trigger="enable_water"            delay="1" />
+      <executeTrigger trigger="enable_water"            delay="3" />
+      <executeTrigger trigger="enable_fire"             delay="10" />
+      <executeTrigger trigger="enable_fire"             delay="12" />
+      <executeTrigger trigger="enable_earth"            delay="18" />
+      <executeTrigger trigger="enable_earth"            delay="20" />
+      <executeTrigger trigger="enable_lightning"        delay="26" />
+      <executeTrigger trigger="enable_lightning"        delay="28" />
+      <executeTrigger trigger="enable_arcane"           delay="34" />
+      <executeTrigger trigger="enable_arcane"           delay="36" />
+      <executeTrigger trigger="enable_shield"           delay="42" />
+      <executeTrigger trigger="enable_shield"           delay="44" />
+      <executeTrigger trigger="enable_cold"             delay="50" />
+      <executeTrigger trigger="enable_cold"             delay="52" />
+
+      <!-- TODO: Add "new elements unlocked" sound to each interval -->
+    </then>
+  </trigger>
+
+  <!-- Scripts to enable specific elements when a unit of a specific ID has died -->
+  <!-- TODO: Add "new elements unlocked" sound to of the following scripts -->
+  <trigger id="elemental_alive_check_arcane" repeat="true" autorun="true">
+    <if>
+      <counter name="elemental_arcane_spawned" compareMethod="equal" value="1" />
+      <present type="woot_unstable_elemental_arcane" area="any" compareMethod="less" includeinvisible="true" nr="1" />
+    </if>
+    <then>
+      <executeTrigger trigger="enable_arcane" />
+      <counter name="elemental_arcane_spawned" action="set" value="0" />
+    </then>
+  </trigger>
+
+  <trigger id="elemental_alive_check_cold" repeat="true" autorun="true">
+    <if>
+      <counter name="elemental_cold_spawned" compareMethod="equal" value="1" />
+      <present type="woot_unstable_elemental_cold" area="any" compareMethod="less" includeinvisible="true" nr="1" />
+    </if>
+    <then>
+      <executeTrigger trigger="enable_cold" />
+      <counter name="elemental_cold_spawned" action="set" value="0" />
+    </then>
+  </trigger>
+
+  <trigger id="elemental_alive_check_fire" repeat="true" autorun="true">
+    <if>
+      <counter name="elemental_fire_spawned" compareMethod="equal" value="1" />
+      <present type="woot_unstable_elemental_fire" area="any" compareMethod="less" includeinvisible="true" nr="1" />
+    </if>
+    <then>
+      <executeTrigger trigger="enable_fire" />
+      <counter name="elemental_fire_spawned" action="set" value="0" />
+    </then>
+  </trigger>
+
+  <trigger id="elemental_alive_check_life" repeat="true" autorun="true">
+    <if>
+      <counter name="elemental_life_spawned" compareMethod="equal" value="1" />
+      <present type="woot_unstable_elemental_life" area="any" compareMethod="less" includeinvisible="true" nr="1" />
+    </if>
+    <then>
+      <executeTrigger trigger="enable_life" />
+      <counter name="elemental_life_spawned" action="set" value="0" />
+    </then>
+  </trigger>
+
+  <trigger id="elemental_alive_check_lightning" repeat="true" autorun="true">
+    <if>
+      <counter name="elemental_lightning_spawned" compareMethod="equal" value="1" />
+      <present type="woot_unstable_elemental_lightning" area="any" compareMethod="less" includeinvisible="true" nr="1" />
+    </if>
+    <then>
+      <executeTrigger trigger="enable_lightning" />
+      <counter name="elemental_lightning_spawned" action="set" value="0" />
+    </then>
+  </trigger>
+
+  <trigger id="elemental_alive_check_water" repeat="true" autorun="true">
+    <if>
+      <counter name="elemental_water_spawned" compareMethod="equal" value="1" />
+      <present type="woot_unstable_elemental_water" area="any" compareMethod="less" includeinvisible="true" nr="1" />
+    </if>
+    <then>
+      <executeTrigger trigger="enable_water" />
+      <counter name="elemental_water_spawned" action="set" value="0" />
+    </then>
+  </trigger>
+
+
+
+  <!-- Useful script that does all that should be done in preparation of a new wave -->
+  <trigger id="reset_before_new_wave" repeat="true" autorun="false">
+    <if />
+    <then>
+      <!-- Stop the timed element unlocker used on wave 11 to 15 -->
+      <clearDelayedActions trigger="timed_element_unlock" />
+      <!-- Cast nullify to truly reset a wave -->
+      <magick magicktype="Nullify" />
+      <!-- Allow for Life and Lightning for 5 seconds before the wave changes elements -->
+      <executeTrigger trigger="roulette_disableAllEnableLifeLightning" />
+      <!-- Automatically disable all elements just before 5 seconds have passed -->
+      <executeTrigger trigger="roulette_disableAll" delay="4.8" />
+
+      <!-- TODO: Add "new element" / "new wave" fanfare sound here? -->
+    </then>
+  </trigger>
+
+
+
+
+
+
+
+  <!--
+        #####################################################################################################################################
+            Confetti of Misfortune scripts
+            These detect if a player dies and allows for special effects and cheers upon that event.
+            Run "confettiOfMisfortune_cycle" first to enable.
+            
+                  <executeTrigger trigger="confettiOfMisfortune_cycle" delay="0.5" />
+
+        #####################################################################################################################################
+  -->
+
+  <trigger id="confettiOfMisfortune_cycle" repeat="true" autorun="false">
+    <if></if>
+    <then>
+      <!-- Check if alive players count is less than last cycle -->
+      <executeTrigger trigger="confettiOfMisfortune_checkDeathEvent" delay="0" />
+
+      <!-- Store the count of alive players, used at the beginning of next cycle -->
+      <counter name="confettiOfMisfortune_aliveCount" action="set" value="0" delay="0.01"/>
+      <executeTrigger trigger="confettiOfMisfortune_storeAliveCount1" delay="0.02" />
+      <executeTrigger trigger="confettiOfMisfortune_storeAliveCount2" delay="0.02" />
+      <executeTrigger trigger="confettiOfMisfortune_storeAliveCount3" delay="0.02" />
+      <executeTrigger trigger="confettiOfMisfortune_storeAliveCount4" delay="0.02" />
+
+      <!-- Call self after a short delay to continue the cycle -->
+      <executeTrigger trigger="confettiOfMisfortune_cycle" delay="0.3" />
+    </then>
+  </trigger>
+
+  <trigger id="confettiOfMisfortune_checkDeathEvent" repeat="true" autorun="false">
+    <if>
+      <!-- Are there less players alive this cycle than the last? -->
+      <counter name="confettiOfMisfortune_aliveCount" compareMethod="equal" value="1" />
+      <present type="wizard" area="any" compareMethod="less" nr="1" />
+    </if>
+    <if>
+      <counter name="confettiOfMisfortune_aliveCount" compareMethod="equal" value="2" />
+      <present type="wizard" area="any" compareMethod="less" nr="2" />
+    </if>
+    <if>
+      <counter name="confettiOfMisfortune_aliveCount" compareMethod="equal" value="3" />
+      <present type="wizard" area="any" compareMethod="less" nr="3" />
+    </if>
+    <if>
+      <counter name="confettiOfMisfortune_aliveCount" compareMethod="equal" value="4" />
+      <present type="wizard" area="any" compareMethod="less" nr="4" />
+    </if>
+    <then>
+      <!-- TODO: Add cheers and special effects after this line............................................................. -->
+
+      <playSound volume="2" cue="Additionalmusic/woot_amb_big_cheers" />
+    </then>
+  </trigger>
+
+  <trigger id="confettiOfMisfortune_storeAliveCount1" repeat="true" autorun="false">
+    <if>
+      <present type="wizard" area="any" compareMethod="equal" nr="1" />
+    </if>
+    <then>
+      <counter name="confettiOfMisfortune_aliveCount" action="set" value="1" />
+    </then>
+  </trigger>
+
+  <trigger id="confettiOfMisfortune_storeAliveCount2" repeat="true" autorun="false">
+    <if>
+      <present type="wizard" area="any" compareMethod="equal" nr="2" />
+    </if>
+    <then>
+      <counter name="confettiOfMisfortune_aliveCount" action="set" value="2" />
+    </then>
+  </trigger>
+
+  <trigger id="confettiOfMisfortune_storeAliveCount3" repeat="true" autorun="false">
+    <if>
+      <present type="wizard" area="any" compareMethod="equal" nr="3" />
+    </if>
+    <then>
+      <counter name="confettiOfMisfortune_aliveCount" action="set" value="3" />
+    </then>
+  </trigger>
+
+  <trigger id="confettiOfMisfortune_storeAliveCount4" repeat="true" autorun="false">
+    <if>
+      <present type="wizard" area="any" compareMethod="equal" nr="4" />
+    </if>
+    <then>
+      <counter name="confettiOfMisfortune_aliveCount" action="set" value="4" />
+    </then>
+  </trigger>
+
+
+
+
+
+
+
+
+  <!-- NOTES -->
+  <!--<spawn id="elemental_arcane" type="woot_unstable_elemental_arcane" nr="1" />
+  <counter name="elemental_arcane_spawned" action="set" value="1" delay="0.5" />
+
+  <spawn id="elemental_fire" type="woot_unstable_elemental_fire" nr="1" />
+  <counter name="elemental_fire_spawned" action="set" value="1" delay="0.5" />-->
+
+  <!--
+      Master Switch spawn scripts
+  -->
+  <trigger id="master_troll" repeat="true" autorun="false">
+    <if>
+      <counter name="master_switch" compareMethod="equal" value="1" />
+    </if>
+    <then>
+      <spawn area="monsterspawn_middle" type="troll_war" nr="1" delay="7" />
+      <spawn area="monsterspawn_left" type="troll_forest" nr="1" delay="3" />
+      <spawn area="monsterspawn_right" type="troll_forest" nr="1" delay="3" />
+    </then>
+  </trigger>
+
+  <trigger id="master_beholder" repeat="true" autorun="false">
+    <if>
+      <counter name="master_switch" compareMethod="equal" value="1" />
+    </if>
+    <then>
+      <spawn area="monsterspawn_middle" type="beholder_malign" nr="1" delay="3" />
+      <spawn area="monsterspawn_middle" type="beholder_malign" nr="1" delay="11" />
+    </then>
+  </trigger>
+
+  <trigger id="master_enderman" repeat="true" autorun="false">
+    <if>
+      <counter name="master_switch" compareMethod="equal" value="1" />
+    </if>
+    <then>
+      <spawn area="monsterspawn_middle" type="enderman" nr="3" delay="3" />
+      <spawn area="monsterspawn_left" type="enderman" nr="3" delay="6" />
+      <spawn area="monsterspawn_right" type="enderman" nr="3" delay="9" />
+    </then>
+  </trigger>
+
+  <trigger id="master_druid" repeat="true" autorun="false">
+    <if>
+      <counter name="master_switch" compareMethod="equal" value="1" />
+    </if>
+    <then>
+      <spawn area="monsterspawn_middle" type="treespirit" nr="1" delay="4" />
+      <spawn area="monsterspawn_left" type="treespirit" nr="2" delay="4" />
+      <spawn area="monsterspawn_right" type="treespirit" nr="2" delay="4" />
+      <spawn area="monsterspawn_middle" type="druid" nr="1" delay="6" />
+    </then>
+  </trigger>
+
+  <trigger id="master_dwarf" repeat="true" autorun="false">
+    <if>
+      <counter name="master_switch" compareMethod="equal" value="1" />
+    </if>
+    <then>
+      <spawn area="monsterspawn_middle" type="dwarf_warrior" nr="2" delay="8" />
+      <spawn area="monsterspawn_left" type="dwarf_mage" nr="1" delay="4" />
+      <spawn area="monsterspawn_right" type="dwarf_mage" nr="1" delay="4" />
+    </then>
+  </trigger>
+
+  <trigger id="master_elves" repeat="true" autorun="false">
+    <if>
+      <counter name="master_switch" compareMethod="equal" value="1" />
+    </if>
+    <then>
+      <spawn area="monsterspawn_middle" type="elf_pathfindermelee" nr="2" delay="8" />
+      <spawn area="monsterspawn_left" type="elf_mage" nr="1" delay="4" />
+      <spawn area="monsterspawn_right" type="elf_mage" nr="1" delay="4" />
+    </then>
+  </trigger>
+
+  <trigger id="master_minions" repeat="true" autorun="false">
+    <if>
+      <counter name="master_switch" compareMethod="equal" value="1" />
+    </if>
+    <then>
+      <spawn area="monsterspawn_middle" type="spider_forest" nr="2" delay="8" />
+      <spawn area="monsterspawn_left" type="daemon_lesser" nr="5" delay="2" />
+      <spawn area="monsterspawn_right" type="daemon_lesser" nr="5" delay="2" />
+    </then>
+  </trigger>
+
+
+  <!--
+      ######################################################################################################################################################
+      ## ##### ####    ##### ### #####   ######    #########################################################################################################
+      ## ##### ######## #### ### #### ### #### #############################################################################################################
+      ## ## ## ####     #### ## #####    ######   ##########################################################################################################
+      ## ## ## #### ### #### # ###### ############ #########################################################################################################
+      ###  #  ######    ####  ########    ####    ##########################################################################################################
+      ######################################################################################################################################################
+  
+      Waves
+      
+      All waves must first run the "reset_before_new_wave" script.
+      Then, new elements and enemy spawns must be delayed with at least 5 seconds.
+      
+    spawnAreas:
+      monsterspawn_left
+      monsterspawn_middle
+      monsterspawn_right
+  -->
+
+  <!--  WAVE 1
+        Monsters:   Goblins
+        Elements:   see below
+        Notes:      Easy goblins
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <executeTrigger trigger="enable_water" delay="5" />
+      <executeTrigger trigger="enable_life" delay="5" />
+      <executeTrigger trigger="enable_earth" delay="5" />
+      <executeTrigger trigger="enable_fire" delay="5" />
+
+      <executeTrigger trigger="master_minions" delay="7" />
+      
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_middle" delay="7">
+      <spawn type="goblin_rogue" nr="3" delay="0" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_left" delay="9">
+      <spawn type="goblin_miner" nr="3" delay="0" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_right" delay="9">
+      <spawn type="goblin_miner" nr="3" delay="0" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 2
+        Monsters:   Goblins
+        Elements:   see below
+        Notes:      Easy goblins
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <executeTrigger trigger="enable_lightning" delay="5" />
+      <executeTrigger trigger="enable_arcane" delay="5" />
+      <executeTrigger trigger="enable_shield" delay="5" />
+      <executeTrigger trigger="enable_cold" delay="5" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_middle" delay="9">
+      <spawn type="goblin_rogue_archer" nr="1" forcenavmesh="true" delay="0" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_left" delay="7">
+      <spawn type="goblin_bomber" nr="1" delay="0" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_right" delay="7">
+      <spawn type="goblin_bomber" nr="1" delay="0" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 3
+        Monsters:   Treespirits, Spiders
+        Elements:   see below
+        Notes:      Slow and vulnerable to fire, few fast tricky spiders
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <executeTrigger trigger="enable_water" delay="5" />
+      <executeTrigger trigger="enable_arcane" delay="5" />
+      <executeTrigger trigger="enable_shield" delay="5" />
+      <executeTrigger trigger="enable_fire" delay="5" />
+
+      <executeTrigger trigger="master_druid" delay="7" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_middle" delay="7">
+      <spawn type="treespirit" nr="1" delay="0" />
+      <spawn type="spider_forest" nr="2" delay="2" />
+      <spawn type="treespirit" nr="1" delay="3" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 4
+        Monsters:   DaemonLesser
+        Elements:   see below
+        Notes:      Throw a bunch of small ones at the player
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <executeTrigger trigger="enable_lightning" delay="5" />
+      <executeTrigger trigger="enable_life" delay="5" />
+      <executeTrigger trigger="enable_earth" delay="5" />
+      <executeTrigger trigger="enable_cold" delay="5" />
+
+      <executeTrigger trigger="master_troll" delay="7" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_middle" delay="7">
+      <spawn type="daemon_lesser" nr="4" delay="0" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_left" delay="9">
+      <spawn type="daemon_lesser" nr="4" delay="0" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_right" delay="10">
+      <spawn type="daemon_lesser" nr="4" delay="0" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 5      BOSS WAVE
+        Monsters:   Orcs
+        Elements:   see below
+        Notes:      Heavy orcs (but no beams)
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <executeTrigger trigger="enable_water" delay="5" />
+      <executeTrigger trigger="enable_lightning" delay="5" />
+      <executeTrigger trigger="enable_cold" delay="5" />
+      <executeTrigger trigger="enable_fire" delay="5" />
+
+      <executeTrigger trigger="master_minions" delay="7" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_middle" delay="7">
+      <spawn type="orc_warrior" nr="1" delay="0" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_left" delay="7">
+      <spawn type="orc_regular" nr="1" delay="0" />
+      <spawn type="orc_regular" nr="1" delay="4" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_right" delay="7">
+      <spawn type="orc_regular" nr="1" delay="0" />
+      <spawn type="orc_regular" nr="1" delay="4" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 6
+        Monsters:   Goblins
+        Elements:   see below
+        Notes:      Goblin warriors and bombers
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <executeTrigger trigger="enable_lightning" delay="5" />
+      <executeTrigger trigger="enable_life" delay="5" />
+      <executeTrigger trigger="enable_earth" delay="5" />
+
+      <executeTrigger trigger="master_beholder" delay="9" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_middle" delay="7">
+      <spawn type="goblin_warrior" nr="4" delay="0" />
+      <spawn type="goblin_bomber" nr="5" delay="3" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_left" delay="7">
+      <spawn type="goblin_warrior" nr="2" delay="0" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_right" delay="7">
+      <spawn type="goblin_warrior" nr="2" delay="0" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 7
+        Monsters:   TrollForest, GoblinShaman, Spiders
+        Elements:   see below
+        Notes:      Not the most optimal of elements for the encounter
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <executeTrigger trigger="enable_life" delay="5" />
+      <executeTrigger trigger="enable_earth" delay="5" />
+      <executeTrigger trigger="enable_cold" delay="5" />
+
+      <executeTrigger trigger="master_minions" delay="9" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_middle" delay="7">
+      <spawn type="troll_forest" nr="1" delay="0" />
+      <spawn type="goblin_shaman" nr="1" delay="3" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_left" delay="7">
+      <spawn type="spider_poison" nr="1" delay="0" />
+      <spawn type="spider_poison" nr="1" delay="2" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_right" delay="7">
+      <spawn type="spider_poison" nr="1" delay="0" />
+      <spawn type="spider_poison" nr="1" delay="2" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 8
+        Monsters:   Ghouls, Darksouls (4 in total at max)
+        Elements:   see below
+        Notes:      Mixed enemies that are hurt / healed by arcane
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <executeTrigger trigger="enable_arcane" delay="5" />
+      <executeTrigger trigger="enable_shield" delay="5" />
+      <executeTrigger trigger="enable_fire" delay="5" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_middle" delay="7">
+      <spawn type="ghoul" nr="3" delay="0" />
+      <spawn type="ghoul" nr="3" delay="3" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_left" delay="7">
+      <spawn type="skeleton_darksoul_arcane" nr="1" delay="0" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_right" delay="7">
+      <spawn type="skeleton_darksoul_lightning" nr="1" delay="7" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 9
+        Monsters:   GoblinBombers
+        Elements:   see below
+        Notes:      No elements, the only thing that works is melee, and primarily pushing back the bombs
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <!--<executeTrigger trigger="enable_water" delay="5" />
+      <executeTrigger trigger="enable_arcane" delay="5" />
+      <executeTrigger trigger="enable_shield" delay="5" />-->
+
+      <executeTrigger trigger="master_minions" delay="7" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_middle" delay="7">
+      <spawn type="goblin_bomber" nr="3" delay="0" />
+      <spawn type="goblin_bomber" nr="3" delay="5" />
+      <spawn type="goblin_bomber" nr="3" delay="10" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_left" delay="7">
+      <spawn type="goblin_bomber" nr="3" delay="0" />
+      <spawn type="goblin_bomber" nr="3" delay="5" />
+      <spawn type="goblin_bomber" nr="3" delay="10" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_right" delay="7">
+      <spawn type="goblin_bomber" nr="3" delay="0" />
+      <spawn type="goblin_bomber" nr="3" delay="5" />
+      <spawn type="goblin_bomber" nr="3" delay="10" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 10     BOSS WAVE
+        Monsters:   TrollSnow
+        Elements:   see below
+        Notes:      Water meteors followed by Cold meteors should suffice; very tricky encounter (no shields)
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <executeTrigger trigger="enable_water" delay="5" />
+      <executeTrigger trigger="enable_earth" delay="5" />
+      <executeTrigger trigger="enable_cold" delay="5" />
+
+      <executeTrigger trigger="master_minions" delay="7" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <waveActions area="any" delay="10">
+      <spawn type="troll_snow" nr="1" delay="0" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 11
+        Monsters:   Undead, Daemonlings
+        Elements:   timed chain of automatic unlocks (see script "timed_element_unlock")
+        Notes:      Relatively easy to handle as Water (push) and Life are unlocked from start
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <executeTrigger trigger="timed_element_unlock" delay="5" />
+
+      <executeTrigger trigger="master_beholder" delay="10" />
+      <executeTrigger trigger="master_beholder" delay="25" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_middle" delay="7">
+      <spawn type="zombie" nr="3" delay="0" />
+      <spawn type="daemon_lesser" nr="5" delay="5" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_left" delay="11">
+      <spawn type="zombie" nr="3" delay="0" />
+      <spawn type="daemon_lesser" nr="5" delay="5" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_right" delay="11">
+      <spawn type="zombie" nr="3" delay="0" />
+      <spawn type="daemon_lesser" nr="5" delay="5" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 12
+        Monsters:   Orcs, Firedrakes
+        Elements:   timed chain of automatic unlocks (see script "timed_element_unlock")
+        Notes:      Low damage initial elements forces players to wait for ~20 seconds
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <executeTrigger trigger="timed_element_unlock" delay="5" />
+
+      <executeTrigger trigger="master_elves" delay="14" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_middle" delay="11">
+      <spawn type="orc_warrior" nr="2" delay="0" />
+      <spawn type="orc_warrior" nr="2" delay="4" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_left" delay="11">
+      <spawn type="orc_regular" nr="2" delay="1" />
+      <spawn type="firedrake" nr="1" forcenavmesh="true" delay="5" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_right" delay="11">
+      <spawn type="orc_regular" nr="2" delay="1" />
+      <spawn type="firedrake" nr="1" forcenavmesh="true" delay="5" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 13
+        Monsters:   Goblins, Spiders
+        Elements:   timed chain of automatic unlocks (see script "timed_element_unlock")
+        Notes:      Igniting goblin archers and flood of spiders to protect them
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <executeTrigger trigger="timed_element_unlock" delay="5" />
+
+      <executeTrigger trigger="master_minions" delay="15" />
+      <executeTrigger trigger="master_minions" delay="25" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_middle" delay="7">
+      <spawn type="spider_forest" nr="4" delay="0" />
+      <spawn type="spider_forest" nr="4" delay="5" />
+      <spawn type="spider_forest" nr="4" delay="10" />
+      <spawn type="spider_forest" nr="4" delay="15" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_left" delay="11">
+      <spawn type="woot_goblin_warrior_archer" nr="3" forcenavmesh="true" delay="0" />
+      <spawn type="goblin_shaman" nr="1" delay="2" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_right" delay="11">
+      <spawn type="woot_goblin_warrior_archer" nr="3" forcenavmesh="true" delay="0" />
+      <spawn type="goblin_shaman" nr="1" delay="2" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 14
+        Monsters:   Dwarves
+        Elements:   timed chain of automatic unlocks (see script "timed_element_unlock")
+        Notes:      Powerful dwarves; will probably need all unlocked elements to take care of these properly
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <executeTrigger trigger="timed_element_unlock" delay="5" />
+
+      <executeTrigger trigger="master_enderman" delay="22" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_middle" delay="14">
+      <spawn type="dwarf_warrior" nr="2" delay="0" />
+      <spawn type="dwarf_warrior" nr="2" delay="4" />
+      <spawn type="dwarf_warrior" nr="2" delay="8" />
+      <spawn type="dwarf_warrior" nr="2" delay="12" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_left" delay="7">
+      <spawn type="dwarf_mage" nr="1" delay="0" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_right" delay="7">
+      <spawn type="dwarf_mage" nr="1" delay="0" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 15     BOSS WAVE
+        Monsters:   Khan, TrollWar, Daemonlings, Druid
+        Elements:   timed chain of automatic unlocks (see script "timed_element_unlock")
+        Notes:      Khan as main antagonist, TrollForest as slow danger, Daemonlings and Druid as trip-ups
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <executeTrigger trigger="timed_element_unlock" delay="5" />
+
+      <executeTrigger trigger="master_troll" delay="21" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_middle" delay="7">
+      <spawn type="daemon_lesser" nr="2" delay="0" />
+      <spawn type="daemon_lesser" nr="2" delay="5" />
+      <spawn type="troll_war" nr="1" delay="10" />
+      <spawn type="daemon_lesser" nr="2" delay="10" />
+      <spawn type="daemon_lesser" nr="2" delay="15" />
+    </waveActions>
+
+    <waveActions area="any" delay="17">
+      <spawn type="druid" nr="1" forcenavmesh="true" delay="0" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_left" delay="10">
+      <spawn type="boss_warlord" nr="1" delay="0" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_right" delay="36">
+      <spawn type="boss_warlord" nr="1" delay="0" />
+      <spawn type="boss_warlord" nr="1" delay="15" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 16
+        Monsters:   Beastmen, Jotunn
+        Elements:   see below; additional elements unlock by killing "unstable elementals"
+        Notes:      
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <executeTrigger trigger="enable_arcane" delay="5" />
+      <executeTrigger trigger="enable_earth" delay="5" />
+
+      <executeTrigger trigger="master_minions" delay="8" />
+      <executeTrigger trigger="master_minions" delay="11" />
+      <executeTrigger trigger="master_minions" delay="14" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_middle" delay="7">
+      <spawn type="beastman_chieftain" nr="1" delay="0" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_left" delay="10">
+      <spawn type="woot_unstable_elemental_life" nr="1" delay="0" />
+      <counter name="elemental_life_spawned" action="set" value="1" delay="0.1" />
+      <spawn type="beastman_brute" nr="1" delay="5" />
+      <spawn type="beastman_brute" nr="1" delay="8" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_right" delay="14">
+      <spawn type="woot_unstable_elemental_lightning" nr="1" delay="0" />
+      <counter name="elemental_lightning_spawned" action="set" value="1" delay="0.1" />
+      <spawn type="beastman_brute" nr="1" delay="5" />
+      <spawn type="beastman_brute" nr="1" delay="8" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 17
+        Monsters:   Beastmen, DeepOne
+        Elements:   see below; additional elements unlock by killing "unstable elementals"
+        Notes:      
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <executeTrigger trigger="enable_water" delay="5" />
+      <executeTrigger trigger="enable_cold" delay="5" />
+
+      <executeTrigger trigger="master_dwarf" delay="24" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <waveActions area="any" delay="7">
+      <spawn type="woot_unstable_elemental_arcane" nr="2" delay="0" />
+      <counter name="elemental_arcane_spawned" action="set" value="1" delay="0.1" />
+      <spawn type="woot_unstable_elemental_fire" nr="1" delay="10" />
+      <counter name="elemental_fire_spawned" action="set" value="1" delay="10.1" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_left" delay="12">
+      <spawn type="deep_one" nr="4" delay="0" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_middle" delay="17">
+      <spawn type="beastman_raider" nr="3" delay="2" />
+      <spawn type="beastman_raider_water" nr="1" delay="2" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_right" delay="22">
+      <spawn type="deep_one" nr="4" delay="0" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 18
+        Monsters:   Khan, Orcs
+        Elements:   see below; additional elements unlock by killing "unstable elementals"
+        Notes:      Pure punchy enemies and only earth walls as protect in the beginning
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <executeTrigger trigger="enable_shield" delay="5" />
+      <executeTrigger trigger="enable_earth" delay="5" />
+
+      <executeTrigger trigger="master_elves" delay="30" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_left" delay="7">
+      <spawn type="boss_warlord" nr="1" delay="0" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_middle" delay="12">
+      <spawn type="boss_warlord" nr="1" delay="0" />
+      <spawn type="orc_berserk" nr="1" delay="15" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_right" delay="7">
+      <spawn type="boss_warlord" nr="1" delay="0" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_left" delay="12">
+      <spawn type="woot_unstable_elemental_arcane" nr="2" delay="0" />
+      <counter name="elemental_arcane_spawned" action="set" value="1" delay="0.1" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_right" delay="12">
+      <spawn type="woot_unstable_elemental_lightning" nr="2" delay="0" />
+      <counter name="elemental_lightning_spawned" action="set" value="1" delay="0.1" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 19
+        Monsters:   Druid, Beholders
+        Elements:   see below; additional elements unlock by killing "unstable elementals"
+        Notes:      Mostly very tricky due to Rain
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <executeTrigger trigger="enable_water" delay="5" />
+      <executeTrigger trigger="enable_shield" delay="5" />
+
+      <executeTrigger trigger="master_minions" delay="19" />
+      <executeTrigger trigger="master_minions" delay="27" />
+      <executeTrigger trigger="master_troll" delay="35" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_left" delay="7">
+      <spawn type="woot_unstable_elemental_life" nr="2" delay="0" />
+      <counter name="elemental_life_spawned" action="set" value="1" delay="0.1" />
+
+      <spawn type="woot_unstable_elemental_arcane" nr="1" delay="0" />
+      <counter name="elemental_arcane_spawned" action="set" value="1" delay="0.1" />
+    </waveActions>
+    <waveActions area="monsterspawn_middle" delay="7">
+      <spawn type="woot_unstable_elemental_life" nr="2" delay="0" />
+    </waveActions>
+    <waveActions area="monsterspawn_right" delay="7">
+      <spawn type="woot_unstable_elemental_life" nr="2" delay="0" />
+
+      <spawn type="woot_unstable_elemental_lightning" nr="1" delay="0" />
+      <counter name="elemental_lightning_spawned" action="set" value="1" delay="0.1" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_left" delay="11">
+      <spawn type="druid" nr="1" forcenavmesh="true" delay="0" />
+    </waveActions>
+    <waveActions area="monsterspawn_right" delay="11">
+      <spawn type="druid" nr="1" forcenavmesh="true" delay="0" />
+    </waveActions>
+
+    <waveActions area="monsterspawn_middle" delay="24">
+      <spawn type="beholder_malign" nr="1" delay="0" />
+      <spawn type="beholder_malign" nr="1" delay="8" />
+      <spawn type="beholder_malign" nr="1" delay="16" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 20     BOSS WAVE
+        Monsters:   all sorts
+        Elements:   see below; additional elements unlock by killing "unstable elementals"
+        Notes:      
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executeTrigger trigger="reset_before_new_wave" />
+      <executeTrigger trigger="enable_life" delay="5" />
+      <executeTrigger trigger="enable_shield" delay="5" />
+
+      <executeTrigger trigger="master_enderman" delay="22" />
+      <executeTrigger trigger="master_beholder" delay="32" />
+      <executeTrigger trigger="master_enderman" delay="52" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="8" />
+    </waveActions>
+
+    <!-- Spawn elementals -->
+    <waveActions area="any" delay="7">
+      <spawn type="woot_unstable_elemental_lightning" nr="1" delay="0" />
+      <counter name="elemental_lightning_spawned" action="set" value="1" delay="0.1" />
+    </waveActions>
+    <waveActions area="any" delay="8">
+      <spawn type="woot_unstable_elemental_cold" nr="1" delay="0" />
+      <counter name="elemental_cold_spawned" action="set" value="1" delay="0.1" />
+    </waveActions>
+    <waveActions area="any" delay="9">
+      <spawn type="zombie" nr="3" delay="0" />
+    </waveActions>
+    <waveActions area="any" delay="10">
+      <spawn type="woot_unstable_elemental_water" nr="1" delay="0" />
+      <counter name="elemental_water_spawned" action="set" value="1" delay="0.1" />
+    </waveActions>
+    <waveActions area="any" delay="11">
+      <spawn type="woot_unstable_elemental_fire" nr="1" delay="0" />
+      <counter name="elemental_fire_spawned" action="set" value="1" delay="0.1" />
+    </waveActions>
+    <waveActions area="any" delay="62">
+      <!-- Delayed to prevent use of Vortex too early -->
+      <spawn type="woot_unstable_elemental_arcane" nr="1" delay="0" />
+      <counter name="elemental_arcane_spawned" action="set" value="1" delay="0.1" />
+    </waveActions>
+
+    <!-- Spawn main antagonists -->
+    <waveActions area="monsterspawn_left" delay="12">
+      <spawn type="necromancer" nr="2" forcenavmesh="true" delay="0" />
+      <spawn type="troll_stone" nr="1" delay="0" />
+    </waveActions>
+    <waveActions area="monsterspawn_right" delay="25">
+      <spawn type="necromancer" nr="1" forcenavmesh="true" delay="2" />
+      <spawn type="woot_enraged_goblin_warlock" nr="1" delay="2" />
+      <spawn type="troll_war" nr="1" delay="0" />
+    </waveActions>
+    <waveActions area="monsterspawn_middle" delay="38">
+      <spawn type="starspawn" nr="1" delay="0" />
+      <spawn type="troll_snow" nr="1" delay="10" />
+    </waveActions>
+  </wave>
+</Scene>

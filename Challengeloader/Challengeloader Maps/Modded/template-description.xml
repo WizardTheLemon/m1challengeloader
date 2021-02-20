@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<maps>
+<!-- #################################### TEMPLATE #################################### -->
+<!--
+	<map>
+		<filename>chs_filename.xml</filename>
+		<name>The name of your challenge goes here</name>
+		<description>
+ Description of your challenge goes here. Make sure to start one line below description
+ and leave one space before each line, otherwise it won't look good in the challengeloader tool
+ when people look at your description
+		</description>
+		<version date="2099-01-01" playable="true"  finished="false"/>
+	</map>
+-->	
+
+	<map>
+		<filename>chs_filename.xml</filename>
+		<name>The name to be displayed in the challengeloader</name>
+		<description>
+ Description of your challenge goes here. Make sure to start one line below description
+ and leave one space before each line, otherwise it won't look good in the challengeloader tool
+ when people look at your description
+		</description>
+		<version date="2099-01-01" playable="true"  finished="false"/>
+	</map>
+
+</maps>

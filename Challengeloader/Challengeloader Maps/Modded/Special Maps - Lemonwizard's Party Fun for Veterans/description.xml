@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<maps>
+	
+	<map>
+		<filename>chs_glade.xml</filename>
+		<name>Glade, but multiple things went wrong in Aldrheim</name>
+		<description>
+ Aldrheim's diversity committee decided that goblins and beastmen were way too overrepresented in this arena.
+ FIREBALLS FOR ALL CREATURES yelled one of the wizards, receiving applause from everybody.
+ 
+ However, the department for meteorology control have been in a coma for several weeks now
+ after drinking "a few" too many glasses of wine... 
+ Who knows what kind of chaos ensues...
+		</description>
+		<version date="2021-02-19" playable="true"  finished="false"/>
+	</map>
+	
+	
+	<map>
+		<filename>chs_havindr_arena.xml</filename>
+		<name>Diminuendo'd Wizards (Havindr Arena)</name>
+		<description>
+ Same waves as the hard version. 
+ All players are permanently shrunk and receive the staff Grandfathers Clock. Increased speed but decreased health and resistance to all damage. 
+
+ WIP.
+		</description>
+		<version date="2021-02-19" playable="true" finished="false"/>
+	</map>
+	
+	
+	<map>
+		<filename>chs_mines.xml</filename>
+		<name>Dehydrated Mine Workers (Cavern)</name>
+		<description>
+ The headmaster sent you down to mine a few precious metals but oh no! You forgot your water bottles!
+ How long can you last without proper hydration in this hot underground mine?
+ 
+ Maybe you can drink your sweat or use the sweat as water in your spells?
+ 
+ 
+ And to make things worse, the goblins and trolls are very angry that the order of Magick has
+ been sending down wizards to mine the precious metals.
+ 
+ Very. angry.
+		</description>
+		<version date="2021-02-19" playable="true"  finished="true"/>
+	</map>
+	
+	
+	<map>
+		<filename>chs_vulcanus.xml</filename>
+		<name>Endless Survival Wizard Trial</name>
+		<description>
+ Steroids were banned by the Aldrheim Council of Fitness and Health not too long ago because numerous wizards
+ exhibited grave side effects such as ripping their robes off and other aggressive behaviour.
+ These days everyone takes their pre workout before an arena fight...
+ but sometimes it's just too much caffeine...
+ 
+ How long can you survive the onslaught of these hyperactive wizards?
+		</description>
+		<version date="2021-02-19" playable="true"  finished="false"/>
+	</map>
+</maps>

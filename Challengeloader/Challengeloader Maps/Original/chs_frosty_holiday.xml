@@ -1,0 +1,948 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Scene forcenavmesh="false">
+  <model>ch_frosty_holiday</model>
+  <reverb roomType="Cave" mix="40" />
+  <Indoor>false</Indoor>
+  <fog start="225" end="265" color="0.6,0.8,1.0"/>
+  <Filter Brightness="0.9" Contrast="1" Saturation="1.1" />
+  <Bloom Threshold="20" Multiplier="1" Blur="1"  />
+  <!--<RimLight Glow="0" Power="0" Bias="0"/>-->
+
+  <!--
+      Frosty holiday challenge map
+      Try to save mister Klase's workshop from his competitors who unleashed twenty waves of asswhoppings.
+      Try using the dynamite presents to best the harder foes
+  -->
+
+  <!-- 
+      !INDEX
+      !start
+        !physobjects
+        !winterapparel
+      !ruleset
+      !trigger scripts
+        !explosive gift checks
+        !blizzard script
+      !waves
+        -->
+
+  <!--
+    ##################################################################################################################
+      !start
+    ##################################################################################################################
+  -->
+  <trigger id="Start" repeat="false">
+    <if />
+    <then>
+      <cameramagnify magnification="0.8"/>
+      <playMusic cue="Additionalmusic/music_hysterical_xmas" delay="2"/>
+      <!--<SpawnEffect Area="effect_snow" name="effect_snow1" effect="Weather_Snow" delay="0"/>-->
+
+      <executetrigger trigger="explosive_gifts_init" delay="0.2" />
+
+      <!--!winterapparel
+          This command adds an item to all wizard charaters
+          You can only use wizard items.-->
+      <!--<AddItemToAvatars item="wizard_winterhatbeard" bone="neck"/>-->
+
+    </then>
+  </trigger>
+
+  <!--
+    ##################################################################################################################
+      !ruleset
+    ##################################################################################################################
+  -->
+  <RuleSet type="Survival" waves="20">
+    <spawnAreas>
+       <area>east_up</area>
+       <area>east_down</area>
+
+       <area>west_up</area>
+       <area>west_down</area>
+
+       <area>south</area>
+    </spawnAreas>
+  </RuleSet>
+
+  <!--
+    ##################################################################################################################
+      !trigger scripts
+    ##################################################################################################################
+    Starts three different checks that looks if there are missing any gifts and then proceeds to spawn them-->
+  <trigger id="explosive_gifts_init" autorun="false" repeat="true">
+  <if/>
+  <then>
+    <executetrigger trigger="explosive_gift1_check" />
+    <executetrigger trigger="explosive_gift2_check" />
+    <executetrigger trigger="explosive_gift3_check" />
+    <executetrigger trigger="explosive_gifts_init" delay="30"/>
+  </then>
+  </trigger>
+
+  <!-- checks the gift1-5 and if they are not present then respawn them-->
+  <trigger id="explosive_gift1_check" autorun="false" repeat="true">
+    <if>
+      <IDPresent id="gift1_1" area="any" invert="true"/>
+      <IDPresent id="gift1_2" area="any" invert="true"/>
+      <IDPresent id="gift1_3" area="any" invert="true"/>
+      <IDPresent id="gift1_4" area="any" invert="true"/>
+      <IDPresent id="gift1_5" area="any" invert="true"/>
+    </if>
+    <then>
+      <executetrigger trigger="explosive_gift1_spawn" />
+    </then>
+  </trigger>
+
+  <!-- Spawns the second section (gift1-5) of bombs, sounds and effects -->
+  <trigger id="explosive_gift1_spawn" autorun="false" repeat="true">
+    <if/>
+    <then>
+      <spawnPhys id="gift1_1" object="gift_explosive_blue"    area="explosive_box1" delay="1.15"/>
+      <spawnPhys id="gift1_2" object="gift_explosive_purple"  area="explosive_box2" delay="1.25"/>
+      <spawnPhys id="gift1_3" object="gift_explosive_blue"    area="explosive_box3" delay="1.35"/>
+      <spawnPhys id="gift1_4" object="gift_explosive_purple"  area="explosive_box4" delay="1.45"/>
+      <spawnPhys id="gift1_5" object="gift_explosive_blue"    area="explosive_box5" delay="1.55"/>
+      <playsound cue="Misc/misc_magick_pickup" id="explosive_box_sound1" volume="-15" delay="0"/>
+      <SpawnEffect area="explosive_box1" effect="Special_gift_spawn" name="explosive_box_effect1" delay="0"/>
+      <SpawnEffect area="explosive_box2" effect="Special_gift_spawn" name="explosive_box_effect2" delay="0.1"/>
+      <SpawnEffect area="explosive_box3" effect="Special_gift_spawn" name="explosive_box_effect3" delay="0.2"/>
+      <SpawnEffect area="explosive_box4" effect="Special_gift_spawn" name="explosive_box_effect4" delay="0.3"/>
+      <SpawnEffect area="explosive_box5" effect="Special_gift_spawn" name="explosive_box_effect5" delay="0.4"/>
+    </then>
+  </trigger>
+
+  <!-- checks the gift2-5 and if they are not present then respawn them-->
+  <trigger id="explosive_gift2_check" autorun="false" repeat="true">
+    <if>
+      <IDPresent id="gift2_1" area="any" invert="true"/>
+      <IDPresent id="gift2_2" area="any" invert="true"/>
+      <IDPresent id="gift2_3" area="any" invert="true"/>
+      <IDPresent id="gift2_4" area="any" invert="true"/>
+      <IDPresent id="gift2_5" area="any" invert="true"/>
+    </if>
+    <then>
+      <executetrigger trigger="explosive_gift2_spawn" />
+    </then>
+  </trigger>
+
+  <!-- Spawns the second section (gift2-5) of bombs, sounds and effects -->
+  <trigger id="explosive_gift2_spawn" autorun="false" repeat="true">
+    <if/>
+    <then>
+      <spawnPhys id="gift2_1" object="gift_explosive_blue"    area="explosive_box6"   delay="1.15"/>
+      <spawnPhys id="gift2_2" object="gift_explosive_purple"  area="explosive_box7"   delay="1.25"/>
+      <spawnPhys id="gift2_3" object="gift_explosive_blue"    area="explosive_box8"   delay="1.35"/>
+      <spawnPhys id="gift2_4" object="gift_explosive_purple"  area="explosive_box9"   delay="1.45"/>
+      <spawnPhys id="gift2_5" object="gift_explosive_blue"    area="explosive_box10"  delay="1.55"/>
+      <playsound cue="Misc/misc_magick_pickup" id="explosive_box_sound8" volume="-15" delay="0.2"/>
+      <SpawnEffect area="explosive_box6" effect="Special_gift_spawn" name="explosive_box_effect6" delay="0"/>
+      <SpawnEffect area="explosive_box7" effect="Special_gift_spawn" name="explosive_box_effect7" delay="0.1"/>
+      <SpawnEffect area="explosive_box8" effect="Special_gift_spawn" name="explosive_box_effect8" delay="0.2"/>
+      <SpawnEffect area="explosive_box9" effect="Special_gift_spawn" name="explosive_box_effect9" delay="0.3"/>
+      <SpawnEffect area="explosive_box10" effect="Special_gift_spawn" name="explosive_box_effect10" delay="0.4"/>
+    </then>
+  </trigger>
+
+  <!-- checks the gift3-4 and if they are not present then respawn them-->
+  <trigger id="explosive_gift3_check" autorun="false" repeat="true">
+    <if>
+      <IDPresent id="gift3_1" area="any" invert="true"/>
+      <IDPresent id="gift3_2" area="any" invert="true"/>
+      <IDPresent id="gift3_3" area="any" invert="true"/>
+      <IDPresent id="gift3_4" area="any" invert="true"/>
+    </if>
+    <then>
+      <executetrigger trigger="explosive_gift3_spawn" />
+    </then>
+  </trigger>
+
+  <!-- Spawns the third section (gift3-4) of bombs, sounds and effects -->
+  <trigger id="explosive_gift3_spawn" autorun="false" repeat="true">
+    <if/>
+    <then>
+      <spawnPhys id="gift3_1" object="gift_explosive_blue"    area="explosive_box11" delay="1.15"/>
+      <spawnPhys id="gift3_2" object="gift_explosive_purple"  area="explosive_box12" delay="1.25"/>
+      <spawnPhys id="gift3_3" object="gift_explosive_blue"    area="explosive_box13" delay="1.35"/>
+      <spawnPhys id="gift3_4" object="gift_explosive_purple"  area="explosive_box14" delay="1.45"/>
+      <playsound cue="Misc/misc_magick_pickup" id="explosive_box_sound14" volume="-15" delay="0.5"/>
+      <SpawnEffect area="explosive_box11" effect="Special_gift_spawn" name="explosive_box_effect11" delay="0"/>
+      <SpawnEffect area="explosive_box12" effect="Special_gift_spawn" name="explosive_box_effect12" delay="0.1"/>
+      <SpawnEffect area="explosive_box13" effect="Special_gift_spawn" name="explosive_box_effect13" delay="0.2"/>
+      <SpawnEffect area="explosive_box14" effect="Special_gift_spawn" name="explosive_box_effect14" delay="0.3"/>
+    </then>
+  </trigger>
+
+  <!--
+    ##################################################################################################################
+      !blizzard script
+    ##################################################################################################################
+  
+        When called, it will keep snowing until constant_blizzard_stop is called.
+        
+        A blizzard tick is 15 seconds long, which would be enough to make casting Nullify
+        useful to get at least a short time of relief.
+        
+        This function is taken from end of the world challenge map.
+  -->
+  <trigger id="constant_blizzard_start" autorun="false" repeat="true">
+    <if />
+    <then>
+      <counter name="constant_blizzard" action="set" value="1" />
+      <executeTrigger trigger="constant_blizzard_tick" />
+    </then>
+  </trigger>
+
+  <trigger id="constant_blizzard_stop" autorun="false" repeat="true">
+    <if />
+    <then>
+      <!-- This only stops the blizzard from casting again and doesn't stop it immediately. -->
+      <counter name="constant_blizzard" action="set" value="0" />
+    </then>
+  </trigger>
+
+  <trigger id="constant_blizzard_tick" autorun="false" repeat="true">
+    <if>
+      <counter name="constant_blizzard" compareMethod="equal" value="1" />
+    </if>
+    <then>
+      <magick magicktype="blizzard" />
+      <executeTrigger trigger="constant_blizzard_tick" delay="30" />
+    </then>
+  </trigger>
+
+  <!-- Offset sound triggers-->
+  
+  <trigger id="door_sound_trigger" autorun="false" repeat="false">
+    <if/>
+    <then>
+      <PlaySound cue="Misc/misc_bf_stronghold_gate" delay="0"/>
+    </then>
+  </trigger>
+  
+  
+  <!-- 
+    ##################################################################################################################
+      !waves
+    ##################################################################################################################
+       These 20 waves mixes goblin, dwarfs, orcs and one or two beholders
+  -->
+
+  
+  
+  <!--  ========================
+                WAVE 1
+        ========================
+      Goblin miners, archers,
+      Introducing the goblin soldier crowdcooler,
+      Also orcs, always orcs-->
+  <wave>
+    <waveActions area="west_down" delay="10">
+      <spawn order="attack" type="frost_goblin_miner" nr="6"/>
+    </waveActions>
+    <waveActions area="west_down" delay="10">
+      <spawn order="attack" ForceNavMesh="false" type="frost_goblin_soldier_crowdcooler" nr="1"/>
+    </waveActions>
+    <waveActions area="east_up" delay="10">
+      <spawn order="attack" ForceNavMesh="false" type="frost_goblin_soldier_crowdcooler" nr="1"/>
+    </waveActions>
+    <waveActions area="west_up" delay="10">
+      <spawn order="attack" ForceNavMesh="false" type="frost_goblin_soldier_crowdcooler" nr="1"/>
+    </waveActions>
+    <waveActions area="east_down" delay="10">
+      <spawn order="attack"  ForceNavMesh="false" type="frost_goblin_soldier_crowdcooler" nr="1"/>
+    </waveActions>
+    <waveActions area="east_down" delay="10">
+      <spawn order="attack"  ForceNavMesh="false" type="frost_goblin_rogue_archer" nr="4"/>
+    </waveActions>
+    <waveActions area="west_up" delay="10" >
+      <spawn order="attack" ForceNavMesh="false" type="orc_regular" nr="2"/>
+    </waveActions>
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="30" />
+  </wave>
+
+  <!--  ========================
+                WAVE 2
+        ======================== 
+      Dwarf Warriors,
+      Introducing dwarf cannon-->
+
+  <wave>
+    <waveActions area="cannon1_spawn">
+      <spawn type="dwarf_cannon" id="cannon" spawnAnimation="spawn" nr="1" delay="3"/>
+      <playanimation name="root/door" start="0" end="2" loop="false" delay="1"/>
+      <playanimation name="root/door_collision" start="0" end="2" loop="false" delay="1"/>
+      <executetrigger trigger="door_sound_trigger" delay="1" />
+    </waveActions>
+    <waveActions area="any">
+      <spawn order="attack" type="dwarf_warrior" nr="1"/>
+    </waveActions>
+    <waveActions area="any">
+      <spawn order="attack" type="dwarf_warrior" nr="1"/>
+    </waveActions>
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="30" />
+  </wave>
+
+  <!--  ========================
+                WAVE 3
+        ======================== 
+      Wave 3: Warriors, bombers and two commandos
+      Adding goblin crowd coolers to slow players and help the melee goblins-->
+  <wave>
+    <waveActions area="cannon2_spawn">
+      <spawn order="attack" type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="goblin_warrior" nr="3"/>
+      <spawn order="attack" type="goblin_bomber" nr="2"/>
+      <spawn order="attack" type="goblin_commando" nr="1" />
+    </waveActions>
+    <waveActions area="any" delay="1">
+      <spawn order="attack" type="frost_goblin_soldier_crowdcooler" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="1">
+      <spawn order="attack" type="goblin_warrior" nr="3"/>
+      <spawn order="attack" type="goblin_warrior_captain_nodrop" nr="1"/>
+      <spawn order="attack" type="goblin_commando" nr="1" />
+    </waveActions>
+    <waveActions area="any" delay="1">
+      <spawn order="attack" type="frost_goblin_soldier_crowdcooler" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="1">
+      <spawn order="attack" type="goblin_warlock_nodrop" nr="1"/>
+    </waveActions>
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="30" />
+  </wave>
+
+
+  <!--  ========================
+               WAVE 4
+        ========================
+     Introducing frost goblins with cold shiels
+     Blizzard wave-->
+  <wave>
+    <waveActions area="west_down">
+      <executetrigger trigger="constant_blizzard_start" delay="1" />
+      <spawn order="attack" type="frost_goblin_shaman" nr="2"/>
+      <spawn order="attack" type="goblin_shaman_nodrop" nr="1"/>
+      <spawn order="attack" type="Goblin_warlock_nodrop" nr="2"/>
+    </waveActions>
+    <waveActions area="east_up">
+      <spawn order="attack" type="frost_goblin_shaman" nr="2"/>
+      <spawn order="attack" type="goblin_shaman_nodrop" nr="1"/>
+      <spawn order="attack" type="Goblin_warlock_nodrop" nr="2"/>
+    </waveActions>
+
+    <waveActions area="east_down">
+      <spawn order="attack" type="frost_goblin_miner" nr="8" />
+    </waveActions>
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="30" />
+  </wave>
+
+
+  <!--  ========================
+               WAVE 5
+        ========================
+      Wave 5: Dwarf!
+      Introducing a common element, the double dwarf cannons-->
+  <wave>
+    <waveActions area="cannon1_spawn">
+      <executetrigger trigger="constant_blizzard_stop" delay="0" />
+      <spawn type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="cannon2_spawn">
+      <spawn type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="dwarf_warrior" nr="2"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="dwarf_warrior" nr="2"/>
+      <spawn order="attack" type="dwarf_mage_nodrop" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="4">
+      <spawn order="attack" type="dwarf_captain_nodrop" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="4">
+      <spawn order="attack" type="dwarf_captain_nodrop" nr="1"/>
+    </waveActions>
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="30" />
+  </wave>
+
+  <!--  ========================
+               WAVE 6
+        ========================
+      Introducing trolls
+      Blizzard wave-->
+  <wave>
+    <waveActions area="north" delay="0">
+      <executetrigger trigger="constant_blizzard_start" delay="5" />
+      <spawn order="attack" type="frost_goblin_soldier_crowdcooler" nr="1"/>
+      <spawn order="attack" type="goblin_warrior_archer" nr="2"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="troll_stone" nr="1"/>
+      <spawn order="attack" type="goblin_warrior_archer" nr="2"/>
+      <spawn order="attack" type="frost_goblin_shaman" nr="1"/>
+      <spawn order="attack" type="goblin_shaman_nodrop" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="troll_stone" nr="1"/>
+      <spawn order="attack" type="goblin_warrior_archer" nr="2"/>
+      <spawn order="attack" type="frost_goblin_shaman" nr="1"/>
+      <spawn order="attack" type="goblin_shaman_nodrop" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="frost_goblin_soldier_crowdcooler" nr="1"/>
+      <spawn order="attack" type="goblin_warrior_archer" nr="3"/>
+    </waveActions>
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="30" />
+  </wave>
+
+  <!--  ========================
+               WAVE 7
+        ========================
+      Introducing orc_berserks that are fast and very melee to balance the priests -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <executetrigger trigger="constant_blizzard_stop" delay="0" />
+      <spawn order="attack" type="dwarf_mage_nodrop" nr="2"/>
+    </waveActions>
+    <waveActions area="cannon2_spawn">
+      <spawn order="attack" type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="dwarf_mage_nodrop" nr="2"/>
+    </waveActions>
+    <waveActions area="any" delay="8">
+      <spawn order="attack" type="dwarf_mage_nodrop" nr="2"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="orc_berserk" nr="1"/>
+    </waveActions>
+    
+    <!-- 10 second delay-->
+    <waveActions area="any" delay="10">
+      <spawn order="attack" type="orc_berserk" nr="2"/>
+    </waveActions>
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="30" />
+  </wave>
+
+  <!--  ========================
+               WAVE 8
+        ========================
+      Combining bombers, archers with the goblin crowd coolers
+      Blizzard wave -->
+  <wave value = "8">
+    <executetrigger trigger="constant_blizzard_start" delay="6" />
+    <waveActions area="north" delay="0">
+      <spawn order="attack" type="goblin_bomber" nr="3"/>
+      <spawn order="attack" type="goblin_warrior_archer" nr="1"/>
+    </waveActions>
+
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="goblin_bomber" nr="3"/>
+      <spawn order="attack" type="goblin_warrior_archer" nr="1"/>
+    </waveActions>
+
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="goblin_bomber" nr="3"/>
+      <spawn order="attack" type="goblin_warrior_archer" nr="1"/>
+      <spawn order="attack" type="frost_goblin_soldier_crowdcooler" nr="1"/>
+    </waveActions>
+
+    <waveActions area="any" delay="3">
+      <spawn order="attack" type="goblin_bomber" nr="3"/>
+      <spawn order="attack" type="goblin_warrior_archer" nr="1"/>
+      <spawn order="attack" type="frost_goblin_soldier_crowdcooler" nr="1"/>
+    </waveActions>
+
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="goblin_bomber"        nr="3"/>
+      <spawn order="attack" type="goblin_warrior_archer" nr="1" />
+      <spawn order="attack" type="frost_goblin_soldier_crowdcooler" nr="1"/>
+    </waveActions>
+
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="goblin_bomber"        nr="3"/>
+      <spawn order="attack" type="frost_goblin_soldier_crowdcooler" nr="1"/>
+    </waveActions>
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="30" />
+  </wave>
+
+
+  <!--  ========================
+               WAVE 9
+        ========================
+      Dwarves and their cannons-->
+  <wave>
+    <waveActions area="cannon1_spawn">
+      <executetrigger trigger="constant_blizzard_stop" delay="0" />
+      <spawn type="dwarf_cannon" spawnAnimation="spawn" nr="1" delay="0"/>
+    </waveActions>
+    <waveActions area="cannon2_spawn">
+      <spawn type="dwarf_cannon" spawnAnimation="spawn" nr="1" delay="0"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="dwarf_captain_nodrop" nr="1"/>
+      <spawn order="attack" type="dwarf_warrior" nr="6" />
+    </waveActions>
+    <waveActions area="west_up" delay="0">
+      <spawn order="attack" type="beholder_malign" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="dwarf_captain_nodrop" nr="1"/>
+      <spawn order="attack" type="dwarf_warrior" nr="6"/>
+    </waveActions>
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="30" />
+  </wave>
+
+  <!--  ========================
+               WAVE 10
+        ========================-->
+
+  <wave >
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="frost_wurstmacher" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="Goblin_warlock_nodrop" nr="3"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="Goblin_warlock_nodrop" nr="3"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="Goblin_warlock_nodrop" nr="3"/>
+    </waveActions>
+    <waveActions area="any" delay="10">
+      <spawn order="attack" type="orc_berserk" nr="4"/>
+    </waveActions>
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="30" />
+  </wave>
+
+  <!--  ========================
+               WAVE 11
+        ======================== 
+      Dwarves, and introducing the beholder in combination with dwarves-->
+  <wave>
+    <waveActions area="cannon1_spawn">
+      <spawn order="attack" type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="north" delay="0">
+      <spawn order="attack" type="beholder_malign" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="dwarf_warrior" nr="5"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="dwarf_warrior" nr="4"/>
+      <spawn order="attack" type="dwarf_captain_nodrop" nr="4"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="dwarf_warrior" nr="4"/>
+    </waveActions>
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="30" />
+  </wave>
+
+  <!--  ========================
+               WAVE 12
+        ========================
+      3 frozen wurstmachers attack!!!!!
+      Blizzard wave-->
+  <wave value = "12">
+    <waveActions area="west_up" delay="0">
+      <executetrigger trigger="constant_blizzard_start" delay="1" />
+      <spawn order="attack" type="frost_wurstmacher" nr="1"/>
+      <spawn order="attack" type="goblin_warrior_archer" nr="2"/>
+      <spawn order="attack" type="frost_goblin_shaman" nr="2"/>
+    </waveActions>
+    <waveActions area="north" delay="10">
+      <spawn order="attack" type="frost_wurstmacher" nr="1"/>
+      <spawn order="attack" type="goblin_warrior_archer" nr="2"/>
+      <spawn order="attack" type="frost_goblin_shaman" nr="2"/>
+    </waveActions>
+    <waveActions area="east_down" delay="15">
+      <spawn order="attack" type="frost_wurstmacher" nr="1"/>
+      <spawn order="attack" type="goblin_warrior_archer" nr="4"/>
+    </waveActions>
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="30" />
+  </wave>
+
+  <!--  ========================
+               WAVE 13
+        ======================== 
+      Blizzard wave-->
+  <wave>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="goblin_warrior_archer" nr="4"/>
+      <spawn order="attack" type="Goblin_warlock_nodrop" nr="1"/>
+      <spawn order="attack" type="frost_goblin_shaman" nr="1"/>
+      <spawn order="attack" type="goblin_shaman_nodrop" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="goblin_warrior" nr="6"/>
+      <spawn order="attack" type="goblin_warrior_captain_nodrop" nr="1"/>
+      <spawn order="attack" type="frost_goblin_shaman" nr="1"/>
+      <spawn order="attack" type="goblin_shaman_nodrop" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="goblin_warrior_captain_nodrop" nr="1" />
+      <spawn order="attack" type="goblin_warrior" nr="4"/>
+      <spawn order="attack" type="goblin_warrior_archer" nr="3"/>
+      <spawn order="attack" type="frost_goblin_shaman" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="dwarf_warrior" nr="6" />
+      <spawn order="attack" type="dwarf_captain_nodrop" nr="1"/>
+      <spawn order="attack" type="frost_goblin_shaman" nr="1"/>
+    </waveActions>
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="30" />
+  </wave>
+
+  <!--  ========================
+               WAVE 14
+        ========================
+      Snow troll-->
+  <wave>
+    <executetrigger trigger="constant_blizzard_stop" delay="1" />
+    <waveActions area="cannon1_spawn">
+      <spawn type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="cannon2_spawn">
+      <spawn type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="west_down" delay="5">
+      <spawn order="attack" type="Troll_snow" nr="1"/>
+    </waveActions>
+    <waveActions area="east_up" delay="0">
+      <spawn order="attack" type="Troll_snow" nr="1"/>
+    </waveActions>
+    <waveActions area="east_up" delay="10">
+      <spawn order="attack" type="Troll_snow" nr="1"/>
+      <spawn order="attack" type="goblin_warrior_archer" nr="4"/>
+    </waveActions>
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="30" />
+  </wave>
+
+  <!--  ========================
+               WAVE 15
+        ========================
+      -->
+  <wave>
+    <waveActions area="cannon1_spawn">
+      <executetrigger trigger="constant_blizzard_stop" delay="1" />
+      <spawn type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="cannon2_spawn">
+      <spawn type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="dwarf_mage_nodrop" nr="1"/>
+      <spawn order="attack" type="dwarf_warrior" nr="5"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="dwarf_mage_nodrop" nr="1"/>
+      <spawn order="attack" type="dwarf_warrior" nr="5"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="goblin_warrior_captain_nodrop" nr="1"/>
+      <spawn order="attack" type="goblin_warrior"         nr="6"/>
+      <spawn order="attack" type="goblin_warrior_archer"  nr="4"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="Goblin_warlock_nodrop" nr="1"/>
+      <spawn order="attack" type="goblin_warrior_captain" nr="1"/>
+      <spawn order="attack" type="goblin_warrior_archer"   nr="5"/>
+    </waveActions>
+
+    <!--Spawn two (10 sec delay)-->
+
+
+    <waveActions area="any" delay="10">
+      <spawn order="attack" type="troll_stone" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="10">
+      <spawn order="attack" type="goblin_warrior_captain_nodrop"  nr="4"/>
+    </waveActions>
+    <waveActions area="any" delay="10">
+      <spawn order="attack" type="goblin_warrior_captain_nodrop"  nr="4"/>
+    </waveActions>
+
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="30" />
+  </wave>
+
+  <!--  ========================
+               WAVE 16
+        ========================
+      Blizzard waves -->
+  <wave value = "16">
+    <!--Spawn one-->
+    <waveActions area="cannon1_spawn">
+      <executetrigger trigger="constant_blizzard_start" delay="1" />
+      <spawn type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="cannon2_spawn">
+      <spawn type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="frost_wurstmacher" nr="1"/>
+      <spawn order="attack" type="frost_goblin_soldier_crowdcooler" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="frost_wurstmacher" nr="1"/>
+      <spawn order="attack" type="frost_goblin_miner" nr="4"/>
+      <spawn order="attack" type="goblin_shaman_nodrop" nr="1"/>
+      <spawn order="attack" type="frost_goblin_soldier_crowdcooler" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="frost_goblin_miner" nr="4"/>
+      <spawn order="attack" type="goblin_shaman_nodrop" nr="1"/>
+      <spawn order="attack" type="frost_goblin_soldier_crowdcooler" nr="1"/>
+    </waveActions>
+
+
+    <!--Spawn two (20 sec delay)-->
+    <waveActions area="any" delay="20">
+      <spawn order="attack" type="troll_stone" nr="1"/>
+      <spawn order="attack" type="frost_goblin_soldier_crowdcooler" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="10">
+      <spawn order="attack" type="troll_snow" nr="1"/>
+      <spawn order="attack" type="goblin_shaman_nodrop" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="10">
+      <spawn order="attack" type="troll_snow" nr="1"/>
+    </waveActions>
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="30" />
+  </wave>
+  
+  <!--  ========================
+               WAVE 17
+        ========================
+      -->
+  <wave>
+    <!--Spawn one-->
+    <waveActions area="any" delay="0">
+      <executetrigger trigger="constant_blizzard_stop" delay="0" />
+      <executetrigger trigger="constant_blizzard_stop" delay="5" />
+      <spawn order="attack" type="Goblin_warlock_nodrop"         nr="2"/>
+      <spawn order="attack" type="dwarf_mage_nodrop"         nr="1"/>
+    </waveActions>
+    <waveActions area="cannon1_spawn">
+      <spawn type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="cannon2_spawn">
+      <spawn type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="Goblin_warlock_nodrop"         nr="2"/>
+      <spawn order="attack" type="dwarf_mage_nodrop"         nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="Goblin_warlock_nodrop"         nr="1"/>
+      <spawn order="attack" type="dwarf_mage_nodrop"         nr="2"/>
+    </waveActions>
+
+
+
+    <!--Spawn two (10 sec delay)-->
+    <waveActions area="any" delay="6">
+      <spawn order="attack" type="Goblin_warlock_nodrop"         nr="2"/>
+      <spawn order="attack" type="dwarf_mage_nodrop"         nr="2"/>
+    </waveActions>
+
+
+    <waveActions area="north" delay="4">
+      <spawn order="attack" type="beholder_malign"  nr="1"/>
+    </waveActions>
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="30" />
+  </wave>
+
+  <!--  ========================
+               WAVE 18
+        ========================-->
+  <wave>
+    <!--Spawn one-->
+    <waveActions area="cannon1_spawn">
+      <executetrigger trigger="constant_blizzard_stop" delay="0" />
+      <spawn type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="cannon2_spawn">
+      <spawn type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="dwarf_mage_nodrop"      nr="1"/>
+      <spawn order="attack" type="dwarf_captain_nodrop" nr="1"/>
+      <spawn order="attack" type="dwarf_warrior"   nr="2"/>
+    </waveActions>
+
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="beholder_malign"      nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="beholder_malign"      nr="1"/>
+    </waveActions>
+
+
+    <!--Spawn two (20 sec delay)-->
+    <waveActions area="any" delay="20">
+      <spawn order="attack" type="frost_goblin_miner"      nr="4"/>
+      <spawn order="attack" type="goblin_warrior_captain" nr="1"/>
+      <spawn order="attack" type="goblin_warrior"   nr="3"/>
+      <spawn order="attack" type="goblin_warrior_archer"   nr="2"/>
+      <spawn order="attack" type="troll_stone"   nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="20">
+      <spawn order="attack" type="goblin_bomber"      nr="4" delay="2"/>
+      <spawn order="attack" type="frost_goblin_miner"      nr="3"/>
+    </waveActions>
+    <waveActions area="any" delay="20">
+      <spawn order="attack" type="troll_stone_unarmed"      nr="2"/>
+    </waveActions>
+
+    <!--Spawn two (30 sec delay)-->
+    <waveActions area="any" delay="30">
+      <spawn order="attack" type="beholder_malign"      nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="30">
+      <spawn order="attack" type="beholder_malign"      nr="1"/>
+    </waveActions>
+
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="50" />
+
+  </wave>
+  <!--  ========================
+               WAVE 19
+        ======================== -->
+  <wave >
+    <!--Spawn one-->
+    <waveActions area="cannon2_spawn">
+      <spawn type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="troll_snow"      nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="2">
+      <spawn order="attack" type="troll_snow"      nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="4">
+      <spawn order="attack" type="troll_snow"      nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="frost_goblin_miner"      nr="2"/>
+      <spawn order="attack" type="goblin_warrior_captain_nodrop" nr="1"/>
+      <spawn order="attack" type="goblin_warrior"   nr="3"/>
+      <spawn order="attack" type="goblin_warrior_archer"   nr="2"/>
+      <spawn order="attack" type="troll_stone"   nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="Goblin_warlock_nodrop"      nr="3"/>
+    </waveActions>
+
+    <!--Spawn three (10 sec delay)-->
+    <waveActions area="cannon1_spawn" delay="15">
+      <spawn type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="cannon2_spawn" delay="15">
+      <spawn type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+
+
+    <!--Spawn two (15 sec delay)-->
+    <waveActions area="any" delay="15">
+      <spawn order="attack" type="dwarf_mage_nodrop"      nr="1"/>
+      <spawn order="attack" type="dwarf_captain_nodrop" nr="1"/>
+      <spawn order="attack" type="dwarf_warrior"   nr="3"/>
+    </waveActions>
+    <waveActions area="any" delay="15">
+      <spawn order="attack" type="dwarf_mage_nodrop"      nr="1"/>
+      <spawn order="attack" type="dwarf_captain_nodrop" nr="1"/>
+      <spawn order="attack" type="dwarf_warrior"   nr="3"/>
+    </waveActions>
+    <waveActions area="any" delay="15">
+      <spawn order="attack" type="beholder_malign"      nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="15">
+      <spawn order="attack" type="beholder_malign"      nr="1"/>
+    </waveActions>
+
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="30" />
+  </wave>
+
+  <!--  ========================
+               WAVE 20
+        ========================
+      The hardest of them all! It has three spawns, but in reality it has four!!!
+      Blizzard wave and more or less everything else-->
+  <wave>
+    <!--Spawn one-->
+    <waveActions area="cannon1_spawn">
+      <executetrigger trigger="constant_blizzard_start" delay="1" />
+      <spawn type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="cannon2_spawn">
+      <spawn type="dwarf_cannon" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="dwarf_mage_nodrop"      nr="1"/>
+      <spawn order="attack" type="dwarf_captain_nodrop" nr="1"/>
+      <spawn order="attack" type="dwarf_warrior"   nr="3"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="frost_goblin_soldier_crowdcooler"      nr="2"/>
+      <spawn order="attack" type="goblin_shaman_nodrop" nr="1"/>
+      <spawn order="attack" type="frost_goblin_shaman" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="frost_goblin_soldier_crowdcooler"      nr="2"/>
+      <spawn order="attack" type="goblin_shaman_nodrop" nr="1"/>
+      <spawn order="attack" type="frost_goblin_shaman" nr="1"/>
+    </waveActions>
+
+    <waveActions area="any" delay="0">
+      <spawn order="attack" type="frost_goblin_miner"      nr="5"/>
+      <spawn order="attack" type="goblin_warrior_captain_nodrop" nr="1"/>
+      <spawn order="attack" type="goblin_warrior"   nr="3"/>
+      <spawn order="attack" type="goblin_warrior_archer"   nr="2"/>
+      <spawn order="attack" type="troll_stone"   nr="2"/>
+      <spawn order="attack" type="frost_goblin_shaman" nr="1"/>
+    </waveActions>
+
+
+    <!--Spawn two (10 sec delay)-->
+    <waveActions area="any" delay="10">
+      <spawn order="attack" type="troll_stone_unarmed"      nr="2"/>
+      <spawn order="attack" type="frost_goblin_shaman" nr="1"/>
+    </waveActions>
+
+
+    <!--Spawn three (20 sec delay)-->
+    <waveActions area="any" delay="20">
+      <spawn order="attack" type="dwarf_mage_nodrop"      nr="1"/>
+      <spawn order="attack" type="dwarf_captain_nodrop" nr="1"/>
+      <spawn order="attack" type="dwarf_warrior"   nr="3"/>
+      <spawn order="attack" type="frost_goblin_shaman" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="20">
+      <spawn order="attack" type="frost_goblin_soldier_crowdcooler"      nr="2"/>
+    </waveActions>
+
+    <!--Spawn four (30 sec delay)-->
+    <waveActions area="any" delay="30">
+      <spawn order="attack" type="frost_wurstmacher"      nr="2"/>
+      <spawn order="attack" type="dwarf_warrior"   nr="3"/>
+      <spawn order="attack" type="frost_goblin_shaman" nr="1"/>
+    </waveActions>
+    <waveActions area="any" delay="30">
+      <spawn order="attack" type="frost_goblin_soldier_crowdcooler"      nr="2"/>
+    </waveActions>
+    <waveActions area="north" delay="30">
+      <spawn order="attack" type="beholder_malign"      nr="2"/>
+    </waveActions>
+    <GiveOrder Factions="evil" Order="attack" Area="any" delay="50" />
+  </wave>
+</Scene>
+  
+  
+

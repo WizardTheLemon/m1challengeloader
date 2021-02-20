@@ -1,0 +1,751 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Scene>
+	<!-- AUTHOR:   Dan Eriksson @ Pieces Interactive, 2012 -->
+
+  <model>ch_woot_eye_sockey_rink</model>
+  <reverb roomType="10" mix="40" />
+  <bloom threshold="2" multiplier="0" blur="0.5"/>
+  <killplaneposition>-35</killplaneposition>
+	
+  <trigger id="Start" repeat="false">
+    <if />
+    <then>
+      <cameramagnify magnification="0.75"/>
+      <executeTrigger trigger="confettiOfMisfortune_cycle" delay="0.5" />
+
+      <!--<playMusic cue="music_encounter" delay="3"/>-->
+      <playMusic cue="music_wizardcastle" delay="3.5" />
+
+      <playSound volume="0" cue="Additional/woot_short_fanfare" delay="1" />
+
+      <playSound id="ambient_audience" volume="0" cue="Additionalmusic/woot_amb_audience_hum" />
+    </then>
+  </trigger>
+
+  <RuleSet type="Survival" waves="20">
+    <spawnAreas>
+      <area>west</area>
+      <area>east</area>
+    </spawnAreas>
+    <!-- Area "north_crash" will only be used at the point when the north wall explodes and monsters rush in.
+           After that, the area "north" will be used for spawns from that direction.
+           The area "north_crash" is more close to the wall than area "north".
+           -->
+  </RuleSet>
+
+  <!--"Goblin Crash Party" event-->
+  <trigger id="crashPartyEvent" repeat="false" autorun="false">
+    <if/>
+    <then>
+      <cameraMove target="explosion1_trigger" magnification="1" offset="0,0,0" time="1.4"/>
+      <cameraShake magnitude="2.5" time="1.5" delay="1" />
+      <Flash Duration="0.25" delay="1" />
+
+      <!-- This flag is used by confettiOfMisfortune to either play audience or monster cheers upon player death -->
+      <counter name="monsters_have_crashed_event" action="set" value="1" />
+
+      <Spawneffect area="explosion1_trigger" name="abc1" effect="Special_pyre_crash"  delay="1.0" />
+      <Spawneffect area="explosion2_trigger" name="abc2" effect="action_explosion"    delay="1.2" />
+      <Spawneffect area="explosion3_trigger" name="abc3" effect="action_explosion"    delay="1.1" />
+
+      <Spawneffect area="explosion4_trigger" name="abc4" effect="Special_pyre_crash"  delay="1.1" />
+      <Spawneffect area="explosion5_trigger" name="abc5" effect="action_explosion"    delay="1.0" />
+      <Spawneffect area="explosion6_trigger" name="abc6" effect="action_explosion"    delay="1.2" />
+
+      <Spawneffect area="explosion7_trigger" name="abc7" effect="Special_pyre_crash"  delay="1.1" />
+      <Spawneffect area="explosion8_trigger" name="abc8" effect="action_explosion"    delay="1.2" />
+      <Spawneffect area="explosion9_trigger" name="abc9" effect="action_explosion"    delay="1.0" />
+
+      <Spawneffect area="explosion10_trigger" name="abc10" effect="Special_pyre_crash"  delay="1.0" />
+      <Spawneffect area="explosion11_trigger" name="abc11" effect="action_explosion"    delay="1.2" />
+
+      <!--<cameraRelease time="1.4" delay="3" />-->
+      <cameraRelease delay="3" />
+      <cameraMagnify magnification="0.75" time="1" delay="3.05" />
+
+      <playAnimation name="crash_event" start="0" end="50" speed="20" resume="true" loop="false" delay="1.1"/>
+
+      <PlaySound cue="Weapons/wep_bomb_explode" delay="1.0"/>
+      <PlaySound cue="Weapons/wep_bomb_explode" delay="1.2"/>
+
+      <!-- Stop the cheering audience sounds -->
+      <stopSound id="ambient_audience" delay="1.1" />
+      <counter name="monsters_have_crashed_event" action="set" value="1" />
+      
+      <!-- Screams from audience -->
+      <playSound volume="5" cue="Additional/woot_panicking_civilians" delay="1.2" />
+      <playSound volume="2" cue="Additional/woot_panicking_civilians" delay="5.2" />
+      <playSound volume="-10" cue="Additional/woot_panicking_civilians" delay="10.2" />
+    </then>
+  </trigger>
+  <!--End of "Goblin Crash Party" event-->
+  
+  <!--
+        #####################################################################################################################################
+            Confetti of Misfortune scripts
+            These detect if a player dies and allows for special effects and cheers upon that event.
+            Run "confettiOfMisfortune_cycle" first to enable.
+            
+                  <executeTrigger trigger="confettiOfMisfortune_cycle" delay="0.5" />
+                  
+            Use the following line to trigger confetti of misfortune at other times...
+            
+                  <counter name="confettiOfMisfortune_aliveCount" action="set" value="5" />
+                  
+            In EYE SOCKEY RINK, we have a special switch called "monsters_have_crashed_event".
+            When this is 1, we stop playing the audience cheers and instead play goblin taunts.
+
+        #####################################################################################################################################
+  -->
+
+  <trigger id="confettiOfMisfortune_cycle" repeat="true" autorun="false">
+    <if></if>
+    <then>
+      <!-- Check if alive players count is less than last cycle -->
+      <executeTrigger trigger="confettiOfMisfortune_checkDeathEvent" delay="0" />
+
+      <!-- Store the count of alive players, used at the beginning of next cycle -->
+      <counter name="confettiOfMisfortune_aliveCount" action="set" value="0" delay="0.01"/>
+      <executeTrigger trigger="confettiOfMisfortune_storeAliveCount1" delay="0.02" />
+      <executeTrigger trigger="confettiOfMisfortune_storeAliveCount2" delay="0.02" />
+      <executeTrigger trigger="confettiOfMisfortune_storeAliveCount3" delay="0.02" />
+      <executeTrigger trigger="confettiOfMisfortune_storeAliveCount4" delay="0.02" />
+
+      <!-- Call self after a short delay to continue the cycle -->
+      <executeTrigger trigger="confettiOfMisfortune_cycle" delay="0.3" />
+    </then>
+  </trigger>
+
+  <trigger id="confettiOfMisfortune_checkDeathEvent" repeat="true" autorun="false">
+    <if>
+      <!-- Are there less players alive this cycle than the last? -->
+      <counter name="confettiOfMisfortune_aliveCount" compareMethod="equal" value="1" />
+      <present type="wizard" area="any" compareMethod="less" nr="1" />
+    </if>
+    <if>
+      <counter name="confettiOfMisfortune_aliveCount" compareMethod="equal" value="2" />
+      <present type="wizard" area="any" compareMethod="less" nr="2" />
+    </if>
+    <if>
+      <counter name="confettiOfMisfortune_aliveCount" compareMethod="equal" value="3" />
+      <present type="wizard" area="any" compareMethod="less" nr="3" />
+    </if>
+    <if>
+      <counter name="confettiOfMisfortune_aliveCount" compareMethod="equal" value="4" />
+      <present type="wizard" area="any" compareMethod="less" nr="4" />
+    </if>
+    <then>
+      <executeTrigger trigger="confettiOfMisfortune_ifAudience" />
+      <executeTrigger trigger="confettiOfMisfortune_ifMonsters" />
+    </then>
+  </trigger>
+
+  <trigger id="confettiOfMisfortune_ifAudience" repeat="true" autorun="false">
+    <if>
+      <counter name="monsters_have_crashed_event" compareMethod="equal" value="0" />
+    </if>
+    <then>
+      <!-- TODO: Add cheers and special effects after this line.
+           THIS ONLY TRIGGERS BEFORE MONSTERS CRASH THE EVENT! -->
+
+      <playSound volume="2" cue="Additionalmusic/woot_amb_big_cheers" />
+    </then>
+  </trigger>
+
+  <trigger id="confettiOfMisfortune_ifMonsters" repeat="true" autorun="false">
+    <if>
+      <counter name="monsters_have_crashed_event" compareMethod="equal" value="1" />
+    </if>
+    <then>
+      <!-- TODO: Add cheers and special effects after this line.
+           THIS ONLY TRIGGERS AFTER MONSTERS CRASH THE EVENT! -->
+
+      <playSound volume="2" cue="Characters/chr_goblin_taunt" />
+    </then>
+  </trigger>
+
+  <trigger id="confettiOfMisfortune_storeAliveCount1" repeat="true" autorun="false">
+    <if>
+      <present type="wizard" area="any" compareMethod="equal" nr="1" />
+    </if>
+    <then>
+      <counter name="confettiOfMisfortune_aliveCount" action="set" value="1" />
+    </then>
+  </trigger>
+
+  <trigger id="confettiOfMisfortune_storeAliveCount2" repeat="true" autorun="false">
+    <if>
+      <present type="wizard" area="any" compareMethod="equal" nr="2" />
+    </if>
+    <then>
+      <counter name="confettiOfMisfortune_aliveCount" action="set" value="2" />
+    </then>
+  </trigger>
+
+  <trigger id="confettiOfMisfortune_storeAliveCount3" repeat="true" autorun="false">
+    <if>
+      <present type="wizard" area="any" compareMethod="equal" nr="3" />
+    </if>
+    <then>
+      <counter name="confettiOfMisfortune_aliveCount" action="set" value="3" />
+    </then>
+  </trigger>
+
+  <trigger id="confettiOfMisfortune_storeAliveCount4" repeat="true" autorun="false">
+    <if>
+      <present type="wizard" area="any" compareMethod="equal" nr="4" />
+    </if>
+    <then>
+      <counter name="confettiOfMisfortune_aliveCount" action="set" value="4" />
+    </then>
+  </trigger>
+
+
+  <!--
+      ######################################################################################################################################################
+      ## ##### ####    ##### ### #####   ######    #########################################################################################################
+      ## ##### ######## #### ### #### ### #### #############################################################################################################
+      ## ## ## ####     #### ## #####    ######   ##########################################################################################################
+      ## ## ## #### ### #### # ###### ############ #########################################################################################################
+      ###  #  ######    ####  ########    ####    ##########################################################################################################
+      ######################################################################################################################################################
+  
+      Waves
+  -->
+
+  <!--  WAVE 1
+        Notes:    Wizards (ordinary)
+                  From either or both far sides of the sockey rink.
+        -->
+  <wave>
+    <waveActions area="west" delay="0">
+      <spawn id="wiz_1" type="wizard" forcenavmesh="true" nr="1" />
+      <!-- Setting faction to "evil" ONLY, just in case something goes wrong -->
+      <setFaction id="wiz_1" action="set" faction="evil" delay="0.1" />
+      <!--<spawn type="woot_enraged_goblin_warlock" nr="1" delay="1" />-->
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="1" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 2
+        Notes:    Wizards (ordinary)
+                  From either or both far sides of the sockey rink.
+        -->
+  <wave>
+    <waveActions area="east" delay="0">
+      <spawn id="wiz_1" type="wizard_hat_evil" nr="1" forcenavmesh="true" order="wander" />
+      <setFaction id="wiz_1" action="set" faction="evil" delay="0.1" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="1" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 3
+        Notes:    Wizards, Soldiers (osotc)
+                  From either or both far sides of the sockey rink.
+        -->
+  <wave>
+    <waveActions area="east" delay="0">
+      <spawn type="soldier_swordsman_evil" nr="3" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="1" />
+    </waveActions>
+    <waveActions area="west" delay="0">
+      <spawn id="wiz_1" type="wizard" forcenavmesh="true" nr="1" />
+      <setFaction id="wiz_1" action="set" faction="evil" delay="0.1" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 4
+        Notes:    Druid, Spiders, TreeSpirit
+                  From either or both far sides of the sockey rink.
+        -->
+  <wave>
+    <waveActions area="east" delay="0">
+      <spawn type="druid" nr="1" forcenavmesh="true" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="1" />
+    </waveActions>
+    <waveActions area="west" delay="0">
+      <spawn type="treespirit" nr="3" order="wander" />
+      <spawn type="druid" nr="1" forcenavmesh="true" delay="3" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 5    BOSS WAVE
+        Notes:    Wizard (tron), ElementalLightning (woot)
+                  From either or both far sides of the sockey rink.
+        -->
+  <wave>
+    <waveActions area="east" delay="0">
+      <!-- Only one elemental as they are, sadly, the most boring enemy in the entire game -->
+      <spawn type="woot_unstable_elemental_lightning" nr="3" order="wander" />
+      <spawn id="wiz_1" type="wizard_tron" nr="1" delay="4" order="wander" />
+      <setFaction id="wiz_1" action="set" faction="evil" delay="4.1" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="1" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 6
+        Notes:    Wizards, Elves (osotc)
+                  From either or both far sides of the sockey rink.
+        -->
+  <wave>
+    <waveActions area="east" delay="0">
+      <spawn type="elf_pathfindermelee" nr="2" order="wander" />
+      <spawn id="wiz_1" type="wizard" nr="1" forcenavmesh="true" delay="2" />
+      <setFaction id="wiz_1" action="set" faction="evil" delay="2.1" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="1" />
+    </waveActions>
+    <waveActions area="west" delay="0">
+      <spawn type="elf_pathfindermelee" nr="2" order="wander" />
+      <spawn id="wiz_2" type="wizard_hat_evil" nr="1" forcenavmesh="true" delay="2" order="wander" />
+      <setFaction id="wiz_2" action="set" faction="evil" delay="2.1" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 7
+        Notes:    Wizards, Elves (osotc)
+                  From either or both far sides of the sockey rink.
+        -->
+  <wave>
+    <waveActions area="east" delay="0">
+      <spawn type="warhound" nr="5" order="wander" />
+      <spawn type="soldier_captain_evil" nr="1" order="wander" delay="2" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="1" />
+    </waveActions>
+    <waveActions area="west" delay="0">
+      <spawn type="soldier_captain_evil" nr="5" order="wander" delay="2" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 8
+        Notes:    Wizards (ordinary and tron), Beholder
+                  From either or both far sides of the sockey rink.
+        -->
+  <wave>
+    <waveActions area="west" delay="0">
+      <spawn id="wiz_2" type="wizard" nr="1" />
+      <setFaction id="wiz_2" action="set" faction="evil" delay="0.1" />
+      <spawn type="beholder_malign" nr="1" delay="6" order="wander" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="1" />
+    </waveActions>
+    <waveActions area="east" delay="8">
+      <spawn id="wiz_1" type="wizard" nr="1" />
+      <setFaction id="wiz_1" action="set" faction="evil" delay="0.1" />
+      <spawn type="beholder_malign" nr="1" delay="6" order="wander" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 9
+        Notes:    Elves (osotc)
+                  From either or both far sides of the sockey rink.
+        -->
+  <wave>
+    <waveActions area="east" delay="0">
+      <spawn type="elf_noble" nr="4" />
+      <spawn type="elf_pathfinder" nr="3" forcenavmesh="true" delay="3" />
+
+      <playSound id="new_wave_cheers" volume="3" cue="Additionalmusic/amb_woot_regular_cheers" delay="1" />
+    </waveActions>
+    <waveActions area="west" delay="0">
+      <spawn type="elf_noble" nr="3" />
+      <spawn type="elf_pathfinder" nr="3" forcenavmesh="true" delay="3" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 10   BOSS WAVE (Monsters crash the sports event from the wall!)
+        Notes:    TrollWar, Spiders, GoblinBombers, Wizard (dies automatically)
+                  From the north (and only a few from the far sides).
+        -->
+  <wave>
+    <!-- Blow the north wall and spawn monster waves -->
+    <waveActions area="north_crash" delay="0">
+      <cameraShake magnitude="1.5" time="1.5" delay="0" />
+
+      <playSound volume="5" cue="Additional/woot_panicking_civilians" delay="1" />
+      <executeTrigger trigger="crashPartyEvent" delay="3" />
+
+      <!-- Change the music to a more dramatic tune -->
+      <stopMusic delay="2" />
+      <playMusic cue="music_deathmatch01" delay="6" />
+
+      <spawn type="goblin_bomber" nr="8" delay="4" />
+    </waveActions>
+    
+    <waveActions area="north" delay="5">
+      <spawn type="goblin_bomber" nr="3" />
+      <spawn type="troll_war_hook" nr="1" delay="3" />
+      <spawn type="troll_war_arbalest" nr="1" forcenavmesh="true" delay="3" />
+    </waveActions>
+
+    <waveActions area="east" delay="11">
+      <spawn type="spider_forest" nr="3" />
+    </waveActions>
+    <waveActions area="west" delay="11">
+      <spawn type="spider_forest" nr="3" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 11
+        Notes:    Orcs (warriors)
+                  From the north. Fast bunch first, slower comes behind.
+        -->
+  <wave>
+    <waveActions area="north" delay="0">
+      <spawn type="orc_warrior_noarmour" nr="5" />
+      <spawn type="orc_warrior_noshield" nr="6" delay="3" />
+    </waveActions>
+  </wave>
+  
+  <!--  WAVE 12
+        Notes:    TrollForest, Druid, TreeSpirit, SpiderPoison, GoblinWarriorArcher (woot)
+                  From the north. A few spiders from each far side.
+        -->
+  <wave>
+    <waveActions area="north" delay="0">
+      <spawn type="treespirit" nr="3" order="wander" />
+      <spawn type="druid" nr="2" forcenavmesh="true" delay="4" />
+      <spawn type="troll_forest_hook" nr="1" delay="8" />
+    </waveActions>
+    
+    <waveActions area="east" delay="0">
+      <spawn type="spider_poison" nr="1" delay="0" />
+      <spawn type="spider_forest" nr="3" delay="0" />
+      <spawn type="spider_poison" nr="1" delay="6" />
+      <spawn type="spider_poison" nr="1" delay="10" />
+    </waveActions>
+    <waveActions area="west" delay="0">
+      <spawn type="spider_poison" nr="1" delay="0" />
+      <spawn type="spider_forest" nr="3" delay="0" />
+      <spawn type="spider_poison" nr="1" delay="6" />
+      <spawn type="spider_poison" nr="1" delay="10" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 13
+        Notes:    panicking Civilians, Beastmen
+                  From the north.
+        -->
+  <wave>
+    <waveActions area="north" delay="0">
+      <!-- Spawn panicking civilians (functionaries) and make them almost dead, then auto-kill them -->
+      <spawn id="wpf_1" type="woot_panicking_functionary_female" nr="1" order="wander" reactto="none" />
+      <spawn id="wpf_2" type="woot_panicking_functionary_male" nr="1" order="wander" reactto="none" />
+      <spawn id="wpf_3" type="woot_panicking_functionary_male" nr="1" order="wander" reactto="none" />
+
+      <playSound volume="10" cue="Additional/woot_panicking_civilians" delay="0" />
+
+      <damage type="woot_panicking_functionary_female">
+        <damage attackproperty="damage" elements="physical" amount="250" magnitude="1" />
+      </damage>
+      <damage type="woot_panicking_functionary_male">
+        <damage attackproperty="damage" elements="physical" amount="450" magnitude="1" />
+      </damage>
+
+      <kill id="wpf_1" delay="2" />
+      <kill id="wpf_2" delay="4" />
+      <kill id="wpf_3" delay="5" />
+    </waveActions>
+
+    <waveActions area="north" delay="2">
+      <spawn type="beastman_raider" nr="6" delay="0" />
+      <spawn type="beastman_raider_lightning" nr="1" delay="1" />
+
+      <spawn type="beastman_brute" nr="4" delay="3" />
+      <spawn type="beastman_brute_fire" nr="1" delay="4" />
+
+      <spawn type="beastman_chieftain" nr="1" delay="6" />
+    </waveActions>
+
+    <waveActions area="east" delay="4">
+      <spawn type="woot_enraged_goblin_warlock" nr="1" delay="0" />
+    </waveActions>
+    <waveActions area="west" delay="4">
+      <spawn type="woot_enraged_goblin_warlock" nr="1" delay="0" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 14
+        Notes:    TrollStone, GoblinShaman, GoblinWarlock, GoblinWarriorArcher (woot)
+                  Goblin casters start to enter from the far sides, mimicking the initial waves.
+                  Trolls come in from the north.
+        -->
+  <wave>
+    <waveActions area="east" delay="0">
+      <spawn type="woot_enraged_goblin_warlock" nr="1" delay="0" />
+      <spawn type="goblin_shaman" nr="1" delay="0" />
+      <spawn type="woot_goblin_warrior_archer" nr="2" forcenavmesh="true" delay="2" />
+      <spawn type="woot_goblin_warrior_archer" nr="5" forcenavmesh="true" delay="10" />
+    </waveActions>
+    <waveActions area="west" delay="0">
+      <spawn type="woot_enraged_goblin_warlock" nr="1" delay="0" />
+      <spawn type="goblin_shaman" nr="1" delay="0" />
+      <spawn type="woot_goblin_warrior_archer" nr="2" forcenavmesh="true" delay="2" />
+      <spawn type="woot_goblin_warrior_archer" nr="5" forcenavmesh="true" delay="10" />
+    </waveActions>
+
+    <waveActions area="north" delay="6">
+      <spawn type="troll_stone" nr="1" />
+      <spawn type="troll_stone_unarmed" nr="1" delay="5" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 15   BOSS WAVE
+        Notes:    Khan, OrcCaptain, GoblinCaptain, GoblinWarriorArcher (woot)
+                  Khan from far sides. Orc and Goblin captains from north.
+        -->
+  <wave>
+    <waveActions area="east" delay="0">
+      <spawn type="boss_warlord" nr="1" delay="0" />
+      <spawn type="boss_warlord" nr="1" delay="4" />
+      <spawn type="troll_war_arbalest" nr="1" forcenavmesh="true" delay="14" />
+      <spawn type="woot_goblin_warrior_archer" nr="3" forcenavmesh="true" delay="12" />
+    </waveActions>
+    <waveActions area="west" delay="0">
+      <spawn type="boss_warlord" nr="1" delay="2" />
+      <spawn type="boss_warlord" nr="1" delay="6" />
+      <spawn type="troll_war_arbalest" nr="1" forcenavmesh="true" delay="14" />
+      <spawn type="woot_goblin_warrior_archer" nr="3" forcenavmesh="true" delay="12" />
+    </waveActions>
+
+    <waveActions area="north" delay="15">
+      <spawn type="woot_goblin_warrior_archer" nr="2" forcenavmesh="true" delay="2" />
+      <spawn type="goblin_warrior_captain" nr="1" delay="3" />
+      <spawn type="troll_snow" nr="1" delay="10" />
+      <spawn type="woot_enraged_goblin_warlock" nr="1" delay="17" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 16
+        Notes:    Dwarves, Firedrakes
+                  Dwarf melee and firedrakes from north.
+                  Dwarf mages from far sides.
+        -->
+  <wave>
+    <waveActions area="north" delay="0">
+      <spawn type="woot_enraged_goblin_warlock" nr="1" delay="0" />
+      <spawn type="dwarf_warrior" nr="5" delay="0" />
+      <spawn type="dwarf_warrior_noshield" nr="2" delay="3" />
+      
+      <spawn type="dwarf_captain" nr="1" delay="6" />
+    </waveActions>
+
+    <waveActions area="east" delay="0">
+      <spawn type="firedrake" nr="2" delay="0" />
+      <spawn type="dwarf_mage" nr="1" delay="0" />
+    </waveActions>
+    <waveActions area="west" delay="0">
+      <spawn type="firedrake" nr="2" delay="0" />
+      <spawn type="dwarf_mage" nr="1" delay="0" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 17
+        Notes:    Zombies, Necromancer
+                  Zombies in a horde from the north (and a few from far sides).
+                  Necromancer from all directions.
+        -->
+  <wave>
+    <waveActions area="north" delay="0">
+      <spawn type="zombie" nr="3" delay="0" />
+      <spawn type="zombie" nr="3" delay="3" />
+      <spawn type="zombie" nr="3" delay="6" />
+      <spawn type="zombie" nr="4" delay="9" />
+      <spawn type="zombie" nr="4" delay="12" />
+      <spawn type="necromancer" nr="2" forcenavmesh="true" delay="4" />
+    </waveActions>
+
+    <waveActions area="east" delay="3">
+      <spawn type="zombie" nr="5" delay="0" />
+      <spawn type="necromancer" nr="1" forcenavmesh="true" delay="1" />
+    </waveActions>
+    <waveActions area="west" delay="3">
+      <spawn type="zombie" nr="5" delay="0" />
+      <spawn type="necromancer" nr="1" forcenavmesh="true" delay="1" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 18
+        Notes:    Ghouls, Goblins, FireDrakes, GoblinWarriorArcher (woot)
+                  Ghouls from anywhere in a stream and a few Goblin Warlocks.
+        -->
+  <wave>
+    <waveActions area="any" delay="0">
+      <spawn type="ghoul_flamer" nr="2" delay="0" />
+    </waveActions>
+    <waveActions area="any" delay="2">
+      <spawn type="ghoul_flamer" nr="2" delay="0" />
+    </waveActions>
+    <waveActions area="any" delay="4">
+      <spawn type="ghoul_flamer" nr="2" delay="0" />
+    </waveActions>
+    
+    <waveActions area="any" delay="6">
+      <spawn type="ghoul_flamer" nr="2" delay="0" />
+      <spawn type="skeleton_darksoul_lightning" nr="2" />
+    </waveActions>
+    <waveActions area="any" delay="10">
+      <spawn type="ghoul_flamer" nr="2" delay="0" />
+      <spawn type="skeleton_darksoul_lightning" nr="2" />
+    </waveActions>
+    <waveActions area="any" delay="16">
+      <spawn type="ghoul_flamer" nr="2" delay="0" />
+      <spawn type="skeleton_darksoul_lightning" nr="2" />
+      <spawn type="skeleton_darksoul_lightning" nr="2" delay="2" />
+    </waveActions>
+
+    <waveActions area="north" delay="3">
+      <spawn type="firedrake" nr="2" delay="0" />
+      <spawn type="woot_goblin_warrior_archer" nr="3" forcenavmesh="true" delay="2" />
+    </waveActions>
+    <waveActions area="east" delay="6">
+      <spawn type="firedrake" nr="2" delay="0" />
+      <spawn type="woot_goblin_warrior_archer" nr="2" forcenavmesh="true" delay="2" />
+    </waveActions>
+    <waveActions area="west" delay="9">
+      <spawn type="firedrake" nr="2" delay="0" />
+      <spawn type="woot_goblin_warrior_archer" nr="2" forcenavmesh="true" delay="2" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 19
+        Notes:    Cultist, DeepOne, Enderman
+                  A stream of DeepOnes from the north, replaced with a stream of Enderman,
+                  then a final horde of DeepOne.
+                  Cultist teams from far sides.
+        -->
+  <wave>
+    <waveActions area="north" delay="0">
+      <spawn type="deep_one" nr="2" delay="0" />
+      <spawn type="deep_one" nr="2" delay="2" />
+      <spawn type="deep_one" nr="2" delay="4" />
+      <spawn type="deep_one" nr="2" delay="6" />
+      <spawn type="deep_one" nr="2" delay="8" />
+      <spawn type="enderman" nr="3" delay="10" />
+      <spawn type="enderman" nr="3" delay="11" />
+      <spawn type="enderman" nr="3" delay="12" />
+      <spawn type="deep_one" nr="5" delay="25" />
+    </waveActions>
+
+    <waveActions area="east" delay="4">
+      <spawn type="cultist" nr="3" forcenavmesh="true" delay="0" />
+      <spawn type="firedrake" nr="1" delay="5" />
+    </waveActions>
+    <waveActions area="west" delay="15">
+      <spawn type="cultist" nr="3" forcenavmesh="true" delay="0" />
+      <spawn type="firedrake" nr="1" delay="5" />
+    </waveActions>
+
+    <waveActions area="north" delay="15">
+      <spawn type="woot_goblin_warrior_archer" nr="4" forcenavmesh="true" delay="0" />
+      <spawn type="woot_enraged_goblin_warlock" nr="1" delay="5" />
+      <spawn type="woot_enraged_goblin_warlock" nr="1" delay="10" />
+    </waveActions>
+    <waveActions area="east" delay="17">
+      <spawn type="woot_goblin_warrior_archer" nr="2" forcenavmesh="true" delay="0" />
+    </waveActions>
+    <waveActions area="west" delay="17">
+      <spawn type="woot_goblin_warrior_archer" nr="2" forcenavmesh="true" delay="0" />
+    </waveActions>
+  </wave>
+
+  <!--  WAVE 20   BOSS WAVE
+        Notes:    All sorts of monsters.
+                  Casters from far sides with appropriate minions.
+                  Streams of lesser monsters from north.
+                  UnstableElementals at the end to trip up player by melting a lot of ice.
+        -->
+  <wave>
+    <waveActions area="north" delay="0">
+      <spawn type="woot_enraged_goblin_warlock" nr="1" delay="0" />
+      <spawn type="woot_goblin_warrior_archer" nr="2" forcenavmesh="true" delay="2" />
+      <spawn type="woot_goblin_warrior_archer" nr="1" forcenavmesh="true" delay="4" />
+      <spawn type="woot_goblin_warrior_archer" nr="1" forcenavmesh="true" delay="6" />
+      <spawn type="woot_goblin_warrior_archer" nr="1" forcenavmesh="true" delay="8" />
+      <spawn type="woot_goblin_warrior_archer" nr="1" forcenavmesh="true" delay="12" />
+      <spawn type="woot_goblin_warrior_archer" nr="1" forcenavmesh="true" delay="14" />
+      <spawn type="goblin_commando" nr="2" delay="14" />
+      <spawn type="woot_goblin_warrior_archer" nr="3" forcenavmesh="true" delay="26" />
+      <spawn type="woot_goblin_warrior_archer" nr="4" forcenavmesh="true" delay="45" />
+      <spawn type="woot_goblin_warrior_archer" nr="4" forcenavmesh="true" delay="60" />
+      <spawn type="goblin_warrior_captain" nr="3" delay="40" />
+      <spawn type="woot_enraged_goblin_warlock" nr="2" delay="42" />
+
+      <spawn type="beastman_raider_water" nr="1" delay="45" />
+      <spawn type="beastman_raider_lightning" nr="1" delay="45" />
+      <spawn type="beastman_raider" nr="3" delay="45" />
+
+      <spawn type="orc_berserk" nr="1" delay="52" />
+      <spawn type="orc_berserk" nr="2" delay="60" />
+
+      <spawn type="troll_forest" nr="2" delay="60" />
+      <spawn type="woot_enraged_goblin_warlock" nr="1" delay="62" />
+
+      <spawn type="boss_warlord" nr="1" delay="72" />
+      <spawn type="boss_warlord" nr="1" delay="75" />
+      <spawn type="woot_enraged_goblin_warlock" nr="1" delay="76" />
+    </waveActions>
+
+    <waveActions area="east" delay="45">
+      <spawn type="beastman_raider_water" nr="1" delay="0" />
+      <spawn type="beastman_raider" nr="3" delay="0" />
+    </waveActions>
+    <waveActions area="west" delay="45">
+      <spawn type="beastman_raider_lightning" nr="1" delay="0" />
+      <spawn type="beastman_raider" nr="3" delay="0" />
+    </waveActions>
+
+    <waveActions area="any" delay="0">
+      <spawn type="cultist" nr="1" forcenavmesh="true" delay="0" />
+    </waveActions>
+    <waveActions area="any" delay="10">
+      <spawn type="necromancer" nr="1" forcenavmesh="true" delay="0" />
+      <spawn type="zombie" nr="3" delay="3" />
+    </waveActions>
+    <waveActions area="any" delay="20">
+      <spawn type="goblin_shaman" nr="2" delay="0" />
+    </waveActions>
+    <waveActions area="any" delay="30">
+      <spawn type="goblin_warlock" nr="2" delay="0" />
+    </waveActions>
+    <!--<waveActions area="any" delay="40">
+      <spawn type="dwarf_mage" nr="2" delay="0" />
+    </waveActions>-->
+    <waveActions area="any" delay="55">
+      <spawn type="druid" nr="2" forcenavmesh="true" delay="0" />
+      <spawn type="treespirit" nr="2" delay="3" order="wander" />
+    </waveActions>
+    <waveActions area="any" delay="65">
+      <spawn type="necromancer" nr="2" forcenavmesh="true" delay="0" />
+      <spawn type="zombie" nr="2" delay="3" />
+    </waveActions>
+
+    <waveActions area="north" delay="73">
+      <spawn type="woot_unstable_elemental_fire" nr="2" delay="0" order="wander" />
+      <spawn type="woot_unstable_elemental_fire" nr="2" delay="2" order="wander" />
+    </waveActions>
+
+    <waveActions area="east" delay="86">
+      <spawn type="woot_unstable_elemental_fire" nr="2" delay="0" order="wander" />
+      <spawn type="troll_snow" nr="1" delay="4" />
+      <spawn type="dwarf_mage" nr="1" delay="6" order="wander" />
+      <spawn type="woot_enraged_goblin_warlock" nr="1" delay="8" />
+    </waveActions>
+    <waveActions area="west" delay="86">
+      <spawn type="woot_unstable_elemental_fire" nr="2" delay="0" order="wander" />
+      <spawn type="troll_war_arbalest" nr="1" forcenavmesh="true" delay="4" />
+      <spawn type="dwarf_mage" nr="1" delay="6" order="wander" />
+      <spawn type="woot_enraged_goblin_warlock" nr="1" delay="8" />
+    </waveActions>
+  </wave>
+
+</Scene>
+  
+  
+

@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Scene>
+  <Indoor>true</Indoor>
+  <model>ch_grimlab_build</model>
+  <reverb roomType="10" mix="40" />
+  <trigger id="Start" repeat="false">
+    <then>
+      <disableElement element="arcane,lightning,cold,life"/>
+      <cameramagnify magnification="0.8"/>
+      <playMusic cue="additionalmusic/music_grimnirs_lab" delay="3"/>
+
+      <!--<cameraMove target="camera_start" offset="0,0,0" magnification="0.8" time="0.01" lockInput="false" delay="0"/>
+      <cameraRelease delay="" time="3"/>-->
+    </then>
+  </trigger>
+
+  <trigger>
+    <then>   
+      <!--EFFECTS FOR THE ELEMENTAL SWITCHES-->
+      <spawnEffect area="effect01" effect="Grimlab_Life" name="life"/>
+      <spawnEffect area="effect01" effect="Grimlab_Shield2" name="shield"/>
+      <spawnEffect area="effect02" effect="Grimlab_Earth" name="earth"/>
+      <spawnEffect area="effect02" effect="Grimlab_Lightning" name="lightning"/>
+      <spawnEffect area="effect03" effect="Grimlab_Water" name="water"/>
+      <spawnEffect area="effect03" effect="Grimlab_Arcane" name="arcane"/>
+      <spawnEffect area="effect04" effect="Grimlab_Cold" name="cold"/>      
+      <spawnEffect area="effect04" effect="Grimlab_Fire" name="fire"/>
+
+      <spawnEffect area="effect01" effect="Grimlab_Life_Pulse" name="life_pulse"/>
+      <spawnEffect area="effect01" effect="Grimlab_Shield_Pulse" name="shield_pulse"/>
+      <spawnEffect area="effect02" effect="Grimlab_Earth_Pulse" name="earth_pulse"/>
+      <spawnEffect area="effect02" effect="Grimlab_Lightning_Pulse" name="lightning_pulse"/>
+      <spawnEffect area="effect03" effect="Grimlab_Water_Pulse" name="water_pulse"/>
+      <spawnEffect area="effect03" effect="Grimlab_Arcane_Pulse" name="arcane_pulse"/>
+      <spawnEffect area="effect04" effect="Grimlab_Cold_Pulse" name="cold_pulse"/>
+      <spawnEffect area="effect04" effect="Grimlab_Fire_Pulse" name="fire_pulse"/>
+
+        
+      <StopEffect name="life"/>
+      <StopEffect name="arcane"/>
+      <StopEffect name="cold"/>
+      <StopEffect name="lightning"/>
+
+      <!--EFFECTS FOR THE WALLMOUNTED TORCHES-->
+      <spawnEffect area="brazier0" effect="Ambient_fire_torch" name="torch00"/>
+      <spawnEffect area="brazier1" effect="Ambient_fire_torch" name="torch01"/>
+      <spawnEffect area="brazier2" effect="Ambient_fire_torch" name="torch02"/>
+      <spawnEffect area="brazier3" effect="Ambient_fire_torch" name="torch03"/>
+      <spawnEffect area="brazier4" effect="Ambient_fire_torch" name="torch04"/>
+      <spawnEffect area="brazier5" effect="Ambient_fire_torch" name="torch05"/>
+      <spawnEffect area="brazier6" effect="Ambient_fire_torch" name="torch06"/>
+
+      <!--spawnEffect area="effect_candle1" effect="Ambient_fire_candle" name="candle1"/-->
+      
+      <!-- SOUNDS FOR AMB-->
+
+      <playSound id="amb_sound1" cue="Ambience/amb_water_bubble01" volume="-15" area="sound_amb1" radius="90" apply3d="false" delay="0" />
+      <playSound id="amb_sound2" cue="Ambience/amb_drone02" volume="-10" area="sound_amb1" radius="90" apply3d="false" delay="0" />
+
+      
+      <!--setting lever counters-->
+      <counter name="count_lever1" action="set" value="0"/>
+      <counter name="count_lever2" action="set" value="0"/>
+      <counter name="count_lever3" action="set" value="0"/>
+      <counter name="count_lever4" action="set" value="0"/>
+    </then>
+  </trigger>
+
+  <trigger ID="elevator_shaft" autorun="true" repeat="true">
+    <if>
+      <present type="wizard" area="killbox" compareMethod="greater" nr="0" />
+    </if>
+    <then>
+      <kill type="wizard" area="killbox" />
+    </then>
+  </trigger>
+
+  <!--Trigger areas present in the level are
+  north_west
+  north_east
+  south_west
+  south_east
+  -->
+
+  <!--LEVER 1. This part defines the area of interaction with the lever and calls 2 triggers-->
+  <OnInteract locator="poi_machine_lever1" type="Interact" animhighlight="machine_lever1">
+    <executeTrigger trigger="machine_lever1_on"/>
+    <executeTrigger trigger="machine_lever1_off"/>
+    <disablePoi id="poi_machine_lever1" />
+    <enablePoi id="poi_machine_lever1" delay="1" />
+  </OnInteract>
+
+  <trigger ID="machine_lever1_on" autorun="false" repeat="true">
+    <if>
+      <!--If the lever is off, 0, then pull lever down and set counter to on-->
+      <counter name="count_lever1" compareMethod="equal" value="0"/>
+    </if>
+    <then>
+      <playSound id="life_activate" cue="Additional/misc_activate_life" volume="3" area="poi_machine_lever1" radius="70" apply3d="false" delay="0" />
+      <playAnimation name="machine_lever1" loop="false" delay="0" />
+      <counter name="count_lever1" action="set" value="1" delay="1"/>
+      <disableElement element="shield"/>
+      <enableElement element="life"/>
+      <StopEffect name="shield"/>
+      <StartEffect name="life_pulse"/>
+      <StartEffect name="life"/>
+    </then>
+  </trigger>
+
+  <trigger ID="machine_lever1_off" autorun="false" repeat="true">
+    <if>
+      <!--If the lever is on, 1, then pull lever up and set counter to off-->
+      <counter name="count_lever1" compareMethod="equal" value="1"/>
+    </if>
+    <then>
+      <playSound id="shield_activate" cue="Spells/spell_shield_self" volume="3" area="poi_machine_lever1" radius="70" apply3d="false" delay="0" />
+      <playAnimation name="machine_lever1" loop="false" delay="0" speed="-1" start="1" end="0" />
+      <counter name="count_lever1" action="set" value="0" delay="1"/>
+      <disableElement element="life"/>
+      <enableElement element="shield"/>
+      <StopEffect name="life"/>
+      <StartEffect name="shield_pulse"/>
+      <StartEffect name="shield"/>
+    </then>
+  </trigger>
+
+  <!--LEVER 2. This part defines the area of interaction with the lever and calls 2 triggers-->
+  <OnInteract locator="poi_machine_lever2" type="Interact" animhighlight="machine_lever2">
+    <executeTrigger trigger="machine_lever2_on"/>
+    <executeTrigger trigger="machine_lever2_off"/>
+    <disablePoi id="poi_machine_lever2" />
+    <enablePoi id="poi_machine_lever2" delay="1" />
+  </OnInteract>
+
+  <trigger ID="machine_lever2_on" autorun="false" repeat="true">
+    <if>
+      <!--If the lever is off, 0, then pull lever down and set counter to on-->
+      <counter name="count_lever2" compareMethod="equal" value="0"/>
+    </if>
+    <then>
+      <playSound id="lightning_activate" cue="Spells/spell_lightning_self" volume="3" area="poi_machine_lever2" radius="70" apply3d="false" delay="0" />
+      <playAnimation name="machine_lever2" loop="false" delay="0" />
+      <counter name="count_lever2" action="set" value="1" delay="1"/>
+      <disableElement element="earth"/>
+      <enableElement element="lightning"/>
+      <StopEffect name="earth"/>
+      <StartEffect name="lightning_pulse"/>
+      <StartEffect name="lightning"/>
+    </then>
+  </trigger>
+
+  <trigger ID="machine_lever2_off" autorun="false" repeat="true">
+    <if>
+      <!--If the lever is on, 1, then pull lever up and set counter to off-->
+      <counter name="count_lever2" compareMethod="equal" value="1"/>
+    </if>
+    <then>
+      <playSound id="earth_activate" cue="Spells/spell_earth_barrier" volume="3" area="poi_machine_lever2" radius="70" apply3d="false" delay="0" />
+      <playAnimation name="machine_lever2" loop="false" delay="0" speed="-1" start="1" end="0" />
+      <counter name="count_lever2" action="set" value="0" delay="1"/>
+      <disableElement element="lightning"/>
+      <enableElement element="earth"/>
+      <StopEffect name="lightning"/>
+      <StartEffect name="earth_pulse"/>
+      <StartEffect name="earth"/>
+    </then>
+  </trigger>
+
+  <!--LEVER 3. This part defines the area of interaction with the lever and calls 2 triggers-->
+  <OnInteract locator="poi_machine_lever3" type="Interact" animhighlight="machine_lever3">
+    <executeTrigger trigger="machine_lever3_on"/>
+    <executeTrigger trigger="machine_lever3_off"/>
+    <disablePoi id="poi_machine_lever3" />
+    <enablePoi id="poi_machine_lever3" delay="1" />
+  </OnInteract>
+
+  <trigger ID="machine_lever3_on" autorun="false" repeat="true">
+    <if>
+      <!--If the lever is off, 0, then pull lever down and set counter to on-->
+      <counter name="count_lever3" compareMethod="equal" value="0"/>
+    </if>
+    <then>
+      <playSound id="arcane_activate" cue="Spells/spell_arcane_self" volume="3" area="poi_machine_lever3" radius="70" apply3d="false" delay="0" />
+      <playAnimation name="machine_lever3" loop="false" delay="0" />
+      <counter name="count_lever3" action="set" value="1" delay="1"/>
+      <disableElement element="water"/>
+      <enableElement element="arcane"/>
+      <StopEffect name="water"/>
+      <StartEffect name="arcane_pulse"/>
+      <StartEffect name="arcane"/>
+    </then>
+  </trigger>
+
+  <trigger ID="machine_lever3_off" autorun="false" repeat="true">
+    <if>
+      <!--If the lever is on, 1, then pull lever up and set counter to off-->
+      <counter name="count_lever3" compareMethod="equal" value="1"/>
+    </if>
+    <then>
+      <playSound id="water_activate" cue="Spells/spell_water_projectile" volume="3" area="poi_machine_lever3" radius="70" apply3d="false" delay="0" />
+      <playAnimation name="machine_lever3" loop="false" delay="0" speed="-1" start="1" end="0" />
+      <counter name="count_lever3" action="set" value="0" delay="1"/>
+      <disableElement element="arcane"/>
+      <enableElement element="water"/>
+      <StopEffect name="arcane"/>
+      <StartEffect name="water_pulse"/>
+      <StartEffect name="water"/>
+    </then>
+  </trigger>
+
+  <!--LEVER 4. This part defines the area of interaction with the lever and calls 2 triggers-->
+  <OnInteract locator="poi_machine_lever4" type="Interact" animhighlight="machine_lever4">
+    <executeTrigger trigger="machine_lever4_on"/>
+    <executeTrigger trigger="machine_lever4_off"/>
+    <disablePoi id="poi_machine_lever4" />
+    <enablePoi id="poi_machine_lever4" delay="1" />
+  </OnInteract>
+
+  <trigger ID="machine_lever4_on" autorun="false" repeat="true">
+    <if>
+      <!--If the lever is off, 0, then pull lever down and set counter to on-->
+      <counter name="count_lever4" compareMethod="equal" value="0"/>
+    </if>
+    <then>
+      <playSound id="cold_activate" cue="Spells/spell_ice_blast" volume="3" area="poi_machine_lever4" radius="70" apply3d="false" delay="0" />
+      <playAnimation name="machine_lever4" loop="false" delay="0" />
+      <counter name="count_lever4" action="set" value="1" delay="1"/>
+      <disableElement element="fire"/>
+      <enableElement element="cold"/>
+      <StopEffect name="fire"/>
+      <StartEffect name="cold_pulse"/>
+      <StartEffect name="cold"/>
+    </then>
+  </trigger>
+
+  <trigger ID="machine_lever4_off" autorun="false" repeat="true">
+    <if>
+      <!--If the lever is on, 1, then pull lever up and set counter to off-->
+      <counter name="count_lever4" compareMethod="equal" value="1"/>
+    </if>
+    <then>
+      <playSound id="fire_activate" cue="Spells/spell_fire_self" volume="3" area="poi_machine_lever4" radius="70" apply3d="false" delay="0" />
+      <playAnimation name="machine_lever4" loop="false" delay="0" speed="-1" start="1" end="0" />
+      <counter name="count_lever4" action="set" value="0" delay="1"/>
+      <disableElement element="cold"/>
+      <enableElement element="fire"/>
+      <StopEffect name="cold"/>
+      <StartEffect name="fire_pulse"/>
+      <StartEffect name="fire"/>
+    </then>
+  </trigger>
+
+  <trigger ID="boss_music" autorun="false" repeat="false">
+    <then>
+      <StopMusic delay="32"/>
+      <playmusic cue="additionalmusic/music_cthulhu_battle" delay="41"/>
+      <playAnimation name="elevator_anim" loop="false" delay="35"/>
+      <spawnEffect effect="portal_to_rlyeh" area="spawn_experiment" delay="42" name="spawn_experiment626" />
+    </then>
+  </trigger>
+
+  <RuleSet type="Survival" waves="16">
+    <spawnAreas>
+      <area>north_west</area>
+      <area>north_east</area>
+      <area>south_west</area>
+      <area>south_east</area>
+      <area>spawn_pit01</area>
+      <area>spawn_pit02</area>
+      <area>spawn_pit03</area>
+      <area>spawn_pit04</area>
+      <area>spawn_pit05</area>
+      <area>spawn_experiment</area>
+    </spawnAreas>
+  </RuleSet>
+
+  <!--ENEMY WAVES-->
+  <!--WAVE 1-->
+  <!--Description-->
+  <wave>
+    <waveActions area="south_west" delay="5">
+      <spawn type="goblin_rogue" nr="5"/>
+      <spawn type="orc_regular" nr="2"/>
+    </waveActions>
+    <waveActions area="north_west" delay="5">
+      <spawn type="orc_regular" nr="2"/>
+      <spawn type="goblin_rogue" nr="5"/>
+    </waveActions>
+    <waveActions area="south_east" delay="5">
+      <spawn type="goblin_rogue" nr="5"/>
+      <spawn type="orc_regular" nr="2"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 2-->
+  <!--Description-->
+  <wave>
+    <waveActions area="south_west" delay="5">
+      <spawn type="beastman_mutant" nr="2"/>
+      <spawn type="spider_poison" nr="1"/>
+    </waveActions>
+    <waveActions area="north_east" delay="5">
+      <spawn type="spider_poison" nr="2"/>
+    </waveActions>
+    <waveActions area="north_west" delay="5">
+      <spawn type="spider_poison" nr="2"/>
+    </waveActions>
+    <waveActions area="south_east" delay="5">
+      <spawn type="beastman_mutant" nr="2"/>
+      <spawn type="spider_poison" nr="1"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 3-->
+  <!--Description-->
+  <wave>
+    <waveActions area="north_west" delay="5">
+      <spawn type="slimedrake" nr="1"/>
+      <spawn type="skeleton_elite" nr="2"/>
+    </waveActions>
+    <waveActions area="north_east" delay="5">
+      <spawn type="slimedrake" nr="1"/>
+      <spawn type="skeleton_elite" nr="2"/>
+    </waveActions>
+    <waveActions area="south_west" delay="5">
+      <spawn type="Daemon_cold_lesser" nr="4"/>
+      <spawn type="skeleton_elite" nr="2"/>
+    </waveActions>
+    <waveActions area="south_east" delay="5">
+      <spawn type="Daemon_cold_lesser" nr="4"/>
+      <spawn type="skeleton_elite" nr="2"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 4-->
+  <!--Description-->
+  <wave>
+    <waveActions area="north_west" delay="5">
+      <spawn type="troll_zombie_club" nr="1"/>
+      <spawn type="ghoul_poison" nr="4"/>
+      </waveActions>
+    <waveActions area="south_east" delay="5">
+      <spawn type="troll_zombie" nr="1"/>
+      <spawn type="ghoul_poison" nr="2"/>
+      <spawn type="goblin_rogue" nr="4"/>
+    </waveActions>
+    <waveActions area="south_west" delay="5">
+      <spawn type="troll_zombie" nr="1"/>
+      <spawn type="ghoul_poison" nr="2"/>
+      <spawn type="goblin_rogue" nr="4"/>
+    </waveActions>
+    <waveActions area="spawn_pit01" delay="7">
+      <spawn type="ghoul_poison" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="spawn_pit02" delay="8">
+      <spawn type="ghoul_poison" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="spawn_pit03" delay="5">
+      <spawn type="ghoul_poison" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="spawn_pit04" delay="9">
+      <spawn type="ghoul_poison" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 5-->
+  <!--Description-->
+  <wave>
+    <waveActions area="south_west" delay="5">
+      <spawn type="zombie" nr="4"/>
+      <spawn type="ghoul_poison" nr="1"/>
+      <spawn type="skeleton_elite" nr="2"/>
+    </waveActions>
+    <waveActions area="north_west" delay="5">
+      <spawn type="zombie" nr="4"/>
+      <spawn type="ghoul_poison" nr="1"/>
+      <spawn type="skeleton_elite" nr="2"/>
+    </waveActions>
+    <waveActions area="south_east" delay="5">
+      <spawn type="zombie" nr="5"/>
+      <spawn type="ghoul_poison" nr="1"/>
+      <spawn type="skeleton_elite" nr="2"/>
+    </waveActions>
+    <waveActions area="north_east" delay="5">
+      <spawn type="zombie" nr="5"/>
+      <spawn type="skeleton_elite" nr="2"/>
+    </waveActions>
+    <waveActions area="north_west" delay="10">
+      <spawn type="beastman_mutant" nr="2"/>
+    </waveActions>
+    <waveActions area="north_east" delay="10">
+      <spawn type="beastman_mutant" nr="2"/>
+    </waveActions>
+    <waveActions area="spawn_pit01" delay="10">
+      <spawn type="ghoul_poison" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="spawn_pit02" delay="11">
+      <spawn type="ghoul_poison" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="spawn_pit03" delay="11.5">
+      <spawn type="ghoul_poison" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="spawn_pit04" delay="12">
+      <spawn type="ghoul_poison" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 6-->
+  <!--Description-->
+  <wave>
+    <waveActions area="south_west" delay="5">
+      <spawn type="orc_regular" nr="3"/>
+      <spawn type="orc_infested" nr="2"/>
+      <spawn type="goblin_rogue" nr="3"/>
+    </waveActions>
+    <waveActions area="south_east" delay="5">
+      <spawn type="orc_regular" nr="3"/>
+      <spawn type="orc_infested" nr="2"/>
+      <spawn type="goblin_rogue" nr="3"/>
+      <spawn type="slimedrake" nr="1"/>
+    </waveActions>
+    <waveActions area="north_west" delay="5">
+      <spawn type="troll_stone" nr="1"/>
+      <spawn type="orc_infested" nr="1"/>
+      <spawn type="slimedrake" nr="1"/>
+    </waveActions>
+    <waveActions area="north_east" delay="5">
+      <spawn type="troll_stone" nr="1"/>
+      <spawn type="orc_infested" nr="1"/>
+      <spawn type="goblin_rogue" nr="3"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 7-->
+  <!--Description-->
+  <wave>
+    <waveActions area="south_west" delay="5">
+      <spawn type="beastman_raider_lightning" nr="2"/>
+      <spawn type="beastman_raider_water" nr="3"/>
+      <spawn type="firedrake" nr="1"/>
+    </waveActions>
+    <waveActions area="south_east" delay="5">
+      <spawn type="beastman_raider_lightning" nr="2"/>
+      <spawn type="beastman_raider_water" nr="3"/>
+      <spawn type="firedrake" nr="1"/>
+    </waveActions>
+    <waveActions area="north_west" delay="5">
+      <spawn type="firedrake" nr="2"/>
+      <spawn type="elemental_lightning" nr="1"/>
+    </waveActions>
+    <waveActions area="north_east" delay="5">
+      <spawn type="elemental_lightning" nr="2"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 8-->
+  <!--Description-->
+  <wave>
+    <waveActions area="south_west" delay="5">
+      <spawn type="orc_infested" nr="1"/>
+      <spawn type="zombie" nr="5"/>
+    </waveActions>
+    <waveActions area="south_east" delay="5">
+      <spawn type="orc_infested" nr="1"/>
+      <spawn type="zombie" nr="5"/>
+    </waveActions>
+    <waveActions area="north_west" delay="5">
+      <spawn type="orc_infested" nr="3"/>
+    </waveActions>
+    <waveActions area="north_east" delay="5">
+      <spawn type="beholder_malign" nr="1"/>
+      <spawn type="orc_infested" nr="1"/>
+    </waveActions>
+  </wave>  
+  
+  <!--WAVE 9-->
+  <!--Description-->
+  <wave>
+    <waveActions area="south_west" delay="5">
+      <spawn type="slimedrake" nr="1"/>
+      <spawn type="elemental_water" nr="2"/>
+      <spawn type="Daemon_cold_lesser" nr="2"/>
+    </waveActions>
+    <waveActions area="south_east" delay="5">
+      <spawn type="elemental_cold" nr="2"/>
+      <spawn type="Daemon_cold_lesser" nr="2"/>
+    </waveActions>
+    <waveActions area="north_east" delay="5">
+      <spawn type="Troll_zombie_snow" nr="1"/>
+      <spawn type="elemental_water" nr="1"/>
+      <spawn type="elemental_cold" nr="1"/>
+    </waveActions>
+    <waveActions area="north_west" delay="5">
+      <spawn type="slimedrake" nr="1"/>
+      <spawn type="Daemon_cold_lesser" nr="2"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 10-->
+  <!--Description-->
+  <wave>
+    <waveActions area="north_west" delay="5">
+      <spawn type="skeleton_elite" nr="3"/>
+      <spawn type="ghoul_poison" nr="1"/>
+    </waveActions>
+    <waveActions area="north_east" delay="5">
+      <spawn type="skeleton_elite" nr="3"/>
+      <spawn type="ghoul_poison" nr="1"/>
+    </waveActions>
+    <waveActions area="south_west" delay="5">
+      <spawn type="troll_zombie" nr="1"/>
+      <spawn type="ghoul_poison" nr="1"/>
+    </waveActions>
+    <waveActions area="south_east" delay="5">
+      <spawn type="troll_zombie" nr="1"/>
+      <spawn type="ghoul_poison" nr="1"/>
+    </waveActions>
+    <waveActions area="south_west" delay="15">
+      <spawn type="elemental_fire" nr="2"/>
+      <spawn type="skeleton_elite" nr="3"/>
+    </waveActions>
+    <waveActions area="south_east" delay="15">
+      <spawn type="elemental_fire" nr="2"/>
+      <spawn type="skeleton_elite" nr="3"/>
+    </waveActions>
+    <waveActions area="spawn_pit01" delay="5.5">
+      <spawn type="ghoul_poison" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="spawn_pit02" delay="5">
+      <spawn type="ghoul_poison" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="spawn_pit03" delay="6">
+      <spawn type="ghoul_poison" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="spawn_pit04" delay="7">
+      <spawn type="ghoul_poison" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 11-->
+  <!--Description-->
+  <wave>
+    <waveActions area="north_west" delay="5">
+      <spawn type="orc_infested" nr="3"/>
+      <spawn type="skeleton_darksoul_elite" nr="2"/>
+      <spawn type="skeleton_elite" nr="3"/>
+    </waveActions>
+    <waveActions area="south_east" delay="5">
+      <spawn type="orc_infested" nr="3"/>
+      <spawn type="skeleton_darksoul_elite" nr="2"/>
+      <spawn type="skeleton_elite" nr="3"/>
+    </waveActions>
+    <waveActions area="south_west" delay="5">
+      <spawn type="elemental_life" nr="2"/>
+      <spawn type="elemental_fire" nr="2"/>
+    </waveActions>
+    <waveActions area="north_east" delay="5">
+      <spawn type="elemental_life" nr="2"/>
+      <spawn type="elemental_fire" nr="2"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 12-->
+  <!--Description-->
+  <wave>
+    <waveActions area="south_west" delay="5">
+      <spawn type="skeleton_darksoul_elite" nr="3"/>
+    </waveActions>
+    <waveActions area="south_east" delay="5">
+      <spawn type="skeleton_darksoul_elite" nr="3"/>
+    </waveActions>
+    <waveActions area="north_east" delay="5">
+      <spawn type="orc_regular" nr="2"/>
+      <spawn type="skeleton_darksoul_elite" nr="3"/>
+    </waveActions>
+    <waveActions area="north_west" delay="5">
+      <spawn type="orc_regular" nr="2"/>
+      <spawn type="skeleton_darksoul_elite" nr="3"/>
+    </waveActions>
+    <waveActions area="spawn_pit01" delay="8">
+      <spawn type="troll_zombie_snow" nr="1" SpawnAnimation="spawn"/>
+    </waveActions>
+    <waveActions area="spawn_pit04" delay="11">
+      <spawn type="troll_zombie_snow" nr="1" SpawnAnimation="spawn"/>
+    </waveActions>
+    <waveActions area="spawn_pit02" delay="5">
+      <spawn type="troll_zombie_snow" nr="1" SpawnAnimation="spawn"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 13-->
+  <!--Description-->
+  <wave>
+    <waveActions area="south_west" delay="5">
+      <spawn type="beastman_mutant" nr="2"/>
+      <spawn type="beastman_raider_water" nr="4"/>
+    </waveActions>
+    <waveActions area="south_east" delay="5">
+      <spawn type="beastman_mutant" nr="2"/>
+      <spawn type="beastman_raider_water" nr="4"/>
+    </waveActions>
+    <waveActions area="north_west" delay="5">
+      <spawn type="beholder_malign" nr="1"/>
+      <spawn type="spider_poison" nr="3"/>
+    </waveActions>
+    <waveActions area="north_east" delay="5">
+      <spawn type="beholder_malign" nr="1"/>
+      <spawn type="spider_poison" nr="3"/>
+    </waveActions>
+  </wave>
+  
+  <!--WAVE 14-->
+  <!--Description-->
+  <wave>
+    <waveActions area="north_west" delay="5">
+      <spawn type="beastman_mutant" nr="2"/>
+      <spawn type="Daemon_cold_lesser" nr="3"/>
+      <spawn type="slimedrake" nr="1"/>
+    </waveActions>
+    <waveActions area="north_east" delay="5">
+      <spawn type="beastman_mutant" nr="2"/>
+      <spawn type="Daemon_cold_lesser" nr="3"/>
+      <spawn type="slimedrake" nr="1"/>
+    </waveActions>
+    <waveActions area="south_west" delay="5">
+      <spawn type="beastman_mutant" nr="2"/>
+      <spawn type="Daemon_cold_lesser" nr="3"/>
+      <spawn type="slimedrake" nr="1"/>
+    </waveActions>
+    <waveActions area="south_east" delay="5">
+      <spawn type="beastman_mutant" nr="2"/>
+      <spawn type="Daemon_cold_lesser" nr="3"/>
+      <spawn type="slimedrake" nr="1"/>
+    </waveActions>
+    <waveaction area="spawn_pit03" delay="8">
+      <spawn type="Troll_zombie_snow" nr="1" spawnAnimation="spawn"/>
+    </waveaction>
+    <waveaction area="spawn_pit02" delay="5">
+      <spawn type="Troll_zombie_snow" nr="1" spawnAnimation="spawn"/>
+    </waveaction>
+  </wave>
+  
+  <!--WAVE 15-->
+  <!--Description-->
+  <wave>
+    <waveActions area="south_west" delay="5">
+      <spawn type="orc_infested" nr="3"/>
+    </waveActions>
+    <waveActions area="south_east" delay="5">
+      <spawn type="ghoul_poison" nr="4"/>
+    </waveActions>
+    <waveActions area="north_west" delay="5">
+      <spawn type="ghoul_poison" nr="4"/>
+      <spawn type="firedrake" nr="1"/>
+    </waveActions>
+    <waveActions area="north_east" delay="5">
+      <spawn type="orc_infested" nr="3"/>
+      <spawn type="firedrake" nr="1"/>
+    </waveActions>
+    <waveActions area="south_west" delay="15">
+      <spawn type="skeleton_darksoul_elite" nr="2"/>
+    </waveActions>
+    <waveActions area="south_east" delay="15">
+      <spawn type="skeleton_darksoul_elite" nr="2"/>
+    </waveActions>
+    <waveActions area="north_west" delay="15">
+      <spawn type="skeleton_darksoul_elite" nr="2"/>
+    </waveActions>
+    <waveActions area="north_east" delay="15">
+      <spawn type="skeleton_darksoul_elite" nr="2"/>
+    </waveActions>
+  </wave>
+
+  <!--WAVE 16-->
+  <!--Description-->
+  <wave>
+    <waveActions>
+      <executeTrigger trigger="boss_music"/>
+    </waveActions>
+    <waveActions area="spawn_experiment" delay="42">
+      <spawn type="grimnirs_starspawn" spawnAnimation="spawn" nr="1"/>
+    </waveActions>
+    <waveActions area="north_west" delay="5">
+      <spawn type="skeleton_darksoul_elite" nr="3"/>
+      <spawn type="orc_infested" nr="2"/>
+    </waveActions>
+    <waveActions area="south_east" delay="5">
+      <spawn type="skeleton_darksoul_elite" nr="3"/>
+      <spawn type="orc_infested" nr="2"/>
+    </waveActions>
+    <waveActions area="south_west" delay="4">
+      <spawn type="skeleton_darksoul_elite" nr="3"/>
+      <spawn type="orc_infested" nr="2"/>
+    </waveActions>
+    <waveActions area="spawn_pit03" delay="7">
+      <spawn type="troll_zombie_snow" nr="1" spawnAnimation="spawn"/>
+    </waveActions>
+    <waveActions area="spawn_pit04" delay="15">
+      <spawn type="troll_zombie_snow" nr="1" spawnAnimation="spawn"/>
+    </waveActions>
+  </wave>
+</Scene>
+  
+  
+
