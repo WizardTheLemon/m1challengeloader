@@ -10,8 +10,6 @@
       <playAnimation name="Godrays" loop="true"/>
       <playSound id="glade_01" cue="Ambience/amb_tree_creak01" volume="-20" area="glade_01" radius="170" apply3d="true" />
       <playSound id="glade_02" cue="Ambience/amb_wind_trees02" volume="-14" area="glade_02" radius="150" apply3d="true" />
-	  
-				<magick position="0,20,-20" magicktype="Sundead" delay="0"/>
     </then>
   </trigger>
 
@@ -24,203 +22,141 @@
     </spawnAreas>
   </RuleSet>
 
-	<trigger id="crazyweather" repeat="10" autorun="true">
+
+
+
+
+
+	<!-- spawn if spooder doesn't exist -->
+    <trigger id="spider_spawn" repeat="15" autorun="true">
+		<if>
+			<characterHealth id="tornadomaker" compareMethod="greater" health="0" invert="true"/>
+		</if>
 		<then>
-			<random>
-				<magick position="-20,-20,-20" magicktype="Tornado" delay="0"/>
-			</random>
-			<random>
-				<magick position="0,20,-20" magicktype="Tornado" delay="0"/>
-			</random>
-			<random>
-				<magick position="-20,-20,-20" magicktype="Tornado" delay="0"/>
-			</random>
-			<random>
-				<magick position="0,20,-20" magicktype="Tornado" delay="0"/>
-			</random>
-			<random>
-				<magick position="-30,-30,-30" magicktype="Tornado" delay="0"/>
-			</random>
-			<random>
-				<magick position="0,-30,0" magicktype="Tornado" delay="0"/>
-			</random>
-			<random>
-				<magick position="-30,-30,0" magicktype="Tornado" delay="0"/>
-			</random>
-			<random>
-				<magick position="0,30,-30" magicktype="Tornado" delay="0"/>
-			</random>
-			<random>
-				<executeTrigger trigger="crazyweather2" delay="0"/>
-			</random>
+			<spawn type="Ghost_Citizen_female00" nr="1" area="south" id="tornadomaker" delay="8"/>
+			<setFaction id="tornadomaker" action="set" faction="neutral" delay="8.1" area="any"/>
+			<giveOrder id="tornadomaker" area="any" delay="8.1" order="wander" reactto="none" reaction="wander"/>
+			<!-- crashes everyone's but the host's game. It works though if people hot join after the unit has been etherealized -->
+			<!-- so instead I decided to use a "ghost" character from Dungeons and Gargoyles instead of spider_baby - I would've preferred the spider_baby solution but oh well -->
+			<!--<magick id="tornadomaker" magicktype="Etherealize" delay="0.1"/> --> 
 		</then>
 	</trigger>
-
-	<trigger id="crazyweather2" repeat="true" autorun="false">
+	
+	<!-- make spooder invisible every game tick (it turns visible if it touches someone or runs into the tornado) -->
+    <trigger id="spider_hide" repeat="1" autorun="true">
+		<if>
+			<characterHealth id="tornadomaker" compareMethod="greater" health="0.1" />
+		</if>
 		<then>
-			<random>
-				<magick position="-20,-20,-20" magicktype="Tornado" delay="0"/>
-			</random>
-			<random>
-				<magick position="0,20,-20" magicktype="Tornado" delay="0"/>
-			</random>
-			<random>
-				<magick position="0,0,0" magicktype="Thunders" delay="0"/>
-			</random>
-			<random>
-				<magick position="0,0,0" magicktype="Blizzard" delay="0"/>
-			</random>
+			<magick id="tornadomaker" magicktype="invisibility" delay="0"/>
 		</then>
 	</trigger>
-
+	
+  <!-- use the spooder to cast tornados; also shrink spider in order to reduce the hitbox and make it more nimble -->
+    <trigger id="spider_cast" repeat="7" autorun="true">
+		<if>
+			<characterHealth id="tornadomaker" compareMethod="greater" health="0.1" />
+		</if>
+		<then>
+			<magick id="tornadomaker" magicktype="shrink" delay="0"/>
+			<magick id="tornadomaker" magicktype="tornado" delay="0"/>
+		</then>
+  </trigger>
+  
+  
+  
+  
+  
+  
+  
   
   <!--WAVE 1 - Basic units-->
   <!--Shows Goblin rogues-->
   <wave>
-    <waveActions area="south" delay="0">
-      <spawn type="goblin_rogue" 		nr="4"/>
-      <spawn type="goblin_rogue_archer" nr="3"/>
-      <spawn type="spider_poison" 		nr="2" delay="3"/>
-    </waveActions>
-    <waveActions area="east" delay="0">
-      <spawn type="goblin_rogue" 		nr="4"/>
-      <spawn type="goblin_rogue_archer" nr="3"/>
-      <spawn type="spider_poison" 		nr="2" delay="3"/>
-    </waveActions>
-    <waveActions area="west" delay="0">
-      <spawn type="goblin_rogue" 		nr="4"/>
-      <spawn type="spider_poison" 		nr="2" delay="3"/>
-      <spawn type="troll_war_arbalest" 	nr="1" delay="5"/>
+    <waveActions area="any" delay="0">
+																								<unlockMagick magicktype="Levitate" delay="1" />
+
+		<spawn type="goblin_rogue" nr="8"/>
+		<spawn type="goblin_rogue" nr="8" delay="6"/>
+		<spawn type="goblin_rogue" nr="8" delay="12"/>
+		<spawn type="goblin_rogue_archer" nr="8" delay="3"/>
+		<spawn type="goblin_rogue_archer" nr="8" delay="10"/>
+		<spawn type="goblin_rogue_archer" nr="8" delay="15"/>
+		
+        <spawn type="troll_forest" nr="1"/>
+      <spawn type="beastman_brute_earth"  nr="1"/>
     </waveActions>
   </wave>
   
   <!--WAVE 2 - Additional units-->
   <!--Orcs Enter the fray-->
   <wave>
-    <waveActions area="east" delay="0">
-		<spawn type="troll_forest_hook" nr="1"/>
-    </waveActions>
-    <waveActions area="west" delay="0">
-		<spawn type="troll_forest_hook" nr="1"/>
-    </waveActions>
-    <waveActions area="north" delay="0">
-		<spawn type="beastman_raider" nr="4"/>
-		<spawn type="beastman_raider" nr="4" delay="7"/>
-    </waveActions>
-    <waveActions area="south" delay="4">
-		<spawn type="goblin_rogue_archer" nr="3"/>
-		<spawn type="spider_poison" 		nr="2" delay="3"/>
-		<spawn type="troll_war_arbalest" 	nr="1" delay="5"/>
+    <waveActions area="any" delay="0">
+																								<unlockMagick magicktype="haste" delay="0" />	
+      <spawn type="beastman_raider" nr="10" delay="5"/>
+      <spawn type="beastman_raider" nr="10" delay="15"/>
+      <spawn type="beastman_brute" nr="13"/>
     </waveActions>
   </wave>
   
 	<!--WAVE 3 - Basic wave example-->
   <!--More goblins from different areas and a shaman to lead them, gives player a rather simple but good example of a real wave-->
-	<wave>
-    <waveActions area="east" delay="0">
-		<spawn type="ghoul_poison" nr="2"/>
+	<wave >
+    <waveActions area="any" delay="0">
+																								<unlockMagick magicktype="TractorPull" delay="4" />
+      <spawn type="goblin_shaman" nr="9"/>
+      <spawn type="goblin_rogue" nr="14"/>
+      <spawn type="goblin_rogue_archer" nr="10" delay="5"/>
+      <spawn type="goblin_rogue_archer" nr="10" delay="15"/>
     </waveActions>
-    <waveActions area="west" delay="0">
-		<spawn type="ghoul_poison" nr="2"/>
-    </waveActions>
-	
-    <waveActions area="north" delay="0">
-		<spawn type="goblin_shaman"		nr="1"/>
-		<spawn type="goblin_rogue" 		nr="3"/>
-		<spawn type="goblin_rogue_archer" nr="3" delay="5"/>
-		<spawn type="goblin_shaman"		nr="1" delay="6"/>
-		<spawn type="Orc_light_armored" 	nr="3" delay="7"/>
-    </waveActions>
-    <waveActions area="south" delay="0">
-		<spawn type="goblin_shaman"		nr="1"/>
-		<spawn type="goblin_rogue" 		nr="3"/>
-		<spawn type="goblin_rogue_archer" nr="3" delay="5"/>
-		<spawn type="goblin_shaman"		nr="1" delay="6"/>
-		<spawn type="Orc_light_armored" 	nr="3" delay="7"/>
+    <waveActions area="any" delay="5">
+      <spawn type="goblin_bomber" nr="3"/>
+      <spawn type="goblin_rogue" nr="14"/>
+      <spawn type="goblin_rogue_archer" nr="10" delay="5"/>
+      <spawn type="goblin_rogue_archer" nr="10" delay="15"/>
     </waveActions>
 	</wave>
 
 	<!--WAVE 4 - First challenge/boss-->
   <!--3 Forest trolls from three directions. Gives the player a feel for what a boss wave might look like.-->
   <wave>
-    <waveActions area="north" delay="0">
-		<spawn type="slimedrake" 			nr="1"/>
-		<spawn type="goblin_shaman"			nr="1"/>
-		<spawn type="beastman_brute_fire" 	nr="1"/>
+    <waveActions area="east" delay="0">
+																								<unlockMagick magicktype="Portal" delay="4" />
+      <spawn type="troll_forest_unarmed" nr="2" delay="2"/>
+      <spawn type="beastman_brute_fire"  nr="2"/>
+      <spawn type="beastman_brute_fire"  nr="2"/>
     </waveActions>
-    <waveActions area="south" delay="0">
-		<spawn type="slimedrake" 			nr="1"/>
-		<spawn type="goblin_shaman"			nr="1"/>
-		<spawn type="beastman_brute_fire" 	nr="1"/>
+    <waveActions area="west" delay="3">
+      <spawn type="troll_forest_unarmed" nr="2" delay="2"/>
+      <spawn type="beastman_brute_fire"  nr="2"/>
+      <spawn type="beastman_brute_fire"  nr="2"/>
     </waveActions>
-	
-    <waveActions area="east" delay="10">
-		<spawn type="slimedrake" 			nr="1"/>
-		<spawn type="goblin_shaman"			nr="1"/>
-		<spawn type="beastman_brute_fire" 	nr="1"/>
-    </waveActions>
-    <waveActions area="west" delay="10">
-		<spawn type="slimedrake" 			nr="1"/>
-		<spawn type="goblin_shaman"			nr="1"/>
-		<spawn type="beastman_brute_fire" 	nr="1"/>
-    </waveActions>
-	
-    <waveActions area="any" delay="0">
-      <spawn type="goblin_rogue"	nr="2"/>
-      <spawn type="goblin_ranger"   nr="6" delay="2"/>
-    </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="goblin_rogue"	nr="6"/>
-      <spawn type="goblin_ranger"   nr="2" delay="2"/>
-    </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="goblin_rogue"	nr="4"/>
-      <spawn type="goblin_ranger"   nr="4" delay="2"/>
+    <waveActions area="south" delay="6">
+      <spawn type="troll_forest_unarmed" nr="2" delay="2"/>
+      <spawn type="beastman_brute_fire"  nr="2"/>
+      <spawn type="beastman_brute_fire"  nr="2"/>
     </waveActions>
   </wave>
 
   <!--WAVE 5 - First real wave-->
   <!--Beastmen raiders with alpha leader and brute for support. Upping difficulty but leaving lots of room for harder waves to come. More synergy between units.-->
   <wave>
-
-    <waveActions area="east" delay="5">
-		<spawn type="spider_forest" 		nr="4"/>
-		<spawn type="beholder_malign" 		nr="1" delay="2"/>
-		<spawn type="beastman_brute_earth" 	nr="1" delay="2"/>
-		<spawn type="spider_poison" 		nr="4" delay="5"/>
-		<spawn type="spider_forest" 		nr="5" delay="12"/>
-    </waveActions>
-    <waveActions area="west" delay="20">
-		<spawn type="spider_forest" 		nr="4"/>
-		<spawn type="beholder_malign" 		nr="1" delay="2"/>
-		<spawn type="beastman_brute_earth" 	nr="1" delay="2"/>
-		<spawn type="spider_poison" 		nr="4" delay="5"/>
-		<spawn type="spider_forest" 		nr="5" delay="12"/>
+    <waveActions area="east" delay="9">
+	  <spawn type="beastman_raider_water" nr="2" delay="0"/>
+      <spawn type="beastman_raider_lightning" nr="5"/>
+      <spawn type="beastman_raider_water" nr="5" delay="10"/>
+      <spawn type="beastman_raider" nr="10" delay="3" />														<unlockMagick magicktype="Sundead" delay="4" />
+      <spawn type="druid"   nr="3"/>
     </waveActions>
 	
-    <waveActions area="north" delay="0">
-      <spawn type="goblin_rogue"	nr="4"/>
-      <spawn type="beastman_raider" nr="4"/>
-      <spawn type="goblin_rogue"	nr="2" delay="4"/>
-      <spawn type="beastman_raider" nr="2" delay="4"/>
-      <spawn type="goblin_rogue"	nr="2" delay="7"/>
-      <spawn type="beastman_raider" nr="2" delay="7"/>
-      <spawn type="goblin_rogue"	nr="2" delay="10"/>
-      <spawn type="beastman_raider" nr="2" delay="10"/>
-      <spawn type="goblin_rogue"	nr="2" delay="14"/>
-      <spawn type="beastman_raider" nr="2" delay="14"/>
-    </waveActions>
-    <waveActions area="south" delay="5">
-      <spawn type="goblin_rogue"	nr="4"/>
-      <spawn type="beastman_raider" nr="4"/>
-      <spawn type="goblin_rogue"	nr="2" delay="4"/>
-      <spawn type="beastman_raider" nr="2" delay="4"/>
-      <spawn type="goblin_rogue"	nr="2" delay="7"/>
-      <spawn type="beastman_raider" nr="2" delay="7"/>
-      <spawn type="goblin_rogue"	nr="2" delay="10"/>
-      <spawn type="beastman_raider" nr="2" delay="10"/>
-      <spawn type="goblin_rogue"	nr="2" delay="14"/>
-      <spawn type="beastman_raider" nr="2" delay="14"/>
+    <waveActions area="west" delay="0">
+																								<unlockMagick magicktype="performanceenchantment" delay="0" />
+      <spawn type="beastman_raider_water" nr="2" delay="0"/>
+	  <spawn type="beastman_raider_lightning" nr="5"/>
+      <spawn type="beastman_raider_water" nr="5" delay="10"/>
+      <spawn type="beastman_raider" nr="9" delay="5" />
+      <spawn type="beastman_brute"  nr="9"/>
+	  <spawn type="druid"   nr="3"/>
     </waveActions>
   </wave>
 	
@@ -229,34 +165,18 @@
       Bombers adds a fun/random factor and the rangers together with a bunch of archers should make players constantly assailed with arrows.-->
   <wave>
     <waveActions area="any" delay="0">
-		<magick position="-20,-20,-20" 	magicktype="sundead" delay="0"/>
-		<magick position="0,20,-20" 	magicktype="sundead" delay="8"/>
-		<magick position="-20,-20,-20" 	magicktype="sundead" delay="16"/>
-		<magick position="0,20,-20" 	magicktype="sundead" delay="24"/>
+																								<unlockMagick magicktype="judgementspray" delay="4" />
+      <spawn type="troll_forest_unarmed" nr="1" delay="2"/>
+	  <spawn type="goblin_bomber" nr="6" delay="4" />
+      <spawn type="goblin_ranger" nr="10" delay="7" />
+      <spawn type="goblin_rogue_archer" nr="15" delay="8"/>
     </waveActions>
 	
-    <waveActions area="east" delay="0">
-		<spawn type="ghoul_poison" 		nr="1"/>
-		<spawn type="beastman_mutant" 	nr="1"/>
-		<spawn type="ghoul_poison" 		nr="1" delay="6"/>
-		<spawn type="beastman_mutant" 	nr="1" delay="6"/>
-    </waveActions>
-    <waveActions area="west" delay="0">
-		<spawn type="ghoul_poison" 		nr="1"/>
-		<spawn type="beastman_mutant" 	nr="1"/>
-		<spawn type="ghoul_poison" 		nr="1" delay="6"/>
-		<spawn type="beastman_mutant" 	nr="1" delay="6"/>
-    </waveActions>
-	
-    <waveActions area="north" delay="0">
-		<spawn type="goblin_bomber" 		nr="6"/>
-		<spawn type="troll_zombie_club" 	nr="1"/>
-		<spawn type="goblin_rogue_archer" 	nr="6" delay="7"/>
-    </waveActions>
-    <waveActions area="south" delay="0">
-		<spawn type="troll_zombie" 			nr="1"/>
-		<spawn type="goblin_ranger" 		nr="3" delay="4"/>
-		<spawn type="goblin_rogue_archer" 	nr="6" delay="7"/>
+    <waveActions area="any" delay="6">
+	  <spawn type="troll_forest_unarmed" nr="1" delay="2"/>
+      <spawn type="goblin_bomber" nr="4" delay="4" />
+      <spawn type="goblin_ranger" nr="10" delay="7"/>
+      <spawn type="goblin_rogue_archer" nr="15" delay="8"/>
     </waveActions>
   </wave>
   
@@ -264,13 +184,16 @@
   <!--Shamans, rogues and orcs. Rogues harras and limits player options while orcs get close to do proper damage. A shaman for support-->
   <wave>
     <waveActions area="any" delay="0">
-      <spawn type="orc_regular"   nr="3"/>
-      <spawn type="goblin_shaman" nr="1"/>
-      <spawn type="goblin_rogue"  nr="7"/>
+																								<unlockMagick magicktype="Tornado" delay="1" />
+      <spawn type="orc_regular"   nr="7" delay="2" />
+      <spawn type="goblin_shaman" nr="9"/>
+      <spawn type="goblin_rogue"  nr="9" delay="4"/>
+      <spawn type="goblin_rogue"  nr="9" delay="7"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="orc_regular"   nr="4"/>
-      <spawn type="goblin_rogue"  nr="7"/>
+    <waveActions area="any" delay="9">
+      <spawn type="orc_regular"   nr="7" delay="4" />
+      <spawn type="goblin_rogue"  nr="9"/>
+      <spawn type="goblin_rogue"  nr="9" delay="4"/>
     </waveActions>
   </wave>
   
@@ -279,19 +202,20 @@
       Brutes can tank and make life hard for the players while druids both act as heavy damage-dealers as well as buffing the brutes.-->
   <wave>
     <waveActions area="east" delay="0">
-      <spawn type="druid"   nr="1"/>
-      <spawn type="beastman_brute"   nr="3"/>
-      <spawn type="beastman_brute_earth"  nr="1"/>
+																								<unlockMagick magicktype="Sundead" delay="4" />
+      <spawn type="druid"   nr="6"/>
+      <spawn type="beastman_brute"   nr="9" delay="7" />
+      <spawn type="beastman_brute_earth"  nr="4"/>
     </waveActions>
-    <waveActions area="west" delay="0">
-      <spawn type="druid"   nr="1"/>
-      <spawn type="beastman_brute"   nr="3"/>
-      <spawn type="beastman_brute_earth"  nr="1"/>
+    <waveActions area="west" delay="17">
+      <spawn type="druid"   nr="6"/>
+      <spawn type="beastman_brute"   nr="9" delay="7"/>
+      <spawn type="beastman_brute_earth"  nr="7"/>
     </waveActions>
     <waveActions area="south" delay="0">
-      <spawn type="druid"   nr="1"/>
-      <spawn type="beastman_brute"   nr="2"/>
-      <spawn type="beastman_brute_fire"  nr="1"/>
+      <spawn type="druid"   nr="6"/>
+      <spawn type="beastman_brute"   nr="9" delay="6"/>
+      <spawn type="beastman_brute_fire"  nr="4"/>
     </waveActions>
   </wave>
 	
@@ -301,32 +225,41 @@
   A dangerous tank and dps setup.-->
   <wave>
     <waveActions area="any" delay="0">
-      <spawn type="troll_forest" nr="1"/>
+																								<unlockMagick magicktype="rain" delay="1" />
+      <spawn type="troll_forest" nr="3"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="troll_forest" nr="1"/>
+	
+    <waveActions area="any" delay="1">
+      <spawn type="troll_forest" nr="3"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="goblin_ranger" nr="2"/>
+	
+    <waveActions area="any" delay="3">
+      <spawn type="goblin_ranger" nr="15"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="goblin_ranger" nr="2"/>
-    </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="goblin_ranger" nr="2"/>
+	
+    <waveActions area="any" delay="6">
+      <spawn type="goblin_ranger" nr="15"/>
     </waveActions>
 
     <waveActions area="any" delay="15">
-      <spawn type="goblin_ranger" nr="1"/>
-      <spawn type="goblin_rogue_archer" nr="5"/>
+      <spawn type="goblin_ranger" nr="13"/>
+      <spawn type="goblin_rogue_archer" nr="13" delay="6"/>
     </waveActions>
-    <waveActions area="any" delay="15">
-      <spawn type="goblin_ranger" nr="1"/>
-      <spawn type="goblin_rogue_archer" nr="5"/>
+	
+    <waveActions area="any" delay="25">
+      <spawn type="troll_forest" nr="1"/>
+      <spawn type="goblin_ranger" nr="13" delay="6"/>
+      <spawn type="goblin_rogue_archer" nr="13"/>
     </waveActions>
-    <waveActions area="any" delay="15">
-      <spawn type="goblin_ranger" nr="1"/>
-      <spawn type="goblin_rogue_archer" nr="5"/>
+	
+    <waveActions area="any" delay="35">
+      <spawn type="troll_forest" nr="1"/>
+      <spawn type="goblin_ranger" nr="13"/>
+      <spawn type="goblin_rogue_archer" nr="13" delay="6"/>
+    </waveActions>
+	
+    <waveActions area="any" delay="45">
+      <spawn type="goblin_ranger" nr="15"/>
     </waveActions>
   </wave>
 
@@ -336,27 +269,33 @@
       Good example of the danger in multi-creature-type combos.-->
 	<wave>
     <waveActions area="any" delay="0">
-      <spawn type="beastman_brute_fire" nr="1"/>
-      <spawn type="orc_regular" nr="3"/>
-      <spawn type="orc_berserk" nr="1"/>
-    </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="beastman_brute_fire" nr="1"/>
-      <spawn type="orc_regular" nr="3"/>
-      <spawn type="orc_berserk" nr="1"/>
-    </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="beastman_brute_fire" nr="1"/>
-      <spawn type="orc_regular" nr="3"/>
+																								<unlockMagick magicktype="grease" delay="0" />
+      <spawn type="beastman_brute_fire" nr="5"/>
+      <spawn type="orc_regular" nr="6" delay="5"/>
+      <spawn type="orc_berserk" nr="9" delay="2"/>
     </waveActions>
 
-    <waveActions area="any" delay="15">
-      <spawn type="beastman_raider_lightning" nr="1"/>
-      <spawn type="orc_berserk" nr="2"/>
+    <waveActions area="any" delay="0">
+      <spawn type="beastman_raider_lightning" nr="12" delay="2"/>
+      <spawn type="orc_berserk" nr="6"/>
+      <spawn type="orc_berserk" nr="6" delay="8"/>
     </waveActions>
-    <waveActions area="any" delay="15">
-      <spawn type="beastman_raider_lightning" nr="1"/>
-      <spawn type="orc_berserk" nr="2"/>
+	
+    <waveActions area="any" delay="6">
+      <spawn type="beastman_brute_fire" nr="3"/>
+      <spawn type="orc_regular" nr="6" delay="4"/>
+      <spawn type="orc_berserk" nr="6" delay="8"/>
+    </waveActions>
+	
+    <waveActions area="any" delay="20">
+      <spawn type="beastman_brute_fire" nr="4"/>
+      <spawn type="orc_regular" nr="9" delay="8"/>
+    </waveActions>
+	
+    <waveActions area="any" delay="55">
+      <spawn type="beastman_raider_lightning" nr="12" delay="4"/>
+      <spawn type="orc_berserk" nr="6"/>
+      <spawn type="orc_berserk" nr="6" delay="8"/>
     </waveActions>
 	</wave>
 
@@ -364,25 +303,46 @@
   <!--Rogues and bombers creates chaos. Beastman reinforcement swoop in to finish the job in the goblins wake.-->
   <wave>
     <waveActions area="any" delay="0">
-      <spawn type="goblin_rogue"  nr="5"/>
-      <spawn type="goblin_bomber" nr="4"/>
+																								<unlockMagick magicktype="teleport" delay="1" />
+      <spawn type="goblin_rogue"  nr="16"/>
+      <spawn type="goblin_bomber" nr="4" delay="4"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="goblin_rogue"  nr="5"/>
-      <spawn type="goblin_bomber" nr="4"/>
+    <waveActions area="any" delay="10">
+      <spawn type="goblin_rogue"  nr="16"/>
+      <spawn type="goblin_bomber" nr="4" delay="4"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="goblin_rogue"  nr="5"/>
-      <spawn type="goblin_bomber" nr="4"/>
+    <waveActions area="any" delay="20">
+      <spawn type="goblin_rogue"  nr="16"/>
+      <spawn type="goblin_bomber" nr="4" delay="4"/>
     </waveActions>
 
-    <waveActions area="any" delay="15">
-      <spawn type="beastman_raider"           nr="5"/>
-      <spawn type="beastman_raider_lightning" nr="1"/>
+    <waveActions area="east" delay="15">
+      <spawn type="beastman_raider"       		nr="1" delay="0"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="0"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="0"/>
+      <spawn type="beastman_raider"       		nr="1" delay="7"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="7"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="7"/>
+      <spawn type="beastman_raider"       		nr="1" delay="14"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="14"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="14"/>
+      <spawn type="beastman_raider"       		nr="1" delay="21"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="21"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="21"/>
     </waveActions>
-    <waveActions area="any" delay="15">
-      <spawn type="beastman_raider"       nr="5"/>
-      <spawn type="beastman_raider_water" nr="1"/>
+    <waveActions area="west" delay="15">
+      <spawn type="beastman_raider"       		nr="1" delay="0"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="0"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="0"/>
+      <spawn type="beastman_raider"       		nr="1" delay="7"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="7"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="7"/>
+      <spawn type="beastman_raider"       		nr="1" delay="14"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="14"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="14"/>
+      <spawn type="beastman_raider"       		nr="1" delay="21"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="21"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="21"/>
     </waveActions>
   </wave>
 
@@ -391,26 +351,31 @@
       Reinforcements added.-->
   <wave>
     <waveActions area="any" delay="0">
-      <spawn type="beastman_chieftain"   nr="1"/>
-      <spawn type="beastman_brute_fire"  nr="1"/>
-      <spawn type="beastman_brute_earth" nr="1"/>
+																									<unlockMagick magicktype="napalm" delay="1" />
+      <spawn type="beastman_chieftain"   nr="3"/>
+      <spawn type="beastman_brute_fire"  nr="3"/>
+      <spawn type="beastman_brute_earth" nr="7"/>
     </waveActions>
     <waveActions area="any" delay="0">
-      <spawn type="beastman_raider" nr="5"/>
-      <spawn type="beastman_brute"  nr="2"/>
+      <spawn type="beastman_raider" nr="10" delay="4"/>
+      <spawn type="beastman_raider" nr="10" delay="8"/>
+      <spawn type="beastman_brute"  nr="5"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="beastman_raider" nr="5"/>
-      <spawn type="beastman_brute"  nr="2"/>
+    <waveActions area="any" delay="13">
+      <spawn type="beastman_raider" nr="10" delay="4"/>
+      <spawn type="beastman_raider" nr="10" delay="8"/>
+      <spawn type="beastman_brute"  nr="5"/>
     </waveActions>
 
-    <waveActions area="any" delay="15">
-      <spawn type="beastman_raider" nr="4"/>
-      <spawn type="beastman_brute"  nr="2"/>
+    <waveActions area="any" delay="20">
+      <spawn type="beastman_raider" nr="10" delay="4"/>
+      <spawn type="beastman_raider" nr="10" delay="8"/>
+      <spawn type="beastman_brute"  nr="5"/>
     </waveActions>
-    <waveActions area="any" delay="15">
-      <spawn type="beastman_raider" nr="4"/>
-      <spawn type="beastman_brute"  nr="2"/>
+    <waveActions area="any" delay="35">
+      <spawn type="beastman_raider" nr="10" delay="4"/>
+      <spawn type="beastman_raider" nr="10" delay="8"/>
+      <spawn type="beastman_brute"  nr="5"/>
     </waveActions>
   </wave>
 
@@ -418,26 +383,32 @@
   <!--Goblins in all shape and form. Break from beastmen. This will put alot of units in play and cause a lot of disorder for the players.-->
   <wave >
     <waveActions area="any" delay="0">
-      <spawn type="goblin_rogue"        nr="9"/>
-      <spawn type="goblin_bomber"       nr="3"/>
-      <spawn type="goblin_ranger"       nr="1"/>
-      <spawn type="goblin_rogue_archer" nr="7"/>
+																									<unlockMagick magicktype="ChainLightning" delay="0" />
+      <spawn type="beastman_chieftain"   nr="1" delay="3"/>
+      <spawn type="goblin_rogue"        nr="14"/>
+      <spawn type="goblin_bomber"       nr="3" delay="5"/>
+      <spawn type="goblin_ranger"       nr="13" delay="10"/>
+      <spawn type="goblin_rogue_archer" nr="8" delay="3"/>
+      <spawn type="goblin_rogue_archer" nr="8" delay="7"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="goblin_rogue"        nr="9"/>
-      <spawn type="goblin_bomber"       nr="3"/>
-      <spawn type="goblin_ranger"       nr="1"/>
-      <spawn type="goblin_rogue_archer" nr="7"/>
+    <waveActions area="any" delay="6">
+      <spawn type="goblin_rogue"        nr="14"/>
+      <spawn type="goblin_bomber"       nr="3" delay="5"/>
+      <spawn type="goblin_ranger"       nr="13" delay="10"/>
+      <spawn type="goblin_rogue_archer" nr="8" delay="3"/>
+      <spawn type="goblin_rogue_archer" nr="8" delay="7"/>
     </waveActions>
-    <waveActions area="any" delay="0">
+    <waveActions area="any" delay="20">
+      <spawn type="beastman_chieftain"   nr="1" delay="3"/>
       <spawn type="goblin_rogue"        nr="9"/>
-      <spawn type="goblin_bomber"       nr="3"/>
-      <spawn type="goblin_ranger"       nr="1"/>
-      <spawn type="goblin_rogue_archer" nr="7"/>
+      <spawn type="goblin_bomber"       nr="3" delay="5"/>
+      <spawn type="goblin_ranger"       nr="13" delay="10"/>
+      <spawn type="goblin_rogue_archer" nr="11" delay="3"/>
     </waveActions>
     <waveActions area="any" delay="2">
-      <spawn type="goblin_shaman"       nr="1"/>
-      <spawn type="goblin_bomber"       nr="3"/>
+      <spawn type="goblin_shaman"       nr="10"/>
+      <spawn type="goblin_bomber"       nr="3" delay="18"/>
+      <spawn type="goblin_bomber"       nr="3" delay="21"/>
     </waveActions>
   </wave>
   
@@ -445,20 +416,26 @@
   <!--Really brute heavy, wizards shouldnt be able to repell knockdown and health of this magnitude.-->
   <wave >
     <waveActions area="any" delay="0">
-      <spawn type="beastman_brute"   nr="5"/>
-      <spawn type="beastman_brute_fire"  nr="1"/>
+																								<unlockMagick magicktype="wave" delay="0" />
+      <spawn type="beastman_brute"   nr="9" delay="3"/>
+      <spawn type="beastman_brute_fire"  nr="2"/>
+      <spawn type="goblin_rogue_archer" nr="6" delay="9"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="beastman_brute"   nr="5"/>
-      <spawn type="beastman_brute_fire"  nr="1"/>
+    <waveActions area="any" delay="3">
+      <spawn type="beastman_brute"   nr="9" delay="3"/>
+      <spawn type="beastman_brute_fire"  nr="2"/>
+      <spawn type="goblin_rogue_archer" nr="6" delay="9"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="beastman_brute"   nr="5"/>
-      <spawn type="beastman_brute_earth" nr="1"/>
+    <waveActions area="any" delay="6">
+      <spawn type="beastman_brute"   nr="9" delay="5"/>
+      <spawn type="beastman_brute_earth" nr="2"/>
+      <spawn type="goblin_rogue_archer" nr="6" delay="9"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="beastman_brute"   nr="5"/>
-      <spawn type="beastman_brute_earth" nr="1"/>
+    <waveActions area="any" delay="9">
+      <spawn type="beastman_brute"   nr="9" delay="5"/>
+      <spawn type="beastman_brute_earth" nr="2"/>
+      <spawn type="goblin_rogue_archer" nr="6" delay="8"/>
+      <spawn type="goblin_rogue_archer" nr="6" delay="16"/>
     </waveActions>
   </wave>
 
@@ -466,19 +443,23 @@
   <!--Rangers and raiders, alot of damage, still rather few units. Many alphas should make this very difficult.-->
   <wave >
     <waveActions area="any" delay="0">
-      <spawn type="goblin_ranger"   nr="6"/>
-      <spawn type="beastman_raider_lightning" nr="1"/>
-      <spawn type="beastman_raider_water"     nr="1"/>
+																								<unlockMagick magicktype="SPhoenix" delay="0" />
+      <spawn type="goblin_ranger"   nr="14" delay="6"/>
+      <spawn type="beastman_raider_lightning" nr="9" delay="2"/>
+      <spawn type="beastman_raider_water"     nr="9"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="goblin_ranger"   nr="6"/>
-      <spawn type="beastman_raider_lightning" nr="1"/>
-      <spawn type="beastman_raider_water"     nr="1"/>
+    <waveActions area="any" delay="7">
+      <spawn type="goblin_ranger"   nr="14" delay="6"/>
+      <spawn type="beastman_raider_lightning" nr="9" delay="2"/>
+      <spawn type="beastman_raider_water"     nr="9"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="goblin_ranger"   nr="6"/>
-      <spawn type="beastman_raider_lightning" nr="1"/>
-      <spawn type="beastman_raider_water"     nr="1"/>
+    <waveActions area="any" delay="14">
+      <spawn type="goblin_ranger"   nr="7" delay="6"/>
+      <spawn type="goblin_ranger"   nr="7" delay="12"/>
+      <spawn type="beastman_raider_lightning" nr="5" delay="2"/>
+      <spawn type="beastman_raider_water"     nr="5" delay="0"/>
+      <spawn type="beastman_raider_lightning" nr="5" delay="6"/>
+      <spawn type="beastman_raider_water"     nr="5" delay="9"/>
     </waveActions>
   </wave>
 
@@ -486,24 +467,29 @@
   <!--A total of 4 shamans and 8 trolls. Few but very dangerous.-->
   <wave>
     <waveActions area="north" delay="0">
-      <spawn type="goblin_shaman"        nr="1"/>
-      <spawn type="troll_forest"         nr="1"/>
-      <spawn type="troll_forest_unarmed" nr="1"/>
+																								<unlockMagick magicktype="SElemental" delay="0" />
+      <spawn type="goblin_shaman"        nr="9"/>
+      <spawn type="troll_forest"         nr="3"/>
+      <spawn type="troll_forest_unarmed" nr="3" delay="10"/>
     </waveActions>
-    <waveActions area="south" delay="0">
-      <spawn type="goblin_shaman"        nr="1"/>
-      <spawn type="troll_forest"         nr="1"/>
-      <spawn type="troll_forest_unarmed" nr="1"/>
+    <waveActions area="south" delay="4">
+      <spawn type="goblin_shaman"        nr="9"/>
+      <spawn type="troll_forest"         nr="3"/>
+      <spawn type="troll_forest_unarmed" nr="3" delay="10"/>
+      <spawn type="goblin_rogue_archer" nr="6" delay="8"/>
+      <spawn type="goblin_rogue_archer" nr="6" delay="16"/>
     </waveActions>
-    <waveActions area="east" delay="0">
-      <spawn type="goblin_shaman"        nr="1"/>
-      <spawn type="troll_forest"         nr="1"/>
-      <spawn type="troll_forest_unarmed" nr="1"/>
+    <waveActions area="east" delay="10">
+      <spawn type="goblin_shaman"        nr="9"/>
+      <spawn type="troll_forest"         nr="3"/>
+      <spawn type="troll_forest_unarmed" nr="3" delay="5"/>
     </waveActions>
-    <waveActions area="west" delay="0">
-      <spawn type="goblin_shaman"        nr="1"/>
-      <spawn type="troll_forest"         nr="1"/>
-      <spawn type="troll_forest_unarmed" nr="1"/>
+    <waveActions area="west" delay="18">
+      <spawn type="goblin_shaman"        nr="9"/>
+      <spawn type="troll_forest"         nr="3"/>
+      <spawn type="troll_forest_unarmed" nr="3" delay="10"/>
+      <spawn type="goblin_rogue_archer" nr="6" delay="8"/>
+      <spawn type="goblin_rogue_archer" nr="6" delay="16"/>
     </waveActions>
   </wave>
 
@@ -513,36 +499,41 @@
       More orcs spawn at each point to quickly get close to potential kills-->
   <wave>
     <waveActions area="any" delay="0">
-      <spawn type="orc_berserk"   nr="3"/>
-      <spawn type="goblin_bomber" nr="5"/>
-      <spawn type="goblin_ranger" nr="2"/>
+      <spawn type="orc_berserk"   nr="6"/>
+      <spawn type="goblin_bomber" nr="4" delay="7"/>
+      <spawn type="goblin_bomber" nr="4" delay="14"/>
+      <spawn type="goblin_ranger" nr="14" delay="4"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="orc_berserk"   nr="3"/>
-      <spawn type="goblin_bomber" nr="5"/>
-      <spawn type="goblin_ranger" nr="2"/>
+    <waveActions area="any" delay="5">
+      <spawn type="orc_berserk"   nr="6"/>
+      <spawn type="goblin_bomber" nr="4" delay="7"/>
+      <spawn type="goblin_bomber" nr="4" delay="14"/>
+      <spawn type="goblin_ranger" nr="14" delay="4"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="orc_berserk"   nr="3"/>
-      <spawn type="goblin_bomber" nr="5"/>
-      <spawn type="goblin_ranger" nr="2"/>
+    <waveActions area="any" delay="20">
+      <spawn type="orc_berserk"   nr="6"/>
+      <spawn type="goblin_bomber" nr="4" delay="7"/>
+      <spawn type="goblin_bomber" nr="4" delay="14"/>
+      <spawn type="goblin_ranger" nr="14" delay="4"/>
     </waveActions>
 
     <waveActions area="south" delay="15">
-      <spawn type="orc_berserk"   nr="1"/>
-      <spawn type="orc_regular"   nr="4"/>
+      <spawn type="orc_berserk"   nr="9"/>
+      <spawn type="orc_regular"   nr="7" delay="4"/>
     </waveActions>
-    <waveActions area="north" delay="15">
-      <spawn type="orc_berserk"   nr="1"/>
-      <spawn type="orc_regular"   nr="4"/>
+    <waveActions area="north" delay="28">
+      <spawn type="orc_berserk"   nr="8"/>
+      <spawn type="orc_regular"   nr="9" delay="4"/>
     </waveActions>
-    <waveActions area="east" delay="15">
-      <spawn type="orc_berserk"   nr="1"/>
-      <spawn type="orc_regular"   nr="4"/>
+    <waveActions area="east" delay="40">
+      <spawn type="orc_berserk"   nr="8"/>
+      <spawn type="orc_regular"   nr="9" delay="4"/>
+      <spawn type="goblin_rogue_archer" nr="6" delay="8"/>
     </waveActions>
-    <waveActions area="west" delay="15">
-      <spawn type="orc_berserk"   nr="1"/>
-      <spawn type="orc_regular"   nr="4"/>
+    <waveActions area="west" delay="53">
+      <spawn type="orc_berserk"   nr="8"/>
+      <spawn type="orc_regular"   nr="7" delay="3"/>
+      <spawn type="goblin_rogue_archer" nr="6" delay="8"/>
     </waveActions>
   </wave>
 
@@ -550,29 +541,37 @@
   <!--Alot of raiders supported by mostly alphas but two shamans as well. Reinforcment simply adds more raiders and alphas. 
       Alot of buffs and combinations of elemental effects.-->
   <wave >
-    <waveActions area="any" delay="0">
-      <spawn type="beastman_brute_fire" nr="1"/>
-      <spawn type="orc_regular" nr="5"/>
-      <spawn type="orc_berserk" nr="1"/>
+    <waveActions area="east" delay="1">
+      <spawn type="beastman_brute_fire" nr="3"/>
+      <spawn type="orc_regular" nr="9"/>
+      <spawn type="orc_berserk" nr="9" delay="4"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="beastman_brute_fire" nr="1"/>
-      <spawn type="orc_regular" nr="5"/>
-      <spawn type="orc_berserk" nr="1"/>
+    <waveActions area="south" delay="4">
+      <spawn type="beastman_brute_fire" nr="3"/>
+      <spawn type="orc_regular" nr="9"/>
+      <spawn type="orc_berserk" nr="9" delay="4"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="beastman_brute_fire" nr="1"/>
-      <spawn type="orc_regular" nr="5"/>
-      <spawn type="orc_berserk" nr="2"/>
+    <waveActions area="west" delay="10">
+      <spawn type="beastman_brute_fire" nr="3"/>
+      <spawn type="orc_regular" nr="9"/>
+      <spawn type="orc_berserk" nr="10" delay="4"/>
     </waveActions>
 
-    <waveActions area="any" delay="15">
-      <spawn type="beastman_raider_lightning" nr="2"/>
-      <spawn type="orc_berserk" nr="2"/>
+    <waveActions area="north" delay="20">
+      <spawn type="orc_berserk" nr="8"/>
     </waveActions>
-    <waveActions area="any" delay="15">
-      <spawn type="beastman_raider_lightning" nr="1"/>
-      <spawn type="orc_berserk" nr="3"/>
+    <waveActions area="north" delay="0">
+      <spawn type="orc_berserk" nr="8" delay="30"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="0"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="0"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="8"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="8"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="16"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="16"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="24"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="24"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="32"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="32"/>
     </waveActions>
   </wave>
 
@@ -581,30 +580,38 @@
       Reinforcement with more alphas, players will need to kill off alphas quickly in beginning to stand a chance.-->
   <wave >
     <waveActions area="any" delay="0">
-      <spawn type="troll_forest"         nr="1"/>
-      <spawn type="beastman_brute_earth" nr="1"/>
+      <spawn type="troll_forest"         nr="3" delay="2"/>
+      <spawn type="beastman_brute_earth" nr="6"/>
+      <spawn type="goblin_rogue_archer" nr="6" delay="8"/>
+      <spawn type="goblin_rogue_archer" nr="6" delay="16"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="troll_forest"         nr="1"/>
-      <spawn type="beastman_brute_earth" nr="1"/>
+    <waveActions area="any" delay="3">
+      <spawn type="troll_forest"         nr="3" delay="2"/>
+      <spawn type="beastman_brute_earth" nr="6"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="troll_forest"         nr="1"/>
-      <spawn type="beastman_brute_fire" nr="1"/>
+    <waveActions area="any" delay="6">
+      <spawn type="troll_forest"         nr="3" delay="2"/>
+      <spawn type="beastman_brute_fire" nr="6"/>
     </waveActions>
-    <waveActions area="any" delay="0">
-      <spawn type="troll_forest"   nr="1"/>
-      <spawn type="beastman_brute" nr="4"/>
+    <waveActions area="any" delay="10">
+      <spawn type="troll_forest"   nr="3" delay="2"/>
+      <spawn type="beastman_brute" nr="7"/>
     </waveActions>
 
-    <waveActions area="any" delay="15">
-      <spawn type="beastman_brute_fire" nr="1"/>
+    <waveActions area="any" delay="25">
+      <spawn type="beastman_brute_fire" nr="7"/>
+      <spawn type="goblin_rogue_archer" nr="6" delay="8"/>
+      <spawn type="goblin_rogue_archer" nr="6" delay="16"/>
     </waveActions>
-    <waveActions area="any" delay="15">
-      <spawn type="beastman_brute_earth" nr="1"/>
+    <waveActions area="any" delay="35">
+      <spawn type="beastman_brute_earth" nr="7"/>
+      <spawn type="goblin_rogue_archer" nr="6" delay="8"/>
+      <spawn type="goblin_rogue_archer" nr="6" delay="16"/>
     </waveActions>
-    <waveActions area="any" delay="15">
-      <spawn type="beastman_brute_fire" nr="1"/>
+    <waveActions area="any" delay="40">
+      <spawn type="beastman_brute_fire" nr="7"/>
+      <spawn type="goblin_rogue_archer" nr="6" delay="8"/>
+      <spawn type="goblin_rogue_archer" nr="6" delay="16"/>
     </waveActions>
   </wave>
 
@@ -613,25 +620,57 @@
       The player will get punished for getting this far.-->
     <wave>
       <waveActions area="north" delay="0">
-        <spawn type="beastman_chieftain"   nr="1"/>
-        <spawn type="beastman_brute_fire"  nr="2"/>
-        <spawn type="beastman_brute_earth" nr="2"/>
+        <spawn type="beastman_chieftain"   nr="6" delay="3"/>
+        <spawn type="beastman_brute_fire"  nr="4" delay="15"/>
+        <spawn type="beastman_brute_earth" nr="6"/>
       </waveActions>
       <waveActions area="south" delay="0">
-        <spawn type="troll_forest_unarmed"  nr="3"/>
+        <spawn type="troll_forest_unarmed"  nr="2"/>
+        <spawn type="troll_forest_unarmed"  nr="2" delay="5"/>
+        <spawn type="troll_forest_unarmed"  nr="2" delay="35"/>
       </waveActions>
       <waveActions area="east" delay="0">
-        <spawn type="druid" nr="2"/>
+        <spawn type="druid" nr="6"/>
+        <spawn type="druid" nr="3" delay="15"/>
+        <spawn type="druid" nr="4" delay="45"/>
       </waveActions>
-      <waveActions area="west" delay="0">
-        <spawn type="druid" nr="2"/>
+      <waveActions area="west" delay="30">
+        <spawn type="druid" nr="6"/>
+        <spawn type="druid" nr="3" delay="15"/>
+        <spawn type="druid" nr="4" delay="45"/>
       </waveActions>
 
-      <waveActions area="any" delay="15">
-        <spawn type="beastman_raider_water" nr="1"/>
+      <waveActions area="east" delay="0">
+      <spawn type="beastman_raider_water" 		nr="2" delay="0"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="0"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="9"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="9"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="18"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="18"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="27"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="27"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="36"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="36"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="45"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="45"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="54"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="54"/>
       </waveActions>
-      <waveActions area="any" delay="15">
-        <spawn type="beastman_raider_lightning" nr="1"/>
+      <waveActions area="west" delay="4">
+      <spawn type="beastman_raider_water" 		nr="2" delay="0"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="0"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="9"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="9"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="18"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="18"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="27"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="27"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="36"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="36"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="45"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="45"/>
+      <spawn type="beastman_raider_water" 		nr="2" delay="54"/>
+      <spawn type="beastman_raider_lightning" 	nr="2" delay="54"/>
       </waveActions>
     </wave>
 </Scene>
