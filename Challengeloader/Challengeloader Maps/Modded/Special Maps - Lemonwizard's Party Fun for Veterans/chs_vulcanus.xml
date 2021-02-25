@@ -9,30 +9,37 @@
       <cameramagnify magnification="0.8"/>
       <playMusic cue="music_encounter" delay="3"/>
       <spawnPhys object="Vulcanus_fire"  area="fire_0"/>
-      <spawnPhys object="vulcanus_gong" id="gong" area="spawn_gong" onDeath="break_gong"/>
+      <!--<spawnPhys object="vulcanus_gong" id="gong" area="spawn_gong" onDeath="break_gong"/>-->
 	  
 	  <addTimer name="progressiontimer"/>
-	  <!-- remove comment and set value to a higher number to start with a higher difficulty -->
-	  <!--<timer name="progressiontimer" value="0"/>-->
+	  <!-- remove comment and set value to a higher number to start with a higher difficulty (300 = 5 minutes)-->
+	  <!--<timer name="progressiontimer" value="300" delay="1"/>-->
 	  
+	  <counter name="givebreak" action="set" value="0"/> 
+	  <executeTrigger trigger="togglebreak" delay="300"/>
     </then>
   </trigger>
 
   <RuleSet type="TimedObjective">
-    <spawnAreas>
-      <area>north</area>
-      <area>west</area>
-      <area>east</area>
-    </spawnAreas>
+	<timeBonus minTime="0" minTimeBonus="10" maxTime="30" maxTimeBonus="10" counter="scorecounter" />
+	<spawnAreas>
+		<area>north</area>
+		<area>west</area>
+		<area>east</area>
+      <area>WaCspawn0</area>
+	</spawnAreas>
   </RuleSet>
-
+  
+<!--
   <trigger id="break_gong" repeat="false" autorun="false">
     <then>
       <playAnimation name="anim_shield_hit" children="true" loop="false"/>
-      <!--Playsound-->
     </then>
   </trigger>
+-->
   
+  
+  <!-- do this so the spawnsupport trigger works a bit more reliably -->
 	<trigger id="setplayerfactions" repeat="2" autorun="true">
 		<then>
 			<setFaction id="player1" action="set" faction="friendly" delay="0" area="any"/>
@@ -42,9 +49,54 @@
 		</then>
 	</trigger>
   
-	<trigger id="spawnsupport1" repeat="20" autorun="true">
+  
+  <!-- repeated unlock for anyone who hot-joins; every 3 minutes -->
+	<trigger id="unlockmagicks" repeat="180" autorun="true">
+		<then>
+			<unlockMagick magicktype="TractorPull" delay="0" />
+			<unlockMagick magicktype="Levitate" delay="0" />
+			<unlockMagick magicktype="ChainLightning" delay="0" />
+			<unlockMagick magicktype="Portal" delay="0" />
+			<unlockMagick magicktype="napalm" delay="0" />
+			<unlockMagick magicktype="grease" delay="0" />
+			<unlockMagick magicktype="teleport" delay="0" />
+			<unlockMagick magicktype="timewarp" delay="0" />
+			<unlockMagick magicktype="Blizzard" delay="0" />
+			<unlockMagick magicktype="Tornado" delay="0" />
+			<unlockMagick magicktype="Thunderb" delay="0" />
+			<unlockMagick magicktype="Thunders" delay="0" />
+			<unlockMagick magicktype="rain" delay="0" />
+			<unlockMagick magicktype="Sundead" delay="0" />
+			<unlockMagick magicktype="Conflagration" delay="0" />
+			<unlockMagick magicktype="Nullify" delay="0" />
+			<unlockMagick magicktype="haste" delay="0" />
+			<unlockMagick magicktype="wave" delay="0" />
+			<unlockMagick magicktype="performanceenchantment" delay="0" />
+			<unlockMagick magicktype="judgementspray" delay="0" />
+		</then>
+	</trigger>
+  
+  
+  <!-- give the players a break for 30 seconds every 5 minutes -->
+	<trigger id="togglebreak" repeat="true" autorun="false">
+		<then>
+			<counter name="givebreak" action="set" value="1"/> 
+			<timer name="progressiontimer" paused="true" />
+
+			<counter name="givebreak" action="set" value="0" delay="30"/> 
+			<timer name="progressiontimer" paused="false"/>
+			
+			<executeTrigger trigger="togglebreak" delay="300"/>
+		</then>
+	</trigger>
+  
+  
+  
+	<trigger id="spawnsupport" repeat="30" autorun="true">
 		<if>
 			<factionPresent factions="friendly" compareMethod="equal" nr="1" area="any"/>
+			<present type="Wizard_Support" compareMethod="less" nr="3" area="any" />
+			<counter name="givebreak" compareMethod="equal" value="0"/> 
 		</if>
 		<then>
 			<random>
@@ -55,32 +107,6 @@
 				<spawn type="Wizard_Support" nr="1" spawnanimation="revive" area="west" delay="0"/>
 				<setFaction type="Wizard_Support" action="set" faction="wild" delay="0.1" area="any"/>
 			</random>
-		</then>
-	</trigger>
-  
-	<trigger id="spawnsupport2" repeat="20" autorun="true">
-		<if>
-			<factionPresent factions="players" compareMethod="equal" nr="2" area="any"/>
-		</if>
-		<then>
-			<spawn type="Wizard_Support" nr="1" spawnanimation="revive" area="east" delay="0"/>
-			<setFaction type="Wizard_Support" action="set" faction="wild" delay="0.1" area="any"/>
-			<spawn type="Wizard_Support" nr="1" spawnanimation="revive" area="west" delay="10"/>
-			<setFaction type="Wizard_Support" action="set" faction="wild" delay="10.1" area="any"/>
-		</then>
-	</trigger>
-  
-	<trigger id="spawnsupport34" repeat="20" autorun="true">
-		<if>
-			<factionPresent factions="players" compareMethod="greater" nr="2" area="any"/>
-		</if>
-		<then>
-			<spawn type="Wizard_Support" nr="1" spawnanimation="revive" area="north" delay="0"/>
-			<setFaction type="Wizard_Support" action="set" faction="wild" delay="0.1" area="any"/>
-			<spawn type="Wizard_Support" nr="1" spawnanimation="revive" area="east" delay="7"/>
-			<setFaction type="Wizard_Support" action="set" faction="wild" delay="7.1" area="any"/>
-			<spawn type="Wizard_Support" nr="1" spawnanimation="revive" area="west" delay="14"/>
-			<setFaction type="Wizard_Support" action="set" faction="wild" delay="14.1" area="any"/>
 		</then>
 	</trigger>
   
@@ -112,6 +138,7 @@
 	<if>
 		<idPresent id="wiz1" area="any" invert="true"/>
 		<characterHealth id="wiz1" compareMethod="less" health="0.1" />
+		<counter name="givebreak" compareMethod="equal" value="0"/> 
 	</if>
 	<then>
 		<spawn type="Wizard_Coldarr" nr="1" spawnanimation="revive" area="north" id="wiz1" delay="6"/>
@@ -119,6 +146,7 @@
 		<executeTrigger trigger="boostwiz1" delay="8"/>
     </then>
   </trigger>
+  
   
   
   
@@ -149,6 +177,7 @@
 		<idPresent id="wiz2" area="any" invert="true"/>
 		<characterHealth id="wiz2" compareMethod="less" health="0.1" />
 		<timer name="progressiontimer" compareMethod="greater" value="50"/>
+		<counter name="givebreak" compareMethod="equal" value="0"/> 
 	</if>
 	<then>
 		<spawn type="Wizard" nr="1" spawnanimation="revive" area="east" id="wiz2" delay="6"/>
@@ -186,9 +215,10 @@
 		<idPresent id="wiz3" area="any" invert="true"/>
 		<characterHealth id="wiz3" compareMethod="less" health="0.1" />
 		<timer name="progressiontimer" compareMethod="greater" value="100"/>
+		<counter name="givebreak" compareMethod="equal" value="0"/> 
 	</if>
 	<then>
-		<spawn type="Wizard_evil" nr="1" spawnanimation="revive" area="west" id="wiz3" delay="6"/>
+		<spawn type="Wizard_evil" nr="1" spawnanimation="revive" area="WaCspawn0" id="wiz3" delay="6"/>
 		<setFaction id="wiz3" action="set" faction="wild" delay="6.1"/>
 		<executeTrigger trigger="boostwiz3" delay="8"/>
     </then>
@@ -223,9 +253,10 @@
 		<idPresent id="wiz4" area="any" invert="true"/>
 		<characterHealth id="wiz4" compareMethod="less" health="0.1" />
 		<timer name="progressiontimer" compareMethod="greater" value="150"/>
+		<counter name="givebreak" compareMethod="equal" value="0"/> 
 	</if>
 	<then>
-		<spawn type="Wizard_rogue" nr="1" spawnanimation="revive" area="north" id="wiz4" delay="6"/>
+		<spawn type="Wizard_rogue" nr="1" spawnanimation="revive" area="WaCspawn0" id="wiz4" delay="6"/>
 		<setFaction id="wiz4" action="set" faction="wild" delay="6.1"/>
 		<executeTrigger trigger="boostwiz4" delay="8"/>
     </then>
@@ -260,6 +291,7 @@
 		<idPresent id="wiz5" area="any" invert="true"/>
 		<characterHealth id="wiz5" compareMethod="less" health="0.1" />
 		<timer name="progressiontimer" compareMethod="greater" value="200"/>
+		<counter name="givebreak" compareMethod="equal" value="0"/> 
 	</if>
 	<then>
 		<spawn type="Wizard_Trekkie" nr="1" spawnanimation="revive" area="east" id="wiz5" delay="6"/>
@@ -269,6 +301,7 @@
   </trigger>
   
   
+
   
     <trigger id="boostwiz6" repeat="true" autorun="false">
 	<if>
@@ -297,13 +330,15 @@
 		<idPresent id="wiz6" area="any" invert="true"/>
 		<characterHealth id="wiz6" compareMethod="less" health="0.1" />
 		<timer name="progressiontimer" compareMethod="greater" value="300"/>
+		<counter name="givebreak" compareMethod="equal" value="0"/> 
 	</if>
 	<then>
-		<spawn type="Wizard_Hat_Evil" nr="1" spawnanimation="revive" area="west" id="wiz6" delay="6"/>
+		<spawn type="Wizard_Hat_Evil" nr="1" spawnanimation="revive" area="WaCspawn0" id="wiz6" delay="6"/>
 		<setFaction id="wiz6" action="set" faction="wild" delay="6.1"/>
 		<executeTrigger trigger="boostwiz6" delay="8"/>
     </then>
   </trigger>
+  
   
   
   
@@ -336,13 +371,15 @@
 		<idPresent id="wiz7" area="any" invert="true"/>
 		<characterHealth id="wiz7" compareMethod="less" health="0.1" />
 		<timer name="progressiontimer" compareMethod="greater" value="350"/>
+		<counter name="givebreak" compareMethod="equal" value="0"/> 
 	</if>
 	<then>
-		<spawn type="Wizard_Necromancer" nr="1" spawnanimation="revive" area="north" id="wiz7" delay="6"/>
-		<setFaction id="wiz7" action="set" faction="wild" delay="6.1"/>
-		<executeTrigger trigger="boostwiz7" delay="8"/>
+		<spawn type="Wizard_Necromancer" nr="1" spawnanimation="revive" area="north" id="wiz7" delay="11"/>
+		<setFaction id="wiz7" action="set" faction="wild" delay="11.1"/>
+		<executeTrigger trigger="boostwiz7" delay="14"/>
     </then>
   </trigger>
+  
   
   
   
@@ -373,13 +410,15 @@
 		<idPresent id="wiz8" area="any" invert="true"/>
 		<characterHealth id="wiz8" compareMethod="less" health="0.1" />
 		<timer name="progressiontimer" compareMethod="greater" value="400"/>
+		<counter name="givebreak" compareMethod="equal" value="0"/> 
 	</if>
 	<then>
-		<spawn type="Wizard_IceRegent" nr="1" spawnanimation="revive" area="east" id="wiz8" delay="6"/>
-		<setFaction id="wiz8" action="set" faction="wild" delay="6.1"/>
-		<executeTrigger trigger="boostwiz8" delay="8"/>
+		<spawn type="Wizard_IceRegent" nr="1" spawnanimation="revive" area="WaCspawn0" id="wiz8" delay="12"/>
+		<setFaction id="wiz8" action="set" faction="wild" delay="12.1"/>
+		<executeTrigger trigger="boostwiz8" delay="15"/>
     </then>
   </trigger>
+  
   
   
   
@@ -410,13 +449,15 @@
 		<idPresent id="wiz9" area="any" invert="true"/>
 		<characterHealth id="wiz9" compareMethod="less" health="0.1" />
 		<timer name="progressiontimer" compareMethod="greater" value="480"/>
+		<counter name="givebreak" compareMethod="equal" value="0"/> 
 	</if>
 	<then>
-		<spawn type="Wizard_Trekkie" nr="1" spawnanimation="revive" area="west" id="wiz9" delay="6"/>
-		<setFaction id="wiz9" action="set" faction="wild" delay="6.1"/>
-		<executeTrigger trigger="boostwiz9" delay="8"/>
+		<spawn type="Wizard_Trekkie" nr="1" spawnanimation="revive" area="west" id="wiz9" delay="13"/>
+		<setFaction id="wiz9" action="set" faction="wild" delay="13.1"/>
+		<executeTrigger trigger="boostwiz9" delay="16"/>
     </then>
   </trigger>
+  
   
   
   
@@ -442,18 +483,21 @@
     </then>
   </trigger>
   
-    <trigger id="spawnwiz10" repeat="15" autorun="true">
+    <trigger id="spawnwiz10" repeat="18" autorun="true">
 	<if>
 		<idPresent id="wiz10" area="any" invert="true"/>
 		<characterHealth id="wiz10" compareMethod="less" health="0.1" />
 		<timer name="progressiontimer" compareMethod="greater" value="600"/>
+		<counter name="givebreak" compareMethod="equal" value="0"/> 
 	</if>
 	<then>
-		<spawn type="Wizard_Flamos" nr="1" spawnanimation="revive" area="west" id="wiz10" delay="6"/>
-		<setFaction id="wiz10" action="set" faction="wild" delay="6.1"/>
-		<executeTrigger trigger="boostwiz10" delay="8"/>
+		<spawn type="Wizard_Flamos" nr="1" spawnanimation="revive" area="west" id="wiz10" delay="16"/>
+		<setFaction id="wiz10" action="set" faction="wild" delay="16.1"/>
+		<executeTrigger trigger="boostwiz10" delay="19"/>
     </then>
   </trigger>
+  
+  
   
   
   <!-- final difficulty increase at 15 minutes-->
@@ -479,20 +523,18 @@
     </then>
   </trigger>
   
-    <trigger id="spawnwiz11" repeat="14" autorun="true">
+    <trigger id="spawnwiz11" repeat="20" autorun="true">
 	<if>
 		<idPresent id="wiz11" area="any" invert="true"/>
 		<characterHealth id="wiz11" compareMethod="less" health="0.1" />
 		<timer name="progressiontimer" compareMethod="greater" value="900"/>
+		<counter name="givebreak" compareMethod="equal" value="0"/> 
 	</if>
 	<then>
-		<spawn type="Wizard_Hat_Evil" nr="1" spawnanimation="revive" area="north" id="wiz11" delay="6"/>
-		<setFaction id="wiz11" action="set" faction="wild" delay="6.1"/>
-		<executeTrigger trigger="boostwiz11" delay="8"/>
+		<spawn type="Wizard_Hat_Evil" nr="1" spawnanimation="revive" area="north" id="wiz11" delay="17"/>
+		<setFaction id="wiz11" action="set" faction="wild" delay="17.1"/>
+		<executeTrigger trigger="boostwiz11" delay="19"/>
     </then>
   </trigger>
   
 </Scene>
-  
-  
-
